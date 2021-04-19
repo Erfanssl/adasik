@@ -1,0 +1,53 @@
+.game--btn {
+  font-size: 3.5rem;
+  cursor: pointer;
+  width: 15rem;
+  height: 10rem;
+  text-align: center;
+  border-radius: 2rem;
+  border: none;
+  border-bottom: .5rem solid rgba(0, 0, 0, .5);
+  outline: none;
+  transition: transform .1s;
+  font-family: Roboto-Bold;
+  margin-bottom: -2rem;
+}
+
+.game--btn__yes {
+  background-color: #00b712;
+  background-image: linear-gradient(315deg, #00b712 0%, #5aff15 74%);
+
+  &:hover {
+    background-image: linear-gradient(135deg, #00b712 0%, #5aff15 74%);
+  }
+
+  img {
+    width: 4rem;
+    height: 4rem;
+    opacity: .7;
+    transform: rotate(180deg);
+  }
+}
+
+.game--btn__no {
+  margin-right: 1rem;
+  transform: translateY(-6%);
+  background-color: #3f0d12;
+  background-image: linear-gradient(315deg, #3f0d12 0%, #a71d31 74%);
+
+  &:hover {
+    background-image: linear-gradient(135deg, #3f0d12 0%, #a71d31 74%);
+  }
+
+  img {
+    width: 4rem;
+    height: 4rem;
+    opacity: .7;
+  }
+}
+
+.game--btn__inner-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}

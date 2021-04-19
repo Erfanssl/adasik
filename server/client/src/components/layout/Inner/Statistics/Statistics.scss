@@ -1,0 +1,340 @@
+@import "../../../../sass/mixins";
+
+@mixin chart-style {
+  background-color: #1e453e;
+  background-image: linear-gradient(314deg, #02150d 0%, #000000 74%);
+  padding: 1rem 0 0 1rem;
+
+  @media only screen and (max-width: 31.25em) { //500px
+    padding: 1rem .5rem 0 1rem;
+  }
+
+  h2 {
+    font-weight: 300;
+    font-size: 2.2rem;
+
+    @include responsive(phone) {
+      font-size: 1.6rem;
+    }
+  }
+}
+
+.statistics {
+  &--container {
+    padding: 0 2rem;
+    position: relative;
+    min-height: 90vh;
+    max-width: 200rem;
+  }
+
+  &--radar-container {
+    display: flex;
+    //width: 124rem;
+
+    @include responsive(small-laptop) {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+
+  &--radar-one, &--radar-two {
+    @include chart-style;
+    border-radius: .8rem;
+    width: 49%;
+
+    @include responsive(small-laptop) {
+      width: 70%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    @include responsive(tab-port) {
+      width: 80%;
+    }
+
+    @include responsive(phone-big) {
+      width: 90%;
+    }
+
+    @include responsive(phone) {
+      width: 97%;
+    }
+
+    h2 {
+      @include responsive(small-laptop) {
+        align-self: flex-start;
+      }
+    }
+
+    svg {
+      @media only screen and (max-width: 31.25em) { //500px
+        transform: scale(.6);
+        margin: -8rem;
+      }
+
+      @include responsive(phone-small) {
+        transform: scale(.5);
+        margin: -10rem;
+      }
+    }
+  }
+
+  &--radar-one {
+    margin-right: 2%;
+
+    @include responsive(small-laptop) {
+      margin-right: 0;
+      margin-bottom: 1%;
+    }
+  }
+
+  &--line-chart-container {
+    @include chart-style;
+    margin: 3rem 0;
+    border-radius: .8rem;
+    width: 100%;
+    position: relative;
+
+    #totalChart {
+      width: 100%;
+      min-height: 50rem;
+    }
+
+    .insufficient--data {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, .7);
+      border-radius: .8rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 3rem;
+    }
+
+    .wrapper {
+      align-items: center;
+      display: flex;
+      justify-content: center;
+    }
+
+    .chart-wrapper {
+      border-radius: 4px;
+      padding: 2rem 3.5rem 1rem;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .axis path,
+    .axis line,
+    .gridline line {
+      fill: none;
+      stroke: #fff;
+      opacity: 0.1;
+      shape-rendering: crispEdges;
+    }
+
+    .line {
+      stroke: #17EAD9;
+      stroke-width: 3px;
+      fill: none;
+    }
+
+    path.domain {
+      fill: none;
+      opacity: 0.1;
+    }
+
+    div.tooltip {
+      color: #4a4a4a;
+      position: absolute;
+      text-align: center;
+      padding: 3px 6px;
+      font-size: 12px;
+      background: #fff;
+      border-radius: 4px;
+      pointer-events: none;
+      top: 0;
+    }
+
+    .lineDots {
+      cursor: pointer;
+      fill: #fff;
+      fill-opacity: 0.5;
+      stroke: #17EAD9;
+      stroke-opacity: 0.4;
+      transition: all 0.2s ease-in-out;
+      &:hover {
+        fill-opacity: 1;
+        stroke-width: 10px;
+      }
+    }
+
+    .lineDotsOutgoing {
+      stroke: #F8C91C;
+    }
+  }
+
+  &--line-chart__header-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 3rem;
+    margin-top: 1rem;
+
+    @include responsive(tab-land) {
+      flex-direction: column;
+    }
+  }
+
+  &--line-chart__items-group {
+    display: flex;
+    align-items: center;
+    width: 30%;
+
+    @include responsive(tab-land) {
+      margin-top: 2rem;
+      width: 100%;
+      justify-content: center;
+    }
+
+    li {
+      list-style: none;
+      font-size: 1.7rem;
+      background-color: #55efc4;
+      background-image: linear-gradient(180deg, #55efc4 0%, #000000 100%);
+      cursor: pointer;
+      padding: 1rem;
+
+      @media only screen and (max-width: 31.25em) { //500px
+        font-size: 1.4rem;
+      }
+
+      &:nth-child(2) {
+
+        border-left: .1rem solid #fff;
+        border-right: .1rem solid #fff;
+      }
+
+      &.active--progress-item {
+        background-color: #55efc4;
+        background-image: linear-gradient(0deg, #55efc4 0%, #000000 100%);
+      }
+    }
+  }
+
+  &--bar-chart-container {
+    @include chart-style;
+    //width: 124rem;
+    width: 100%;
+    min-height: 40rem;
+    margin: 3rem 0;
+    border-radius: .8rem;
+
+    h2 {
+      text-align: center;
+      margin-bottom: 5rem;
+    }
+  }
+
+  &--games-strength-container {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 3rem;
+
+    @include responsive(small-laptop) {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+
+  &--games-container {
+    @include chart-style;
+    //flex: 1;
+    border-radius: .8rem;
+    margin-right: 2%;
+    position: relative;
+    overflow: hidden;
+    width: 50%;
+
+    @include responsive(small-laptop) {
+      width: 70%;
+      margin-right: 0;
+      margin-bottom: 1%;
+    }
+
+    @include responsive(tab-port) {
+      width: 80%;
+    }
+
+    @include responsive(phone-big) {
+      width: 90%;
+    }
+
+    @include responsive(phone) {
+      width: 97%;
+    }
+
+    h2 {
+      margin-bottom: 5rem;
+    }
+
+    text {
+      font-size: 1.3rem;
+    }
+
+    .no--games {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      background-color: rgba(0, 0, 0, .7);
+      z-index: 200;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2.2rem;
+    }
+  }
+
+  &--strength-container {
+    @include chart-style;
+    //flex: 1;
+    border-radius: .8rem;
+    width: 50%;
+
+    @include responsive(small-laptop) {
+      width: 70%;
+    }
+
+    @include responsive(tab-port) {
+      width: 80%;
+    }
+
+    @include responsive(phone-big) {
+      width: 90%;
+    }
+
+    @include responsive(phone) {
+      width: 97%;
+    }
+  }
+}
+
+.games--center-text {
+  transition: all .5s;
+  font-size: 2rem !important;
+  width: 2rem;
+  height: 2rem;
+
+  @media only screen and (max-width: 31.25em) { //500px
+    font-size: 1rem !important;
+  }
+}

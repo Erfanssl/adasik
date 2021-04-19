@@ -1,0 +1,19 @@
+.settings--submit-btn {
+  max-width: 70%;
+  min-width: 40%;
+  margin: 1rem auto 2rem;
+  padding: 2rem;
+  border-radius: 1rem;
+  cursor: pointer;
+  background-color: #3bb78f;
+  background-image: linear-gradient(180deg, #3bb78f 0%, #0bab64 74%);
+  border: none;
+  outline: none;
+  font-size: 1.6rem;
+  color: #fff;
+  letter-spacing: .15rem;
+
+  &:hover {
+    background-image: linear-gradient(0deg, #3bb78f 0%, #0bab64 74%);
+  }
+}

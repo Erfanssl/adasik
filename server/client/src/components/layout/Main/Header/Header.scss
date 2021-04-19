@@ -1,0 +1,234 @@
+@import '../../../../sass/mixins';
+
+.header--sign-in-container, .header--sign-up-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, .7);
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.header--container__main {
+  height: 160vh;
+  min-height: 140rem;
+  //background: linear-gradient(0deg, #f39283 0, #e97765 50%, #c36254 100%); // ora
+  //background: linear-gradient(0deg, #a1d2c8 0, #74cab9 50%, #54cab4 100%); // cyan
+  background: linear-gradient(0deg, var(--primaryGreen) 0, var(--secondaryGreen) 20%, #000000 100%); // groon
+  clip-path: polygon(0 0, 100% 0, 100% 27%, 0 100%, 0 0);
+  position: relative;
+
+  @include responsive(tab-land-small) {
+    height: 150vh;
+    min-height: 130rem;
+    clip-path: polygon(0 0, 100% 0, 100% 40%, 0 100%, 0 0);
+  }
+
+  @include responsive(tab-port-big) {
+    height: 140vh;
+    min-height: 120rem;
+  }
+
+  @include responsive(phone-big) {
+    height: 100vh;
+    min-height: 80rem;
+    clip-path: polygon(0 0, 100% 0, 100% 60%, 0 100%, 0 0);
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    //background-color: rgba(13, 17, 34, .3);
+    z-index: -1;
+    display: block;
+  }
+}
+
+.header--bg__main {
+  display: block;
+  opacity: .15;
+  position: absolute;
+  z-index: -1;
+  height: 100%;
+  left: 0;
+  top: 0;
+}
+
+.header--inner {
+  &__main {
+    color: var(--primaryWhite);
+    padding: 2rem;
+    margin-left: 12%;
+    margin-top: 11%;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 28%;
+
+    @include responsive(tab-land-small) {
+      margin-left: 7%;
+    }
+
+    @include responsive(tab-port-big) {
+      margin-left: 5%;
+    }
+
+    @include responsive(tab-land-small) {
+      margin-top: 15%;
+    }
+
+    @include responsive(tab-port) {
+      margin-top: 19%;
+    }
+
+    @include responsive(phone-big) {
+      height: 35%;
+      margin-top: 24%;
+    }
+
+    @include responsive(phone-small) {
+      margin-top: 30%;
+      height: 40%;
+    }
+
+    p {
+      font-family: Roboto-Regular;
+      font-size: 1.6rem;
+      color: rgba(255, 255, 255, .6);
+
+      @include responsive(phone-small) {
+        font-size: 1.4rem;
+      }
+    }
+  }
+
+  &__link-group {
+    display: flex;
+    align-items: center;
+
+    .header--link__text {
+      color: var(--primaryWhite);
+      margin-left: 2rem;
+      transition: color .4s;
+      font-size: 1.6rem;
+      z-index: 100;
+      cursor: pointer;
+
+      &:hover {
+        color: rgba(255, 255, 255, .6);
+      }
+    }
+  }
+
+  &__text-group {
+    p {
+      font-family: Roboto-Bold;
+      font-size: 7rem;
+      color: var(--primaryWhite);
+
+      @include responsive(small-desktop) {
+        font-size: 6rem;
+      }
+
+      @include responsive(small-laptop) {
+        font-size: 5rem;
+      }
+
+      @include responsive(tab-land-small) {
+        font-size: 4.5rem;
+      }
+
+      @include responsive(tab-port) {
+        font-size: 3.9rem;
+      }
+
+      @include responsive(phone-big) {
+        font-size: 2.8rem;
+      }
+
+      @include responsive(phone) {
+        font-size: 2.3rem;
+      }
+
+      @include responsive(phone-small) {
+        font-size: 2rem;
+      }
+    }
+  }
+
+  &__line-one-container {
+    display: flex;
+    height: 8rem;
+    background-color: transparent;
+    align-items: center;
+    margin-bottom: 4rem;
+
+    @include responsive(tab-land-small) {
+      height: 4rem;
+    }
+
+    @media only screen and (max-width: 33.75em) { // 540px
+      margin-bottom: 2rem;
+    }
+
+    .advanced {
+      margin: 0 1.5rem;
+
+      @include responsive(phone-big) {
+        margin: 0 1rem;
+      }
+    }
+
+    .an {
+      display: none;
+
+      @media only screen and (max-width: 33.75em) { // 540px
+        display: block;
+      }
+    }
+
+    .the-most {
+      @media only screen and (max-width: 33.75em) { // 540px
+        display: none;
+      }
+    }
+
+    div.header--inner__outside {
+      overflow: hidden;
+      height: 8rem;
+    }
+
+    div.header--inner__inside {
+      margin: 0 2rem;
+      transition: all .5s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      @include responsive(tab-land-small) {
+        margin: 0;
+      }
+
+      p {
+        height: 10rem;
+        margin-top: -.2rem;
+        letter-spacing: .5rem;
+
+        @include responsive(small-desktop) {
+          margin-top: .2rem;
+        }
+
+        @include responsive(small-laptop) {
+          margin-top: .45rem;
+        }
+      }
+    }
+  }
+}

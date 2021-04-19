@@ -1,0 +1,187 @@
+import React, { useState, useEffect } from 'react';
+import { NavLink } from "react-router-dom";
+import './Nav.scss';
+import { connect } from 'react-redux';
+import { authSignOutSendData } from "../../../../actions/authAction";
+import Logo from "../../utils/Logo/Logo";
+import history from "../../../../history";
+import requireAuth from "../../../../middlewares/requireAuth";
+
+import dashboard from '../../../../assets/icons/home.svg';
+import profile from '../../../../assets/icons/profile.svg';
+import messenger from '../../../../assets/icons/messages.svg';
+import training from '../../../../assets/icons/training.svg';
+import challenges from '../../../../assets/icons/challenges.svg';
+import group from '../../../../assets/icons/group.svg';
+import friends from '../../../../assets/icons/friends.svg';
+import statistics from '../../../../assets/icons/statistics.svg';
+import signOut from '../../../../assets/icons/signout.svg';
+import settings from '../../../../assets/icons/settings.svg';
+import test from '../../../../assets/icons/test.svg';
+
+const Nav = ({
+                 popUpRes,
+                 setShowPopUp,
+                 signOutData,
+                 notificationData,
+                 authSignOutSendData,
+                 isOffline
+}) => {
+    const [signOutError, setSignOutError] = useState({ show: false });
+
+    useEffect(() => {
+        if (signOutData && signOutData.Error) {
+            setSignOutError({ show: true });
+
+            setTimeout(() => {
+                setSignOutError({ show: false });
+            }, 3000);
+        }
+
+        if (signOutData  && signOutData.done) {
+            history.push('/');
+        }
+    }, [signOutData]);
+
+    useEffect(() => {
+        if (popUpRes && popUpRes.res === 'accept') {
+            authSignOutSendData();
+        }
+    }, [popUpRes]);
+
+    function handleSignOutClick() {
+        setShowPopUp({ show: true, type: 'sign-out' });
+    }
+
+    return (
+        <div className="nav--container">
+            <div className="nav--logo-container">
+                {
+                    isOffline && isOffline[0] ?
+                        <div className="offline--logo">
+                            <p>Offline</p>
+                        </div>:
+                        <Logo extraClass="inner--logo" />
+                }
+            </div>
+            <div className="nav--separator-line" />
+            <div className="nav--items-container">
+                <ul>
+                    <li className={ isOffline && isOffline[0] ? "nav--items__dashboard offline" : "nav--items__dashboard" }>
+                        <NavLink to="/dashboard" activeClassName="nav--item__active-link">
+                            <div className="nav--item__active-bg" />
+                            <img src={ dashboard } alt="dashboard" />
+                            <p>Dashboard</p>
+                        </NavLink>
+                    </li>
+                    <li className={ isOffline && isOffline[0] ? "nav--items__profile offline" : "nav--items__profile" }>
+                        <NavLink to="/profile" activeClassName="nav--item__active-link">
+                            <div className="nav--item__active-bg" />
+                            <img src={ profile } alt="profile" />
+                            <p>Profile</p>
+                        </NavLink>
+                    </li>
+                    <li className={ isOffline && isOffline[0] ? "nav--items__messenger offline" : "nav--items__messenger" }>
+                        <NavLink to="/messenger" activeClassName="nav--item__active-link">
+                            <div className="nav--item__active-bg" />
+                            {
+                                notificationData && !!notificationData.newMessengerConversations &&
+                                    <div className="notification">
+                                        <p>{ notificationData.newMessengerConversations }</p>
+                                    </div>
+                            }
+                            <img src={ messenger } alt="messenger" />
+                            <p>Messenger</p>
+                        </NavLink>
+                    </li>
+                    <li className="nav--items__training">
+                        <NavLink to="/training" activeClassName="nav--item__active-link">
+                            <div className="nav--item__active-bg" />
+                            <img src={ training } alt="training" />
+                            <p>Training</p>
+                        </NavLink>
+                    </li>
+                    <li className={ isOffline && isOffline[0] ? "nav--items__training offline" : "nav--items__training" }>
+                        <NavLink to="/tests" activeClassName="nav--item__active-link">
+                            <div className="nav--item__active-bg" />
+                            <img src={ test } alt="training" />
+                            <p>Tests</p>
+                        </NavLink>
+                    </li>
+                    <li className={ isOffline && isOffline[0] ? "nav--items__challenges offline" : "nav--items__challenges" }>
+                        <NavLink to="/challenges" activeClassName="nav--item__active-link">
+                            <div className="nav--item__active-bg" />
+                            {
+                                notificationData && !!(notificationData.challengesShouldPlay || notificationData.challengeRequests) &&
+                                <div className="notification">
+                                    <p>{ notificationData.challengesShouldPlay + notificationData.challengeRequests }</p>
+                                </div>
+                            }
+                            <img src={ challenges } alt="challenges" />
+                            <p>Challenges</p>
+                        </NavLink>
+                    </li>
+                    <li className={ isOffline && isOffline[0] ? "nav--items__group offline" : "nav--items__group" }>
+                        <NavLink to="/group" activeClassName="nav--item__active-link">
+                            <div className="nav--item__active-bg" />
+                            <img src={ group } alt="group" />
+                            <p>Group</p>
+                        </NavLink>
+                    </li>
+                    <li className={ isOffline && isOffline[0] ? "nav--items__friends offline" : "nav--items__friends" }>
+                        <NavLink to="/friends" activeClassName="nav--item__active-link">
+                            <div className="nav--item__active-bg" />
+                            {
+                                notificationData && !!notificationData.newFriendRequests &&
+                                <div className="notification">
+                                    <p>{ notificationData.newFriendRequests }</p>
+                                </div>
+                            }
+                            <img src={ friends } alt="friends" />
+                            <p>Friends</p>
+                        </NavLink>
+                    </li>
+                    <li className={ isOffline && isOffline[0] ? "nav--items__statistics offline" : "nav--items__statistics" }>
+                        <NavLink to="/statistics" activeClassName="nav--item__active-link">
+                            <div className="nav--item__active-bg" />
+                            <img src={ statistics } alt="statistics" />
+                            <p>Statistics</p>
+                        </NavLink>
+                    </li>
+                    <li className={ isOffline && isOffline[0] ? "nav--items__settings offline" : "nav--items__settings" }>
+                        <NavLink to="/settings" activeClassName="nav--item__active-link">
+                            <NavLink to="/settings/profile">
+                                <div className="nav--item__active-bg" />
+                                <img src={ settings } alt="settings" />
+                                <p>Settings</p>
+                            </NavLink>
+                        </NavLink>
+                    </li>
+                    <li className={ isOffline && isOffline[0] ? "nav--items__sign-out offline" : "nav--items__sign-out" } onClick={ handleSignOutClick }>
+                        <div className="sign-out--container">
+                            <div className="nav--item__active-bg" />
+                            <img src={ signOut } alt="sign out" />
+                            <p>Sign Out</p>
+                        </div>
+                        {
+                            signOutError.show &&
+                            <div className="sign-out--error">
+                                Unable to Sign Out
+                            </div>
+                        }
+                    </li>
+                </ul>
+            </div>
+        </div>
+    );
+};
+
+function mapStateToProps(state) {
+    return {
+        signOutData: state.auth.signOut
+    };
+}
+
+export default connect(mapStateToProps, {
+    authSignOutSendData
+})(Nav);

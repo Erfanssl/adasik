@@ -1,0 +1,289 @@
+@import '../../../../sass/mixins';
+
+.third--container {
+  position: absolute;
+  top: 110%;
+  right: 0;
+  width: 50%;
+  height: 130%;
+  max-width: 92rem;
+
+  @include responsive(small-desktop) {
+    top: 120%;
+  }
+
+  @include responsive(small-laptop) {
+    top: 126%;
+  }
+
+  @media only screen and (max-height: 43.75em) { //700px
+    top: 170%;
+  }
+
+  @include responsive(tab-port) {
+    width: 55%;
+  }
+
+  @include responsive(phone-big) {
+    position: static;
+    width: 100%;
+    top: 120%;
+  }
+
+  @media only screen and (max-height: 31.25em) { //500px
+    position: static;
+    width: 100%;
+    top: 120%;
+    max-width: unset;
+  }
+
+  //background-color: #6a4ea5;
+  ////clip-path: inset(100% 0, 0 30%, 20% 70%, 100% 100%, 100% 0);
+  ////clip-path: polygon(100% 0, 5% 26%, 4.5% 26.9%, 4% 27.6%, 3.5% 28.5%, 3% 29.3%, 2.5% 30.1%, 2% 31%, 20% 70%, 100% 100%);
+  //clip-path: polygon(100% 0, 5% 26%, 20% 70%, 100% 100%);
+  ////clip-path: inset(45% 0% 33% 10% round 10px);
+  //border-radius: 100000rem 0 0 100000rem;
+
+  .third--right-side {
+    .third--bar-chart {
+      position: absolute;
+      top: 65%;
+      left: 62%;
+      z-index: 200;
+      width: 35rem;
+      overflow: hidden;
+
+      @include responsive(big-desktop) {
+        top: 60%;
+        transform: scale(.85);
+      }
+
+      @include responsive(desktop) {
+        top: 54%;
+        transform: scale(.7);
+      }
+
+      @include responsive(small-desktop) {
+        top: 48%;
+        left: 58%;
+        transform: scale(.6);
+      }
+
+      @include responsive(small-laptop) {
+        top: 42%;
+        left: 55%;
+        transform: scale(.55);
+      }
+
+      @media only screen and (max-height: 43.75em) { //700px
+        top: 62%;
+      }
+
+      @include responsive(tab-land) {
+        top: 35%;
+        left: 46%;
+      }
+
+      @include responsive(tab-land-small) {
+        display: none;
+      }
+    }
+
+    .third--pie-chart {
+      position: absolute;
+      top: 30%;
+      left: 52%;
+      z-index: 200;
+      width: 43rem;
+      overflow: hidden;
+
+      @include responsive(big-desktop) {
+        top: 25%;
+        left: 50%;
+        transform: scale(.85);
+      }
+
+      @include responsive(desktop) {
+        top: 23%;
+        left: 50%;
+        transform: scale(.8);
+      }
+
+      @include responsive(small-desktop) {
+        top: 19%;
+        left: 46%;
+        transform: scale(.7);
+      }
+
+      @include responsive(small-laptop) {
+        top: 13%;
+        left: 42%;
+        transform: scale(.65);
+      }
+
+      @include responsive(tab-land) {
+        display: none;
+      }
+    }
+
+    .third--radar-chart {
+      position: absolute;
+      top: 46%;
+      left: 15%;
+      z-index: 200;
+
+      @include responsive(big-desktop) {
+        top: 40%;
+        left: 12%;
+        transform: scale(.85);
+      }
+
+      @include responsive(desktop) {
+        top: 35%;
+        left: 12%;
+        transform: scale(.8);
+      }
+
+      @include responsive(small-desktop) {
+        top: 31%;
+        left: 8%;
+        transform: scale(.7);
+      }
+
+      @media only screen and (max-height: 43.75em) { //700px
+        top: 39%;
+      }
+
+      @include responsive(small-laptop) {
+        top: 25%;
+        left: 5%;
+        transform: scale(.65);
+      }
+
+      @include responsive(tab-land) {
+        top: 9%;
+        left: 32%;
+      }
+
+      @include responsive(tab-land-small) {
+        top: 17%;
+        left: 20%;
+        transform: scale(.75);
+      }
+
+      @include responsive(tab-port-big) {
+        transform: scale(.65);
+        left: 15%;
+        top: 15%;
+      }
+
+      @include responsive(tab-port) {
+        top: 12%;
+      }
+    }
+
+    @include responsive(phone-big) {
+      display: none;
+    }
+
+    @media only screen and (max-height: 31.25em) { //500px
+      display: none;
+    }
+  }
+
+  .third--left {
+    &-side {
+      width: 45%;
+      position: absolute;
+      top: 46%;
+      left: -65%;
+
+      @include responsive(small-desktop) {
+        top: 43%;
+        width: 50%;
+      }
+
+      @include responsive(small-laptop) {
+        top: 36%;
+        width: 55%;
+      }
+
+      @include responsive(tab-land-small) {
+        top: 29%;
+        width: 65%;
+      }
+
+      @include responsive(tab-port-big) {
+        top: 25%;
+        width: 70%;
+      }
+
+      @include responsive(phone-big) {
+        position: static;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        margin: 7rem 0;
+        padding: 0 1rem;
+      }
+
+      @media only screen and (max-height: 31.25em) { //500px
+        position: static;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        margin: 7rem 0;
+        padding: 0 1rem;
+      }
+
+      .third--radar-chart--two {
+        width: 50rem;
+        height: 50rem;
+        border-radius: 50%;
+        background-color: #5a6a83;
+        background-image: radial-gradient(black, transparent);
+        display: none;
+        transform: scale(.9);
+
+        @include responsive(phone-big) {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        @media only screen and (max-height: 31.25em) { //500px
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        @include responsive(phone-small) {
+          transform: scale(.76);
+        }
+      }
+    }
+
+    &__header {
+      font-family: Roboto-Bold;
+      font-size: var(--h2FontSize);
+      color: var(--primaryHead);
+    }
+
+    &__text {
+      font-size: 1.6rem;
+      color: var(--primaryText);
+      line-height: 1.7;
+
+      p {
+        margin: 2rem 0;
+        margin-left: .4rem;
+      }
+    }
+  }
+}

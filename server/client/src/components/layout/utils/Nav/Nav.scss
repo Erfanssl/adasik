@@ -1,0 +1,142 @@
+@import '../../../../sass/mixins';
+
+.header--nav {
+  padding: 2% 1% 0 13%;
+  display: flex;
+  justify-content: space-between;
+
+  .nav--items, .nav--items--two {
+    color: var(--primaryLink);
+    font-size: 1.6rem;
+    width: 40%;
+    z-index: 10;
+    margin-right: 4%;
+    margin-top: 1rem;
+
+    @include responsive(tab-port-big) {
+      margin-top: 2.5rem;
+      width: 50%;
+    }
+
+    ul {
+      display: flex;
+      justify-content: space-around;
+      width: 80%;
+
+      li {
+        list-style: none;
+        cursor: pointer;
+        transition: color .4s;
+
+        color: var(--primaryLink);
+
+        &:hover {
+          color: var(--primaryWhite);
+        }
+
+        a {
+          color: var(--primaryLink);
+
+          &:hover {
+            color: var(--primaryWhite);
+          }
+        }
+      }
+    }
+  }
+
+  .nav--items {
+    @include responsive(phone-big) {
+      display: none;
+    }
+  }
+
+  .nav--button {
+    display: none;
+
+    @include responsive(phone-big) {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      align-items: center;
+      padding: 1rem 0;
+    }
+
+    position: absolute;
+    right: 8%;
+    width: 7rem;
+    height: 7rem;
+    border-radius: 50%;
+    background-color: red;
+    background-image: radial-gradient(50% 50%, #f5f7fa, #b8c6db);
+    z-index: 200;
+    cursor: pointer;
+    transition: all .4s;
+
+    &.active {
+      .line {
+        &:nth-child(1) {
+          transform: rotate(45deg);
+          position: absolute;
+        }
+
+        &:nth-child(2) {
+          opacity: 0;
+          visibility: hidden;
+        }
+
+        &:nth-child(3) {
+          transform: rotate(135deg);
+          position: absolute;
+        }
+      }
+    }
+
+
+    .line {
+      width: 60%;
+      height: .5rem;
+      background-color: #4f4a4a;
+      border-radius: 1rem;
+      transition: all .4s;
+      position: static;
+    }
+  }
+
+  .nav--items--two {
+    display: none;
+    transform: scale(0);
+    transition: all .4s;
+    opacity: 0;
+    visibility: hidden;
+    transform-origin: top right;
+
+    @include responsive(phone-big) {
+      display: block;
+    }
+
+    &.active {
+      transform: scale(1);
+      opacity: 1;
+      visibility: visible;
+    }
+
+    margin-top: 2.5rem;
+    width: 78%;
+    position: absolute;
+    border-radius: 1rem;
+    background-color: #000000;
+    background-image: linear-gradient(147deg, #000000 0%, #054066 74%);
+
+    right: 7%;
+    height: 40rem;
+
+    ul {
+      width: 100%;
+      flex-direction: column;
+      align-items: center;
+      height: 100%;
+      font-size: 2rem;
+    }
+  }
+}

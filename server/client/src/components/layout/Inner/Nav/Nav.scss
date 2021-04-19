@@ -1,0 +1,347 @@
+@import "../../../../sass/mixins";
+
+.nav {
+  &--container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 2rem;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    @include responsive(phone) {
+      padding-top: 0;
+    }
+  }
+
+  &--logo {
+    &-container {
+      align-items: center;
+    }
+
+    &.inner--logo {
+      margin-top: 0;
+      left: unset;
+
+      h1 {
+        font-size: 2rem;
+        margin-left: -1rem;
+        margin-top: -1rem;
+
+        @include responsive(tab-port) {
+          display: none;
+        }
+
+        a {
+          color: #0a640a;
+          text-decoration: none;
+          width: 100%;
+          letter-spacing: .2rem;
+        }
+      }
+    }
+
+    @include responsive(phone-big) {
+      position: static;
+    }
+  }
+
+  &--logo-container {
+    display: flex;
+    justify-content: space-around;
+    width: 58%;
+    height: 7rem;
+
+    @include responsive(tab-port) {
+      width: 90%;
+    }
+
+    .offline--logo {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: .1rem solid rgba(255, 0, 0, .25);
+      position: relative;
+      border-radius: 1rem;
+
+      @include responsive(phone) {
+        margin-top: .5rem;
+      }
+
+      &::before {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 1rem;
+        left: 0;
+        top: 0;
+        background-color: #000000;
+        background-image: linear-gradient(147deg, #000000 0%, #434343 74%);
+        opacity: .2;
+        animation: offline 1s infinite backwards alternate;
+        box-shadow: inset 0 0 20rem .5rem rgba(255, 0, 0, .4);
+      }
+
+      p {
+        color: #fff;
+        letter-spacing: .1rem;
+        z-index: 10;
+        font-size: 1.6rem;
+
+        @include responsive(phone) {
+          font-size: 1.4rem;
+        }
+      }
+    }
+
+    @keyframes offline {
+      to {
+        opacity: .6;
+      }
+    }
+
+    .nav--logo {
+      &:hover a {
+        color: #089808;
+      }
+    }
+
+    a {
+      @include responsive(tab-port) {
+        text-align: center;
+      }
+    }
+
+    img {
+      @include responsive(tab-port) {
+        width: 80%;
+      }
+    }
+  }
+
+  &--separator-line {
+    width: 70%;
+    height: .2rem;
+    background-color: rgba(0, 0, 0, .2);
+    margin: 1rem 0 2rem;
+    border-radius: 50%;
+
+    @include responsive(phone) {
+      margin: .8rem 0 2rem;
+    }
+  }
+
+  &--items {
+    &-container {
+      ul {
+        list-style: none;
+
+        li {
+          height: 6rem;
+          cursor: pointer;
+          margin: .5rem 0;
+          position: relative;
+
+          &.offline {
+            opacity: .5;
+          }
+
+          .notification {
+            position: absolute;
+            width: 2rem;
+            height: 2rem;
+            left: 27%;
+            top: -8%;
+            background-color: #6617cb;
+            background-image: linear-gradient(315deg, #6617cb 0%, #cb218e 74%);
+            border-radius: 50%;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all .6s;
+
+            @include responsive(tab-port) {
+              left: 100%;
+            }
+
+            p {
+              text-align: center;
+              margin-bottom: 0;
+              font-size: 1.4rem;
+              display: block;
+            }
+          }
+
+          @include responsive(big-desktop) {
+            margin: .9rem 0;
+            font-size: 1.7rem;
+          }
+
+          @include responsive(small-desktop) {
+            margin: 1.3rem 0;
+          }
+
+          @include responsive(phone) {
+            height: 4.5rem;
+          }
+
+          @include responsive(phone-small) {
+            height: 3.9rem;
+          }
+
+          a {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+
+            position: relative;
+
+            &:link, &:active, &:visited {
+              color: black;
+            }
+          }
+
+          p {
+            width: 8rem;
+            transition: all .6s;
+            margin-bottom: 1.5rem;
+
+            @include responsive(tab-port) {
+              display: none;
+            }
+          }
+
+          img {
+            width: 4rem;
+            margin-right: 3rem;
+            margin-bottom: 2rem;
+            transition: all .6s;
+
+            @include responsive(tab-port) {
+              margin-right: 0;
+            }
+
+            @include responsive(phone) {
+              width: 3rem;
+            }
+          }
+        }
+      }
+
+      .sign-out--container {
+        display: flex;
+        align-items: center;
+        position: relative;
+
+        &:hover {
+          color: #ff0000;
+
+          img {
+            filter: invert(.1);
+          }
+        }
+      }
+
+      .sign-out--error {
+        text-align: center;
+        color: #ff0000;
+      }
+    }
+
+    &__dashboard {
+      i {
+        //background-image: ;
+      }
+    }
+  }
+}
+
+.nav--item__active-link {
+  width: 100%;
+  height: 100%;
+
+  &:link, &:active, &:visited {
+    color: white !important;
+  }
+
+  p {
+    opacity: 0;
+  }
+
+  img {
+    transform: translate(145%, 0);
+
+    @include responsive(tab-port) {
+      transform: translate(75%, 0);
+    }
+
+    @include responsive(phone) {
+      transform: translate(46%, 0);
+    }
+
+    filter: invert(1);
+  }
+
+  .notification {
+    transform: translate(280%, 0);
+
+    @include responsive(tab-port) {
+      transform: translate(210%, 0);
+    }
+
+    @include responsive(phone) {
+      transform: translate(181%, 0);
+    }
+
+    p {
+      opacity: 1;
+    }
+  }
+
+  div {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.nav--item__active-bg {
+  position: absolute;
+  top: -16%;
+  left: 20%;
+  width: 6rem;
+  height: 6rem;
+  border-radius: 50%;
+  background-color: var(--primaryBlack);
+  opacity: 0;
+  transform: translateX(270%);
+  transition: all .6s;
+
+  @include responsive(phone) {
+    height: 5rem;
+    width: 5rem;
+    top: -25%;
+  }
+
+  @include responsive(phone-small) {
+    top: -29%;
+  }
+
+  &::before {
+    content: '';
+    background-color: var(--primaryBlack);
+    width: 20rem;
+    height: 6rem;
+    position: absolute;
+    left: 50%;
+    top: 0;
+
+    @include responsive(phone) {
+      height: 5rem;
+    }
+  }
+}

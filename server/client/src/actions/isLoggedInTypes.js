@@ -1,0 +1,1 @@
+export const FETCH_IS_LOGGED_ID = 'FETCH_IS_LOGGED_ID';

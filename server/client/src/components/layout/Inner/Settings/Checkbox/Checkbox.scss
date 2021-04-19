@@ -1,0 +1,48 @@
+.settings--checkbox__input {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.settings--checkbox__label {
+  margin-left: 2rem;
+  display: flex;
+  align-items: center;
+  font-size: 1.7rem;
+  cursor: pointer;
+
+  p {
+    margin-left: 1rem;
+  }
+
+  .icon--container {
+    position: relative;
+    height: 5rem;
+
+    img {
+      height: 100%;
+    }
+
+    .checkbox--circle {
+      transition: filter .2s;
+    }
+
+    .checkbox--check {
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .2s, visibility .2s;
+      filter: brightness(1.5);
+    }
+  }
+}
+
+.settings--checkbox__input:checked + label .checkbox--check {
+  opacity: 1;
+  visibility: visible;
+}
+
+.settings--checkbox__input:checked + label .checkbox--circle {
+  filter: brightness(1.5);
+}

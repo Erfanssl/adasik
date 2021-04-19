@@ -1,0 +1,88 @@
+.messenger--audio-player {
+  &__container {
+    position: relative;
+  }
+
+  &__ready {
+    min-height: 8rem;
+    min-width: 30rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .audio--buttons {
+      div {
+        width: 4rem;
+        height: 4rem;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        img {
+          width: 90%;
+          height: 90%;
+          filter: invert(.95);
+        }
+      }
+
+      .pause--btn {
+        img {
+          width: 70%;
+          height: 70%;
+        }
+      }
+    }
+
+    .progress-bar--container {
+      position: relative;
+      width: 70%;
+      height: 2rem;
+      background-color: #0f0d2b;
+      margin: 2rem;
+      border-radius: 1rem;
+      cursor: pointer;
+
+      @media only screen and (max-width: 31.25em) { //500px
+        width: 55%;
+      }
+    }
+
+    .progress-bar--bg {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      background-color: #00b712;
+      background-image: linear-gradient(0deg, #00b712 0%, #5aff15 74%);
+      border-radius: 1rem;
+    }
+
+    .progress-bar--btn {
+      position: absolute;
+      left: 10%;
+      top: 50%;
+      width: 3.2rem;
+      height: 3.2rem;
+      background-color: rgb(255, 211, 2);
+      background-image: radial-gradient(50% 50%, rgb(255, 211, 2), rgb(183, 145, 34));
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+    }
+
+    .time--container {
+      font-size: 1.3rem;
+    }
+  }
+
+  &__not-ready {
+    min-height: 8rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: -1rem;
+    margin-bottom: 1rem;
+    transform: scale(.8);
+  }
+}

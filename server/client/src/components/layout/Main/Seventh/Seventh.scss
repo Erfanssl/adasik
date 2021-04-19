@@ -1,0 +1,102 @@
+@import '../../../../sass/mixins';
+
+.seventh {
+  &--container {
+    position: absolute;
+    top: 480%;
+    //background: linear-gradient(270deg, var(--tertiaryOrange) 0, var(--secondaryOrange) 50%, var(--primaryOrange) 100%);
+    //background: linear-gradient(270deg, #434343 0, #000000 100%);
+    background: linear-gradient(270deg, var(--primaryGreen) 0, var(--secondaryGreen) 20%, var(--tertiaryGreen) 100%);
+    //background: linear-gradient(35deg,rgba(9,32,107,1) 0,rgba(31,79,208,1) 56%,rgba(10,179,210,1) 100%);
+    width: 100%;
+    height: 35%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+      background: rgba(0, 0, 0, .5);
+    }
+
+    @media only screen and (max-height: 43.75em) { //700px
+      top: 635%;
+    }
+
+    @include responsive(phone-big) {
+      position: relative;
+      margin: 7rem 0 0;
+      padding: 0 1rem;
+    }
+
+    @media only screen and (max-height: 31.25em) { //500px
+      position: relative;
+      margin: 7rem 0 0;
+      padding: 0 1rem;
+    }
+  }
+
+  &--left-container {
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: flex-start;
+    height: 100%;
+
+
+    h2 {
+      font-family: Roboto-Bold;
+      font-size: 5.4rem;
+      color: var(--primaryWhite);
+    }
+
+    p {
+      font-size: 1.6rem;
+      color: var(--primaryWhite);
+
+      @include responsive(phone-big) {
+        text-align: center;
+      }
+
+      @media only screen and (max-height: 31.25em) { //500px
+        text-align: center;
+      }
+    }
+
+    @include responsive(phone-big) {
+      align-items: center;
+      min-height: 25rem;
+    }
+
+    @media only screen and (max-height: 31.25em) { //500px
+      align-items: center;
+      min-height: 25rem;
+    }
+  }
+
+  &--right-container {
+    z-index: 100;
+    width: 25%;
+    margin-right: 3rem;
+
+    img {
+      width: 114%;
+      height: 120%;
+    }
+
+    @include responsive(phone-big) {
+      display: none;
+    }
+
+    @media only screen and (max-height: 31.25em) { //500px
+      display: none;
+    }
+  }
+}

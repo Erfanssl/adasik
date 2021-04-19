@@ -1,0 +1,128 @@
+@import '../../../../sass/mixins';
+
+.sixth {
+  &--container {
+    position: absolute;
+    top: 440%;
+    left: 46.5%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: space-evenly;
+    width: 80%;
+    height: 60%;
+
+    @media only screen and (max-height: 43.75em) { //700px
+      top: 585%;
+    }
+
+    @include responsive(tab-land) {
+      top: 430%;
+    }
+
+    @include responsive(phone-big) {
+      position: static;
+      width: 100%;
+      transform: none;
+      margin: 7rem 0;
+      padding: 0 1rem;
+    }
+
+    @media only screen and (max-width: 35.625em) { // 570px
+      top: 415%;
+    }
+
+    @media only screen and (max-height: 31.25em) { //500px
+      position: static;
+      width: 100%;
+      transform: none;
+      margin: 7rem 0;
+      padding: 0 1rem;
+    }
+  }
+
+  &--left-container {
+    width: 40%;
+    display: flex;
+    justify-content: center;
+
+    @include responsive(phone-big) {
+      display: none;
+    }
+
+    @media only screen and (max-height: 31.25em) { //500px
+      display: none;
+    }
+  }
+
+  &--right-container {
+    width: 25%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    margin-top: -1%;
+
+    @include responsive(desktop) {
+      width: 35%;
+    }
+
+    @include responsive(tab-land) {
+      width: 40%;
+    }
+
+    @include responsive(phone-big) {
+      width: 90%;
+      left: 5%;
+      align-items: center;
+      text-align: center;
+    }
+
+    @media only screen and (max-height: 31.25em) { //500px
+      width: 90%;
+      left: 5%;
+      align-items: center;
+      text-align: center;
+    }
+
+    h2 {
+      font-family: Roboto-Bold;
+      font-size: var(--h2FontSize);
+      color: var(--primaryHead);
+      margin-bottom: 5%;
+    }
+
+    #globe2 {
+      display: none;
+
+      @include responsive(phone-big) {
+        display: block;
+      }
+
+      @media only screen and (max-height: 31.25em) { //500px
+        display: block;
+      }
+    }
+  }
+
+  &--right__text {
+    font-size: 1.6rem;
+    color: var(--primaryText);
+    line-height: 1.8;
+
+    @include responsive(phone-big) {
+      margin-top: 5rem;
+    }
+
+    @media only screen and (max-height: 31.25em) { //500px
+      margin-top: 5rem;
+    }
+
+    @include responsive(phone) {
+      margin-top: 3rem;
+    }
+
+    p {
+      margin-bottom: 3%;
+    }
+  }
+}

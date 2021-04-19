@@ -1,0 +1,223 @@
+@import "../../../../sass/mixins";
+
+.group {
+  &--container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    position: relative;
+  }
+
+  &--big-el {
+    width: 60rem;
+    height: 3rem;
+    background-color: rgba(0, 0, 0, .3);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    filter: blur(2px);
+    position: relative;
+  }
+
+  &--smallest-el {
+    width: 15rem;
+    height: 1rem;
+    background-color: rgba(255, 255, 255, .8);
+    border-radius: 50%;
+    filter: blur(1px);
+    position: absolute;
+  }
+
+  &--small-el {
+    width: 30rem;
+    height: .5rem;
+    background-color: rgba(255, 255, 255, .8);
+    border-radius: 50%;
+    filter: blur(5px);
+    position: absolute;
+    top: 1.6rem;
+  }
+
+  &--shadow1 {
+    width: 40rem;
+    height: 25rem;
+    background-color: white;
+    filter: blur(50px);
+    border-radius: 50%;
+    margin-top: 2rem;
+    opacity: .1;
+  }
+
+  &--shadow2 {
+    width: 80rem;
+    height: 60rem;
+    background-color: white;
+    filter: blur(60px);
+    border-radius: 50%;
+    margin-top: -26rem;
+    opacity: .09;
+  }
+
+  &--text-container {
+    font-family: Peace-Sans;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 10rem;
+    font-weight: 700;
+    background-image: linear-gradient(#cdcdcd, #6e6e6e);
+    -webkit-background-clip: text;
+    top: 16rem;
+
+    p {
+      &:first-child {
+        font-size: 12rem;
+        color: transparent;
+
+        @include responsive(tab-land-small) {
+          font-size: 9rem;
+        }
+
+        @include responsive(phone-big) {
+          font-size: 7rem;
+        }
+
+        @include responsive(phone) {
+          font-size: 5rem;
+        }
+
+        @media only screen and (max-width: 31.25em) { //500px
+          font-size: 4rem;
+        }
+      }
+
+      &:nth-child(2) {
+        font-size: 9rem;
+        color: transparent;
+        margin-top: -4rem;
+
+        @include responsive(tab-land-small) {
+          font-size: 7rem;
+          margin-top: -3rem;
+        }
+
+        @include responsive(phone-big) {
+          font-size: 6rem;
+          margin-top: -2rem;
+        }
+
+        @include responsive(phone) {
+          font-size: 4rem;
+          margin-top: -1rem;
+        }
+
+        @media only screen and (max-width: 31.25em) { //500px
+          font-size: 3.5rem;
+        }
+      }
+
+      &:nth-child(4) {
+        font-family: Fantasy;
+        font-size: 7rem;
+        color: transparent;
+        letter-spacing: 1px;
+        word-spacing: .2rem;
+
+        @include responsive(tab-land-small) {
+          font-size: 5rem;
+        }
+
+        @include responsive(phone-big) {
+          font-size: 4rem;
+        }
+
+        @include responsive(phone) {
+          font-size: 3rem;
+        }
+
+        @media only screen and (max-width: 31.25em) { //500px
+          font-size: 2.5rem;
+        }
+      }
+
+      &:nth-child(5) {
+        font-family: Fantasy;
+        font-size: 7rem;
+        color: transparent;
+        letter-spacing: 3px;
+        word-spacing: 2rem;
+
+        @include responsive(tab-land-small) {
+          font-size: 5rem;
+        }
+
+        @include responsive(phone-big) {
+          font-size: 4rem;
+        }
+
+        @include responsive(phone) {
+          font-size: 3rem;
+          word-spacing: .6rem;
+        }
+
+        @media only screen and (max-width: 31.25em) { //500px
+          font-size: 2.5rem;
+          word-spacing: .3rem;
+        }
+      }
+    }
+  }
+
+  &--divide-line {
+    margin: 3rem 0;
+    width: 80rem;
+    height: 1rem;
+    opacity: .2;
+    background-image: linear-gradient(#e2e1e1, #8d8c8c);
+
+    @include responsive(tab-land-small) {
+      width: 70rem;
+    }
+
+    @include responsive(phone-big) {
+      width: 55rem;
+    }
+
+    @include responsive(phone) {
+      width: 40rem;
+      margin: 2rem 0;
+    }
+
+    @media only screen and (max-width: 31.25em) { //500px
+      width: 32rem;
+      margin: 1rem 0;
+    }
+  }
+
+  &--bottom__big-el {
+    width: 110rem;
+    height: 5rem;
+    background-color: rgba(255, 255, 255, .1);
+    border-radius: 50%;
+    margin-top: 14rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    filter: blur(30px);
+  }
+
+  &--bottom__small-el {
+    width: 60rem;
+    height: .8rem;
+    background-color: rgba(255, 255, 255, .8);;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    filter: blur(40px);
+  }
+}

@@ -1,0 +1,171 @@
+@import '../../../../sass/mixins';
+
+.fourth--container {
+  position: absolute;
+  top: 180%;
+  left: -10%;
+  width: 45%;
+  height: 130%;
+  max-width: 100rem;
+
+  @include responsive(small-desktop) {
+    top: 190%;
+  }
+
+  @include responsive(small-laptop) {
+    top: 196%;
+  }
+
+  @media only screen and (max-height: 43.75em) { //700px
+    top: 270%;
+  }
+
+  @include responsive(tab-port) {
+    width: 55%;
+  }
+
+  @include responsive(phone-big) {
+    position: static;
+    width: 100%;
+    left: 0;
+    top: 204%;
+  }
+
+  @media only screen and (max-height: 31.25em) { //500px
+    position: static;
+    width: 100%;
+    left: 0;
+    top: 204%;
+    max-width: unset;
+  }
+
+  .fourth--left {
+    &__message-img {
+      position: absolute;
+      top: 30%;
+      left: 23%;
+      width: 67%;
+
+      @include responsive(desktop) {
+        top: 27%;
+      }
+
+      @include responsive(small-desktop) {
+        top: 22%;
+      }
+
+      @include responsive(small-laptop) {
+        top: 19%;
+      }
+
+      @include responsive(tab-land-small) {
+        top: 16%;
+      }
+
+      @include responsive(tab-port-big) {
+        top: 15%;
+      }
+    }
+
+    &-side {
+      @include responsive(phone-big) {
+        display: none;
+      }
+
+      @media only screen and (max-height: 31.25em) { //500px
+        display: none;
+      }
+    }
+  }
+
+  .fourth--right {
+    &-side {
+      width: 45%;
+      position: absolute;
+      top: 46%;
+      left: 140%;
+
+      @include responsive(desktop) {
+        top: 42%;
+      }
+
+      @include responsive(small-desktop) {
+        top: 35%;
+      }
+
+      @include responsive(small-laptop) {
+        top: 32%;
+        width: 55%;
+      }
+
+      @include responsive(tab-land-small) {
+        top: 28%;
+        width: 60%;
+      }
+
+      @include responsive(tab-port-big) {
+        top: 25%;
+        width: 65%;
+      }
+
+      @include responsive(tab-port) {
+        left: 120%;
+      }
+
+      @include responsive(phone-big) {
+        position: static;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        margin: 7rem 0;
+        padding: 0 1rem;
+      }
+
+      @media only screen and (max-height: 31.25em) { //500px
+        position: static;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        margin: 7rem 0;
+        padding: 0 1rem;
+      }
+
+      .fourth--left__message-img--two {
+        display: none;
+        width: 45%;
+        margin: 2rem 0;
+
+        @include responsive(phone-big) {
+          display: block;
+        }
+
+        @media only screen and (max-height: 31.25em) { //500px
+          display: block;
+        }
+      }
+    }
+
+    &__header {
+      font-family: Roboto-Bold;
+      font-size: var(--h2FontSize);
+      color: var(--primaryHead);
+    }
+
+    &__text {
+      font-size: 1.6rem;
+      color: var(--primaryText);
+      line-height: 1.7;
+
+      p {
+        margin: 2rem 0;
+        margin-left: .4rem;
+      }
+    }
+  }
+}

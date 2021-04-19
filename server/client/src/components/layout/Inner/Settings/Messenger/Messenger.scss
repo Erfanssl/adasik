@@ -1,0 +1,51 @@
+.settings--messenger {
+  &-container {
+    position: relative;
+    background-color: #000000;
+    background-image: linear-gradient(0deg, rgba(19, 48, 64, .7) 0%, rgba(44, 62, 80, .7) 74%);
+    box-shadow: inset 0 0 1rem .1rem rgba(255, 255, 255, .1);
+    display: flex;
+    flex-direction: column;
+    min-height: 80.7rem;
+    padding: 0 .5rem;
+
+    .checkbox--group {
+      display: flex;
+      margin: 3rem 0 3rem 0;
+      flex-direction: column;
+      align-content: flex-start;
+
+      li {
+        list-style: none;
+        display: flex;
+        align-items: center;
+        margin-bottom: 4rem;
+      }
+    }
+  }
+
+  &__footer-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    min-height: 15rem;
+
+    .upper-container {
+      min-height: 4rem;
+    }
+
+    .send--error {
+      font-size: 2rem;
+      margin-bottom: -1rem;
+      color: #ff0000;
+    }
+
+    .send--success {
+      font-size: 2rem;
+      margin-bottom: -1rem;
+      color: #00ff00;
+    }
+  }
+}

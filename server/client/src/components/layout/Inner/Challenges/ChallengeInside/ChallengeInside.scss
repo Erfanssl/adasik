@@ -1,0 +1,864 @@
+@import "../../../../../sass/mixins";
+
+.challenge {
+  &--container {
+    width: 84%;
+    margin: 1rem auto 0;
+    min-height: 80vh;
+    position: relative;
+
+    @include responsive(phone) {
+      width: 90%;
+    }
+  }
+
+  &--header-container {
+    display: flex;
+    width: 100%;
+    position: relative;
+
+    //background-color: #ef5734;
+    background-color: #e20c0b;
+
+    border-radius: 1rem;
+    overflow: hidden;
+
+    @media only screen and (max-width: 87.5em) { //1400px
+      height: 20rem;
+    }
+
+    @media only screen and (max-width: 31.25em) { //500px
+      height: 17rem;
+    }
+  }
+
+  &--lost-on-time__container {
+    position: absolute;
+    left: 50%;
+    top: 40%;
+    transform: translateX(-50%);
+    font-size: 2.5rem;
+    //border: 0.1rem solid var(--primaryOrange);
+    padding: 1rem;
+    border-radius: .8rem;
+    background-color: #0cbaba;
+    background-image: linear-gradient(315deg, #0cbaba 0%, #380036 74%);
+
+    @include responsive(tab-land) {
+      font-size: 1.5rem;
+    }
+
+    @include responsive(tab-port) {
+      top: 4%;
+    }
+
+    @include responsive(phone-big) {
+      font-size: 1.4rem;
+    }
+
+    @media only screen and (max-width: 31.25em) { //500px
+      font-size: 1.3rem;
+    }
+  }
+
+  &--surrender-container {
+    position: absolute;
+    top: 47.5%;
+    left: 50%;
+    width: 14rem;
+    height: 14rem;
+    z-index: 100;
+    transform: scale(.5) translateX(-50%);
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, .2);
+    padding: 1rem;
+    border-radius: 1rem;
+
+    img {
+      width: 100%;
+    }
+  }
+
+  &--header__left-container {
+    flex: 1;
+    display: flex;
+    align-items: flex-start;
+    z-index: 20;
+
+    position: relative;
+
+    & .challenge--username-container {
+      margin-top: 3rem;
+      background-color: #0abcf9;
+      background-image: linear-gradient(315deg, #0abcf9 0%, #2787d2 74%);
+      z-index: 100;
+      padding: 1rem 2.5rem 1rem 4.5rem;
+      border-radius: 2rem;
+      margin-left: -4rem;
+      position: relative;
+
+      @media only screen and (max-width: 87.5em) { //1400px
+        margin-top: 4rem;
+      }
+
+      @include responsive(tab-port-big) {
+        margin-top: 5rem;
+        margin-left: -3rem;
+      }
+
+      @include responsive(phone-big) {
+        padding: 1rem 2.5rem 1rem 3.5rem !important;
+      }
+
+      @media only screen and (max-width: 31.25em) { //500px
+        margin-top: 5rem;
+      }
+
+      a {
+        color: #fff;
+      }
+
+      p {
+        font-size: 2.1rem;
+
+        @include responsive(tab-land) {
+          font-size: 1.9rem;
+        }
+
+        @include responsive(tab-port-big) {
+          font-size: 1.6rem;
+        }
+
+        @include responsive(phone-big) {
+          font-size: 1.4rem;
+        }
+
+        @media only screen and (max-width: 31.25em) { //500px
+          font-size: 1.3rem;
+        }
+      }
+
+      .increment {
+        position: absolute;
+        right: 10%;
+        top: 5%;
+        font-size: 1.3rem;
+
+        @include responsive(phone-big) {
+          font-size: 1.2rem;
+        }
+
+        @media only screen and (max-width: 31.25em) { //500px
+          font-size: 1.1rem;
+        }
+      }
+    }
+
+    & .challenge--badge-container {
+      left: 37%;
+      top: 34%;
+
+      @media only screen and (max-width: 87.5em) { //1400px
+        top: 40%;
+        left: 19rem;
+      }
+
+      @include responsive(tab-land) {
+        left: 17rem;
+      }
+
+      @include responsive(tab-port-big) {
+        top: 44%;
+        left: 13rem;
+      }
+
+      @include responsive(phone-big) {
+        top: 43%;
+        left: 10.3rem;
+      }
+
+      @media only screen and (max-width: 31.25em) { //500px
+        top: 47%;
+        left: 6rem;
+      }
+    }
+  }
+
+  &--badge-container {
+    position: absolute;
+    width: 6rem;
+    height: 6rem;
+    z-index: -1;
+
+    @include responsive(tab-port-big) {
+      width: 5rem;
+      height: 5rem;
+    }
+
+    @include responsive(phone-big) {
+      width: 4rem;
+      height: 4rem;
+    }
+
+    img {
+      width: 100%;
+    }
+  }
+
+  &--level-container {
+    position: absolute;
+    border-radius: 5rem;
+    width: auto;
+    text-align: unset;
+    left: 1%;
+    top: 2%;
+    padding: 0;
+    background-color: transparent;
+
+    p {
+      font-size: 1.2rem;
+      color: #fff;
+    }
+  }
+
+  &--total-score-container {
+    position: absolute;
+    border-radius: 5rem;
+    width: auto;
+    text-align: unset;
+    left: 1%;
+    top: 91%;
+    padding: 0;
+    background-color: transparent;
+
+    p {
+      font-size: 1.2rem;
+      color: #fff;
+    }
+  }
+
+  &--score-container {
+    background-color: rgba(0, 0, 0, .25);
+
+    border-top: .2rem solid rgba(255, 255, 255, .1);
+    border-left: .2rem solid rgba(255, 255, 255, .1);
+    border-right: .2rem solid rgba(255, 255, 255, .1);
+    border-bottom: .2rem solid rgba(255, 255, 255, .5);
+    border-radius: 1rem;
+    position: absolute;
+    top: 65%;
+    left: 30%;
+    padding: .5rem 1rem .5rem 4.5rem;
+
+    @media only screen and (max-width: 87.5em) { //1400px
+      padding: .5rem 1rem;
+      top: 72%;
+      left: 46%;
+      display: flex;
+      justify-content: center;
+    }
+
+    @include responsive(tab-port-big) {
+      left: 40%;
+    }
+
+    @media only screen and (max-width: 31.25em) { //500px
+      top: 75%;
+    }
+
+    p {
+      font-size: 3rem;
+
+      @include responsive(phone-big) {
+        font-size: 2.5rem;
+      }
+
+      @media only screen and (max-width: 31.25em) { //500px
+        font-size: 2rem;
+      }
+    }
+  }
+
+  &--header__right-container {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    z-index: 20;
+
+    position: relative;
+
+    & .challenge--username-container {
+      margin-top: 3rem;
+      background-color: #0abcf9;
+      background-image: linear-gradient(135deg, #0abcf9 0%, #2787d2 74%);
+      padding: 1rem 4.5rem 1rem 2.5rem;
+      border-radius: 2rem;
+      margin-right: -4rem;
+      position: relative;
+
+      @media only screen and (max-width: 87.5em) { //1400px
+        margin-top: 4rem;
+      }
+
+      @include responsive(tab-port-big) {
+        margin-top: 5rem;
+        margin-right: -3rem;
+      }
+
+      @include responsive(phone-big) {
+        padding: 1rem 3.5rem 1rem 2.5rem !important;
+      }
+
+      @media only screen and (max-width: 31.25em) { //500px
+        margin-top: 5rem;
+      }
+
+      a {
+        color: #fff;
+      }
+
+      p {
+        font-size: 2.1rem;
+
+        @include responsive(tab-land) {
+          font-size: 1.9rem;
+        }
+
+        @include responsive(tab-port-big) {
+          font-size: 1.6rem;
+        }
+
+        @include responsive(phone-big) {
+          font-size: 1.4rem;
+        }
+
+        @media only screen and (max-width: 31.25em) { //500px
+          font-size: 1.3rem;
+        }
+      }
+
+      .increment {
+        position: absolute;
+        left: 10%;
+        top: 5%;
+        font-size: 1.3rem;
+
+        @include responsive(phone-big) {
+          font-size: 1.2rem;
+        }
+
+        @media only screen and (max-width: 31.25em) { //500px
+          font-size: 1.1rem;
+        }
+      }
+    }
+
+    & .challenge--score-container {
+      padding: .5rem 4.5rem .5rem 1rem;
+      left: 41%;
+
+      @media only screen and (max-width: 87.5em) { //1400px
+        right: 46%;
+        padding: .5rem 1rem;
+        left: unset !important;
+      }
+
+      @include responsive(tab-port-big) {
+        right: 40%;
+      }
+    }
+
+    & .challenge--total-score-container {
+      width: auto;
+      text-align: unset;
+      right: 1%;
+      top: 91%;
+      padding: 0;
+      left: unset;
+    }
+
+    & .challenge--level-container {
+      width: auto;
+      text-align: unset;
+      right: 1%;
+      top: 2%;
+      padding: 0;
+      left: unset;
+    }
+
+    & .challenge--badge-container {
+      right: 37%;
+      top: 34%;
+
+      @media only screen and (max-width: 87.5em) { //1400px
+        top: 40%;
+        right: 19rem;
+      }
+
+      @include responsive(tab-land) {
+        right: 17rem;
+      }
+
+      @include responsive(tab-port-big) {
+        top: 44%;
+        right: 13rem;
+      }
+
+      @include responsive(phone-big) {
+        top: 43%;
+        right: 10.3rem;
+      }
+
+      @media only screen and (max-width: 31.25em) { //500px
+        top: 47%;
+        right: 6rem;
+      }
+    }
+  }
+
+  &--header__avatar-container {
+    width: 20rem;
+    height: 20rem;
+    border-radius: 50%;
+    overflow: hidden;
+    z-index: 1000;
+    background-color: #0f0d2b;
+
+    @media only screen and (max-width: 87.5em) { //1400px
+      width: 18rem;
+      height: 18rem;
+      margin-top: 1rem;
+    }
+
+    @include responsive(tab-land) {
+      width: 16rem;
+      height: 16rem;
+      margin-top: 2rem;
+    }
+
+    @include responsive(tab-port-big) {
+      width: 12rem;
+      height: 12rem;
+      margin-top: 3rem;
+    }
+
+    @include responsive(phone-big) {
+      width: 10rem;
+      height: 10rem;
+    }
+
+    @media only screen and (max-width: 31.25em) { //500px
+      width: 6rem;
+      height: 6rem;
+      margin-top: 4rem;
+    }
+
+    img {
+      width: 100%;
+    }
+  }
+
+  //&--body-container {
+  //  margin-top: -3rem;
+  //  padding: 1rem 0;
+  //  position: relative;
+  //
+  //  &::before {
+  //    content: '';
+  //    position: absolute;
+  //    top: 0;
+  //    left: 0;
+  //    width: 100%;
+  //    height: 100%;
+  //    background-color: #1b2845;
+  //    background-image: linear-gradient(315deg, #1b2845 0%, #274060 74%);
+  //    z-index: -1;
+  //    opacity: .4;
+  //  }
+  //}
+
+  &--item-container {
+    display: flex;
+    height: 20rem;
+    align-items: center;
+    margin: 3rem 0;
+    position: relative;
+
+    @include responsive(tab-land) {
+      margin: 1rem 0;
+    }
+
+    @include responsive(phone) {
+      margin: 0;
+      height: 17rem;
+    }
+
+    .challenge--item__score-container {
+      &:first-child {
+        left: 0;
+        transform: translateX(-130%);
+
+        @include responsive(tab-land) {
+          transform: unset;
+          font-size: 1.5rem;
+          top: 75%;
+          left: 8%;
+        }
+      }
+
+      &:last-child {
+        right: 0;
+        transform: translateX(130%);
+
+        @include responsive(tab-land) {
+          transform: unset;
+          font-size: 1.5rem;
+          top: 75%;
+          left: unset;
+          right: 8%;
+        }
+      }
+    }
+  }
+
+  &--item__score-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    position: absolute;
+    width: 5%;
+
+    &.inactive {
+      font-size: 3.5rem;
+
+      @include responsive(tab-land) {
+        margin: 0;
+      }
+    }
+  }
+
+  &--item__left {
+    height: 40%;
+    background-color: #6b0f1a;
+    background-image: linear-gradient(0deg, #6b0f1a 0%, #b91372 74%);
+    border-radius: 7rem;
+    margin-right: -5rem;
+    position: relative;
+
+    @include responsive(tab-land) {
+      height: 35%;
+    }
+
+    &.inactive::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 7rem;
+      background-color: rgba(0, 0, 0, .8);
+      top: 0;
+      left: 0;
+    }
+  }
+
+  &--item__center {
+    width: 23.5rem;
+    height: 21.5rem;
+    background-color: #2a2a72;
+    background-image: linear-gradient(315deg, #2a2a72 0%, #009ffd 74%);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    position: relative;
+
+    @include responsive(small-laptop) {
+      width: 21.5rem;
+      height: 17.5rem;
+    }
+
+    @include responsive(tab-land) {
+      width: 19.5rem;
+      height: 15.5rem;
+    }
+
+    @include responsive(tab-port-big) {
+      width: 21.5rem;
+      height: 15.5rem;
+    }
+
+    @include responsive(tab-port) {
+      width: 23.5rem;
+    }
+
+    @media only screen and (max-width: 50em) { //800px
+      width: 25.5rem;
+    }
+
+    @media only screen and (max-width: 43.75em) { //700px
+      width: 29.5rem;
+    }
+
+    @include responsive(phone) {
+      height: 10.5rem;
+    }
+
+    @media only screen and (max-width: 31.25em) { //500px
+      width: 32.5rem;
+    }
+
+    &.inactive::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background-color: rgba(0, 0, 0, .7);
+      top: 0;
+      left: 0;
+    }
+
+    &.inactive img {
+      filter: brightness(.5);
+    }
+
+    div {
+      width: 90%;
+      height: 90%;
+      background-color: white;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      overflow: hidden;
+      position: relative;
+
+      img {
+        width: 77%;
+      }
+
+      p {
+        position: absolute;
+        bottom: -.5rem;
+        background-color: rgba(0, 0, 0, .8);
+        color: white;
+        width: 100%;
+        padding: .5rem 0 1.5rem;
+        font-size: 1.25rem;
+        text-align: center;
+        border-radius: 5rem;
+
+        @include responsive(phone) {
+          font-size: 1rem;
+        }
+      }
+    }
+  }
+
+  &--item__right {
+    background-color: #fbb034;
+    background-image: linear-gradient(0deg, #fbb034 0%, #ffdd00 74%);
+    height: 40%;
+    position: relative;
+    border-radius: 7rem;
+    margin-left: -5rem;
+
+    @include responsive(tab-land) {
+      height: 35%;
+    }
+
+    &.inactive::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 7rem;
+      background-color: rgba(0, 0, 0, .8);
+      top: 0;
+      left: 0;
+    }
+  }
+
+  &--btn-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 6rem;
+    position: sticky;
+    bottom: 0;
+    z-index: 200;
+  }
+
+
+  &--btn {
+    width: 40rem;
+    height: 10rem;
+    margin-bottom: 2.5rem;
+    border-radius: 3.2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.1s ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    @include responsive(tab-port) {
+      width: 37rem;
+      height: 9.5rem;
+    }
+
+    @include responsive(phone) {
+      width: 34rem;
+      height: 8.5rem;
+    }
+
+    @media only screen and (max-width: 31.25em) { //500px
+      width: 32rem;
+      height: 7rem;
+    }
+
+    span {
+      line-height: 10rem;
+      font-family: "Montserrat", sans-serif;
+      font-size: 4rem;
+      margin-right: 2rem;
+      color: #fff;
+
+      @include responsive(phone) {
+        font-size: 3rem;
+      }
+    }
+
+    img {
+      width: 3rem;
+      height: 3rem;
+      filter: invert(1);
+    }
+  }
+
+  &--btn__play {
+    background-color: #3bb78f;
+    background-image: linear-gradient(180deg, #3bb78f 0%, #0bab64 74%);
+    box-shadow: inset 0 -6px 10px rgba(255, 255, 255, .4);
+
+    img {
+      margin-top: .7rem;
+
+      @include responsive(phone) {
+        margin-top: .3rem;
+      }
+    }
+
+    &:hover {
+      opacity: 0.9;
+      background-image: linear-gradient(0deg, #3bb78f 0%, #0bab64 74%);
+    }
+
+    &:active {
+      opacity: 1;
+      box-shadow: inset -4px -4px 8px rgba(255, 255, 255, 0.5),
+      inset 8px 8px 16px rgba(0, 0, 0, 0.1);
+      color: #79e3b6;
+    }
+  }
+
+  &--btn__waiting {
+    background-color: #0d0a0b;
+    background-image: linear-gradient(315deg, #0d0a0b 0%, #009fc2 74%);
+    box-shadow: inset 0 -6px 10px rgba(255, 255, 255, .15);
+    cursor: wait;
+
+    span {
+      font-size: 3rem;
+      margin-right: 2rem;
+
+      @include responsive(phone) {
+        font-size: 2.5rem;
+      }
+    }
+
+    &:hover {
+      opacity: 0.9;
+      background-image: linear-gradient(135deg, #0d0a0b 0%, #009fc2 74%);
+    }
+  }
+
+  &--btn__finish {
+    background-color: #130f40;
+    background-image: linear-gradient(315deg, #130f40 0%, #000000 74%);
+    box-shadow: inset 0 -6px 10px rgba(255, 255, 255, .15);
+    width: 48rem;
+    height: 22rem;
+    cursor: not-allowed;
+    overflow: hidden;
+
+    @include responsive(tab-port) {
+      width: 40rem;
+      height: 20rem;
+    }
+
+    @include responsive(phone) {
+      width: 36rem;
+      height: 18rem;
+    }
+
+    @media only screen and (max-width: 31.25em) { //500px
+      width: 30rem;
+      height: 16rem;
+    }
+
+    span {
+      font-size: 3rem;
+      margin-right: 2rem;
+    }
+
+    img {
+      width: 17rem;
+      height: 17rem;
+
+      @include responsive(phone) {
+        width: 15rem;
+        height: 17rem;
+      }
+
+      @media only screen and (max-width: 31.25em) { //500px
+        width: 13rem;
+      }
+    }
+
+    &:hover {
+      opacity: 0.9;
+      background-image: linear-gradient(135deg, #130f40 0%, #000000 74%);
+    }
+  }
+
+  &--btn__watching {
+    background-color: #a40606;
+    background-image: linear-gradient(315deg, #a40606 0%, #d98324 74%);
+    box-shadow: inset 0 -6px 10px rgba(255, 255, 255, .15);
+    cursor: wait;
+    width: 45rem;
+
+    span {
+      font-size: 3rem;
+      margin-right: 2rem;
+    }
+
+    &:hover {
+      opacity: 0.9;
+      background-image: linear-gradient(135deg, #a40606 0%, #d98324 74%);
+    }
+  }
+
+  &--item__offline {
+    border: var(--statusSize) solid var(--offlineColor);
+  }
+
+  &--item__online {
+    border: var(--statusSize) solid var(--onlineColor);
+  }
+}

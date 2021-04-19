@@ -1,0 +1,116 @@
+@import "../../../../sass/mixins";
+
+.about-us {
+  &--container {
+    width: 60vw;
+    height: 80vh;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background-color: #130f40;
+    background-image: linear-gradient(315deg, #130f40 0%, #000000 74%);
+    color: #eee;
+    border-radius: 1rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: all .4s;
+    z-index: 100;
+    transform-origin: center;
+
+    @include responsive(small-desktop) {
+      width: 70vw;
+    }
+
+    @include responsive(desktop) {
+      width: 80vw;
+    }
+
+    @include responsive(tab-port) {
+      width: 90vw;
+    }
+
+    &.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .holder {
+      overflow-y: auto;
+      overflow-x: hidden;
+      width: 100%;
+      height: 100%;
+      padding: 1rem 2rem;
+      border: .1rem solid rgba(255, 255, 255, .2);
+      border-radius: 1rem;
+    }
+  }
+
+  &--close-container {
+    width: 5.5rem;
+    height: 5.5rem;
+    position: absolute;
+    top: -2.5rem;
+    right: -2.5rem;
+    cursor: pointer;
+
+    @include responsive(phone-small) {
+      top: -1.5rem;
+      right: -1.5rem;
+    }
+
+    img {
+      filter: invert(.9);
+      transition: filter .2s;
+
+      &:hover {
+        filter: invert(1);
+      }
+    }
+  }
+
+  &--header-container {
+    text-align: center;
+    font-size: 2rem;
+
+    p {
+      margin-top: 1rem;
+      font-size: 1.8rem;
+    }
+  }
+
+  &--body-container {
+    .section {
+      margin: 5rem 0;
+
+      h3 {
+        font-size: 1.8rem;
+        font-family: Roboto-Bold;
+        font-weight: 300;
+        margin-bottom: 1rem;
+      }
+
+      h4 {
+        font-size: 1.65rem;
+        font-family: Roboto-Bold;
+        font-weight: 300;
+        margin: 2rem 0 1rem 2rem;
+      }
+
+      p {
+        font-size: 1.7rem;
+        margin: .8rem 0 .8rem 2rem;
+
+        &.indent {
+          margin-left: 4rem;
+        }
+      }
+
+      ul {
+        font-size: 1.7rem;
+        margin: 0 0 1rem 4rem;
+      }
+    }
+  }
+}

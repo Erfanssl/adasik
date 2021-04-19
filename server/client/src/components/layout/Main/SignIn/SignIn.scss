@@ -1,0 +1,227 @@
+@import '../../../../sass/mixins';
+
+.sign-in {
+  &--container {
+    width: 30vw;
+    height: 90vh;
+    max-height: 65rem;
+
+    @include responsive(small-desktop) {
+      width: 35vw;
+    }
+
+    @include responsive(tab-land) {
+      width: 40vw;
+    }
+
+    @include responsive(tab-land-small) {
+      width: 47vw;
+    }
+
+    @include responsive(tab-port) {
+      width: 55vw;
+    }
+
+    @include responsive(phone-big) {
+      width: 67vw;
+    }
+
+    @include responsive(phone) {
+      width: 85vw;
+    }
+
+    @include responsive(phone-small) {
+      width: 90vw;
+      //height: 90vh;
+    }
+
+    position: absolute;
+
+    top: 52%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    border-radius: 2rem;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    background-color: #130f40;
+    background-image: linear-gradient(180deg, #130f40 0%, #100c29 74%);
+
+    box-shadow: inset 0 0 10px rgba(255, 255, 255, .2);
+
+    z-index: 10000;
+    color: white;
+
+    form {
+      margin-top: 4rem;
+      display: flex;
+      flex-direction: column;
+
+      .input--group-container {
+        position: relative;
+
+        input {
+          width: 40rem;
+          border-radius: 7rem;
+          height: 5rem;
+          padding: 2rem;
+          border: none;
+          outline: none;
+          margin: 2.7rem 0;
+          transition: all .4s;
+          background-color: #04010e;
+          color: white;
+          font-size: 1.5rem;
+          letter-spacing: .1rem;
+
+          @include responsive(phone-small) {
+            width: 30rem;
+          }
+
+          &::placeholder {
+            color: rgba(255, 255, 255, .6);
+            font-size: 1.3rem;
+          }
+
+          &:focus {
+            box-shadow: 0 .4rem 1rem .01rem rgba(255, 255, 255, .1);
+          }
+
+          &:not(:focus):valid {
+            border: .15rem solid #09ba09;
+          }
+
+          &:not(:focus):invalid {
+            border: .15rem solid #ff6600;
+          }
+
+          &:focus:valid {
+            border: .15rem solid transparent;
+            border-bottom: .15rem solid #09ba09;
+          }
+
+          &:focus:invalid {
+            border: .15rem solid transparent;
+            border-bottom: .15rem solid #ff2600;
+          }
+
+          &:not(:placeholder-shown) + label {
+            transform: translateY(260%);
+            opacity: 1;
+            visibility: visible;
+          }
+        }
+
+        label {
+          opacity: 0;
+          visibility: hidden;
+          position: absolute;
+          top: 42%;
+          left: 5%;
+          font-size: 1.35rem;
+          transition: all .5s;
+          transform: translateY(0);
+        }
+      }
+
+      button {
+        border: none;
+        outline: none;
+        margin-top: 3rem;
+
+        & .button--container__main {
+          background-color: #100c29;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+
+  &--header-container {
+    margin-top: 4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    @media only screen and (max-height: 31.25em) { //500px
+      margin-top: 0;
+    }
+
+    h2 {
+      font-family: Roboto-Thin;
+      margin-top: 3rem;
+      font-weight: 300;
+      font-size: 3rem;
+
+      @include responsive(phone-small) {
+        font-size: 2.5rem;
+      }
+    }
+
+    .nav--logo {
+      @include responsive(phone-big) {
+        position: static;
+        margin-top: 2rem;
+      }
+
+      @media only screen and (max-height: 31.25em) { //500px
+        display: none;
+      }
+    }
+  }
+
+  &--close-container {
+    width: 5rem;
+    height: 5rem;
+    position: absolute;
+    top: -2.5rem;
+    right: -2.5rem;
+    cursor: pointer;
+
+    @include responsive(phone-small) {
+      top: -1.5rem;
+      right: -1.5rem;
+    }
+
+    img {
+      filter: invert(.9);
+      transition: filter .2s;
+
+      &:hover {
+        filter: invert(1);
+      }
+    }
+  }
+
+  &--forgot__password {
+    text-decoration: none;
+    color: #eee;
+    margin-top: 2rem;
+    font-size: 1.6rem;
+
+    &:hover {
+      color: #c5c5c5;
+    }
+  }
+
+  &--footer__container {
+    margin-top: 1.4rem;
+    font-size: 1.6rem;
+    text-align: center;
+
+    .spinner--container {
+      transform: scale(.4);
+    }
+
+    .submission--error {
+      color: #ff0000;
+    }
+
+    .submission--success {
+      color: #00ff00;
+    }
+  }
+}

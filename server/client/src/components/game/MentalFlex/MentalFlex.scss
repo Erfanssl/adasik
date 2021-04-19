@@ -1,0 +1,87 @@
+@import "../../../sass/mixins";
+
+.mental-flex--colors {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 7rem;
+  height: 20rem;
+
+  li {
+    list-style: none;
+    font-family: Roboto-Bold;
+    font-size: 15rem;
+    text-transform: capitalize;
+    transition: .2s all;
+    border-radius: 2rem;
+    box-shadow: 0 0 4.2rem 0.2rem #000;
+    padding: 1rem 3rem;
+
+    @media only screen and (max-width: 31.25em) { //500px
+      font-size: 10rem;
+    }
+  }
+}
+
+.mental-flex--container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 100vh;
+  padding: 3rem 1rem;
+  background-color: #0f0d2b;
+  background-image: url("../../../assets/bg/woven.png");
+  max-width: 200rem;
+
+  .meta {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 45%;
+    height: 30%;
+    border-radius: 2rem;
+    box-shadow: 0 0 4.2rem 0.2rem #000;
+
+    @include responsive(desktop) {
+      width: 55%;
+    }
+
+    @media only screen and (max-width: 87.5em) { //1400px
+      width: 60%;
+    }
+
+    @include responsive(small-laptop) {
+      width: 65%;
+    }
+
+    @include responsive(tab-land) {
+      width: 70%;
+    }
+
+    @include responsive(tab-land-small) {
+      width: 75%;
+    }
+
+    @include responsive(tab-port-big) {
+      width: 82%;
+    }
+
+    @include responsive(tab-port) {
+      width: 90%;
+      height: 25%;
+    }
+
+    @include responsive(phone-big) {
+      width: 94%;
+    }
+  }
+}
+
+.mental-flex--result {
+  color: white;
+  font-size: 5rem;
+  margin-bottom: 1rem;
+}

@@ -1,0 +1,58 @@
+@import '../../../../sass/mixins';
+
+.nav--logo {
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-top: -2rem;
+  //height: 100%;
+
+  @include responsive(tab-port-big) {
+    margin-top: -1rem;
+  }
+
+  @include responsive(phone-big) {
+    margin-top: 0;
+    position: absolute;
+    left: 8%;
+  }
+
+  img {
+    filter: invert(0.2);
+    width: 80%;
+    height: 80%;
+    transition: filter .5s;
+
+    @include responsive(phone-big) {
+      width: 60%;
+    }
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    font-family: BarlowSemiCondensed-Bold;
+    font-weight: 400;
+    margin-left: -1rem;
+    margin-top: -3rem;
+
+    @include responsive(phone-big) {
+      font-size: 2rem;
+      margin-left: -5rem;
+      margin-top: -2rem;
+    }
+
+    a {
+      color: var(--primaryLink);
+      text-decoration: none;
+      transition: color .4s;
+    }
+  }
+
+  &:hover a {
+    color: var(--primaryWhite);
+  }
+
+  &:hover img {
+    filter: invert(.15);
+  }
+}

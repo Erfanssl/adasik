@@ -1,0 +1,147 @@
+@import "../../../sass/mixins";
+
+.anticipation--container {
+  display: flex;
+  padding: 3rem 1rem;
+  height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+
+  background-color: #0f0d2b;
+  background-image: url("../../../assets/bg/woven.png");
+  max-width: 200rem;
+
+  .meta {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 45%;
+    height: 30%;
+    border-radius: 2rem;
+    box-shadow: 0 0 4.2rem 0.2rem #000;
+
+    @include responsive(desktop) {
+      width: 55%;
+    }
+
+    @media only screen and (max-width: 87.5em) { //1400px
+      width: 60%;
+    }
+
+    @include responsive(small-laptop) {
+      width: 65%;
+    }
+
+    @include responsive(tab-land) {
+      width: 70%;
+    }
+
+    @include responsive(tab-land-small) {
+      width: 75%;
+    }
+
+    @include responsive(tab-port-big) {
+      width: 82%;
+    }
+
+    @include responsive(tab-port) {
+      width: 90%;
+      height: 25%;
+    }
+
+    @include responsive(phone-big) {
+      width: 94%;
+    }
+  }
+}
+
+.anticipation--bucket-container {
+  width: 60%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  //margin-bottom: 11rem;
+  //margin-top: 18rem;
+  border-radius: 2rem;
+  box-shadow: 0 0 4.2rem 0.2rem #000;
+  padding: 2rem 0;
+
+  @include responsive(desktop) {
+    width: 68%;
+  }
+
+  @media only screen and (max-width: 87.5em) { //1400px
+    width: 70%;
+  }
+
+  @include responsive(small-laptop) {
+    width: 75%;
+  }
+
+  @include responsive(tab-land) {
+    width: 85%;
+  }
+
+  @include responsive(tab-land-small) {
+    width: 95%;
+  }
+
+  @include responsive(tab-port) {
+    width: 98%;
+  }
+}
+
+.anticipation--shape-container {
+  width: 16rem;
+  height: 16rem;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  filter: drop-shadow(0 2rem 4rem rgba(255, 255, 255, .1));
+  transition: all .2s;
+  background-color: #fcfcf7;
+  border-radius: 2.5rem;
+  margin: 0 1rem;
+
+  @include responsive(tab-port-big) {
+    width: 14rem;
+    height: 14rem;
+  }
+
+  @include responsive(tab-port) {
+    width: 12rem;
+    height: 12rem;
+
+    &:last-child {
+      display: none;
+    }
+  }
+
+  @include responsive(phone-big) {
+    //width: 11rem;
+    //height: 11rem;
+    margin: 0 .2rem;
+
+    &:nth-last-child(2) {
+      display: none;
+    }
+  }
+
+  @include responsive(phone) {
+    width: 11rem;
+    height: 11rem;
+  }
+
+  @media only screen and (max-width: 31.25em) { //500px
+    width: 8rem;
+    height: 8rem;
+  }
+
+  img {
+    width: 80%;
+    height: 80%;
+  }
+}

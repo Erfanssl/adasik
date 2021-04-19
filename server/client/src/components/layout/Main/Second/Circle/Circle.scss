@@ -1,0 +1,63 @@
+@import '../../../../../sass/mixins';
+
+.circle--item-container {
+  width: 8rem;
+  height: 8rem;
+  border-radius: 50%;
+  background-color: white;
+  animation: circle-move 4s 1s ease-in-out infinite both alternate;
+  box-shadow: 0 3rem 8rem .5rem rgba(0, 0, 0, .3);
+  transition: all .4s;
+  position: relative;
+  text-align: center;
+  overflow: hidden;
+
+  @include responsive(small-desktop) {
+    width: 7rem;
+    height: 7rem;
+  }
+
+  @include responsive(tab-port-big) {
+    width: 6rem;
+    height: 6rem;
+  }
+
+  @include responsive(tab-port) {
+    width: 5rem;
+    height: 5rem;
+  }
+
+  @include responsive(phone) {
+    width: 4.1rem;
+    height: 4.1rem;
+  }
+
+  @media only screen and (max-width: 33.75em) { // 540px
+    width: 3.4rem;
+    height: 3.4rem;
+  }
+
+  @include responsive(phone-small) {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  img {
+    width: 75% !important;
+  }
+
+  &:hover {
+    filter: blur(.2rem);
+    transform: scale(.8);
+  }
+}
+
+@keyframes circle-move {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(100%);
+  }
+}
