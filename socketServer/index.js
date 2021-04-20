@@ -25,12 +25,7 @@ const httpServer = app.listen(4500, () => {
     console.log('Socket Server is up on port 4500');
 });
 
-const io = socketio(httpServer, {
-    cors: {
-        origin: 'http://127.0.0.1:3000',
-        methods: ['GET', 'POST']
-    }
-});
+const io = socketio(httpServer);
 
 // contains main socket connection and other connection that depend on its information
 // mainSocketConnection(io);

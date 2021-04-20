@@ -112,7 +112,7 @@ const Dashboard = ({ fetchDashboard, dashboardData, statusSocket, dashboardSendT
                             }
                         })
                         .then(newSub => {
-                            return fetch('http://localhost:4000/create-subscription', {
+                            return fetch('/nnn-notification/create-subscription', {
                                 method: 'POST',
                                 mode: 'cors',
                                 body: JSON.stringify({ newSub, userId: dashboardData.userInfo._id })

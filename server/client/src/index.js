@@ -42,7 +42,7 @@ const App = ({ setStatus }) => {
     const [isOffline, setIsOffline] = useState([false]);
 
     useEffect(() => {
-        const mainSocket = io.connect('http://127.0.0.1:4500',  {transports: ['websocket'], upgrade: false} );
+        const mainSocket = io.connect('/sss-socket',  {transports: ['websocket'], upgrade: false} );
         let OuterStatusSocket;
 
 
@@ -53,7 +53,7 @@ const App = ({ setStatus }) => {
                 return res.json();
             }).then(data => {
                 mainSocket.emit('encryptedMessage', data);
-                const statusSocket = io.connect('http://127.0.0.1:4500/status');
+                const statusSocket = io.connect('/sss-socket/status');
                 OuterStatusSocket = statusSocket;
                 store.dispatch(setIdentifier(data));
 

@@ -132,7 +132,7 @@ const Messenger = ({
             setReRender(r => !r);
         }, 1000 * 60);
 
-        const messengerSocket = io.connect('http://127.0.0.1:4500/messenger'/*{ transports: ['websocket'], upgrade: false }*/);
+        const messengerSocket = io.connect('/sss-socket/messenger'/*{ transports: ['websocket'], upgrade: false }*/);
 
         setSocket(messengerSocket);
         fetchMessengerSocket(messengerSocket);
