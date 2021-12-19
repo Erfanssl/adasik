@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './Button.scss';
 
-const Button = ({ text, form=false, link='/sign-up', ...props }) => {
+const Button = ({ text, form= false, link= '/sign-up', ...props }) => {
     function formBtn() {
         return (
             <div>

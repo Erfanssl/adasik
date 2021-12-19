@@ -1,0 +1,133 @@
+@import "../../../../../../sass/mixins";
+
+$placeholderColor: rgba(255, 255, 255, 0.7);
+$inputColor: rgba(255, 255, 255, .9);
+$inputFontSize: 1.45rem;
+$placeholderFontSize: 1.3rem;
+$labelFontSize: 1.3rem;
+
+.country-picker {
+  width: 15rem;
+  background-color: #120618;
+  border-left: .1rem solid #fff;
+  border-right: .1rem solid #fff;
+  border-radius: 1rem;
+  height: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+
+  .country-name {
+    font-size: $inputFontSize;
+  }
+
+  .placeholder {
+    color: $placeholderColor;
+    font-size: $inputFontSize;
+  }
+
+  .label {
+    position: absolute;
+    top: 114%;
+    color: rgba(255, 255, 255, .9);
+    font-size: $labelFontSize;
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  &.complete {
+    border-left: .1rem solid #02ff02;
+    border-right: .1rem solid #02ff02;
+
+    .label {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+
+  &.active {
+    color: $inputColor;
+    border-left: .1rem solid #FFFF00;
+    border-right: .1rem solid #FFFF00;
+
+    img {
+      transform: rotate(90deg);
+    }
+  }
+
+  img {
+    width: 1.6rem;
+    filter: invert(.2);
+    transform: rotate(-90deg);
+    transition: all .4s;
+  }
+
+  .list-container {
+    position: absolute;
+    top: 105%;
+    max-height: 35rem;
+    width: 192%;
+    overflow-y: auto;
+    background-color: #120618;
+    z-index: 100;
+    font-size: 1.45rem;
+    border-radius: 1rem;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0);
+    transform-origin: top;
+    transition: all .4s;
+
+    @include responsive(phone-big) {
+      left: -7%;
+    }
+
+    &.active {
+      opacity: 1;
+      visibility: visible;
+      transform: scale(1);
+    }
+
+    input {
+      border: none !important;
+      border-radius: 0 !important;
+      border-bottom: .1rem solid #eee !important;
+      width: 90% !important;
+      margin: 0 5% 1rem 5%;
+
+      &:focus ~ label {
+        transform: scale(1);
+        opacity: 1;
+        visibility: visible;
+      }
+    }
+
+    label {
+      transform: scale(0);
+      opacity: 0;
+      visibility: hidden;
+      width: 90% !important;
+      margin: 0 5% 1rem 5%;
+      transition: all .6s;
+      border-bottom: .1rem solid #19d0a5 !important;
+      position: absolute;
+      left: 0;
+      height: 4.4rem;
+      transform-origin: bottom;
+    }
+
+    ul {
+      text-align: center;
+    }
+
+    li {
+      padding: 1rem;
+
+      &:hover {
+        background-color: #989595;
+      }
+    }
+  }
+}

@@ -9,25 +9,25 @@ async function onStatusSocketConnect(socket) {
 
     socket.on('new-message', ({ toUsername }) => {
         if (!messengerStore[toUsername] && statusStore[toUsername]) {
-            socket.to(statusStore[toUsername]).emit('new-message', { id: socket.id });
+            socket.to(statusStore[toUsername].id).emit('new-message', { id: socket.id });
         }
     });
 
     socket.on('friend-request', ({ toUsername }) => {
         if (statusStore[toUsername]) {
-            socket.to(statusStore[toUsername]).emit('friend-request');
+            socket.to(statusStore[toUsername].id).emit('friend-request', { id: socket.id });
         }
     });
 
     socket.on('challenge-request', ({ toUsername }) => {
         if (statusStore[toUsername]) {
-            socket.to(statusStore[toUsername]).emit('challenge-request');
+            socket.to(statusStore[toUsername].id).emit('challenge-request', { id: socket.id });
         }
     });
 
     socket.on('challenge-turn', ({ toUsername }) => {
         if (statusStore[toUsername]) {
-            socket.to(statusStore[toUsername]).emit('challenge-turn');
+            socket.to(statusStore[toUsername].id).emit('challenge-turn');
         }
     });
 }

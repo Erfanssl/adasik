@@ -49,13 +49,13 @@ const Nav = ({ becomeTop = false, handleTermsClick, handlePrivacyClick, handleAb
                     <li onClick={ handleTermsClick }>
                         <p>Terms of Service</p>
                     </li>
-                    <li onClick={ handlePrivacyClick }>
+                    <li className="privacy" onClick={ handlePrivacyClick }>
                         <p>Privacy Policy</p>
                     </li>
                     {
                         isLoggedInData === null &&
                         <li>
-                            <p>Fetching Data...</p>
+                            <p>Loading Data...</p>
                         </li>
                     }
                     {
@@ -93,7 +93,7 @@ const Nav = ({ becomeTop = false, handleTermsClick, handlePrivacyClick, handleAb
                     {
                         isLoggedInData === null &&
                         <li>
-                            <p>Fetching Data...</p>
+                            <p>Loading Data...</p>
                         </li>
                     }
                     {

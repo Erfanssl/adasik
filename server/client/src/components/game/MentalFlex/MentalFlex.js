@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './MentalFlex.scss';
 import Clock from "../Clock/Clock";
 import Button from "../Button/Button";
@@ -6,39 +6,42 @@ import Result from "../Result/Result";
 import Score from "../Score/Score";
 
 // Colors
-const BLUE = '#4949ff';
-const PURPLE = '#cb1acb';
+const BLUE = '#0086fc';
+const PURPLE = '#f107f1';
+const RED = '#ff0000';
+const YELLOW = '#f2f600';
+const GREEN = '#19fd00'
 
 const data = [
-    { id: 1, text: 'red', color: 'red', bool: true },
+    { id: 1, text: 'red', color: RED, bool: true },
     { id: 2, text: 'red', color: BLUE, bool: false },
-    { id: 3, text: 'blue', color: 'green', bool: false },
-    { id: 4, text: 'blue', color: 'yellow', bool: false },
+    { id: 3, text: 'blue', color: GREEN, bool: false },
+    { id: 4, text: 'blue', color: YELLOW, bool: false },
     { id: 5, text: 'purple', color: PURPLE, bool: true },
     { id: 6, text: 'blue', color: BLUE, bool: true },
-    { id: 7, text: 'yellow', color: 'red', bool: false },
-    { id: 8, text: 'green', color: 'green', bool: true },
-    { id: 9, text: 'red', color: 'yellow', bool: false },
-    { id: 10, text: 'green', color: 'yellow', bool: false },
-    { id: 11, text: 'yellow', color: 'red', bool: false },
+    { id: 7, text: 'yellow', color: RED, bool: false },
+    { id: 8, text: 'green', color: GREEN, bool: true },
+    { id: 9, text: 'red', color: YELLOW, bool: false },
+    { id: 10, text: 'green', color: YELLOW, bool: false },
+    { id: 11, text: 'yellow', color: RED, bool: false },
     { id: 12, text: 'blue', color: BLUE, bool: true },
-    { id: 13, text: 'purple', color: 'yellow', bool: false },
+    { id: 13, text: 'purple', color: YELLOW, bool: false },
     { id: 14, text: 'yellow', color: BLUE, bool: false }
 ];
 
-const MentalFlex = ({ shouldStart, timer, handleResult, dataFromSocket, setMaxBooster, setScore, setGameName }) => {
+const MentalFlex = ({ shouldStart, handleResult, dataFromSocket, setMaxBooster, setScore, setGameName, finish, setFinish, gameSocket, isFromSocket }) => {
     const [result, setResult] = useState(['']);
-    const [randomNum, setRandomNum] = useState(randomNumFn());
-    const [info, setInfo] = useState(data[randomNumFn()]);
+    const [randomNum, setRandomNum] = useState(() => randomNumFn());
+    const [info, setInfo] = useState(() => data[randomNumFn()]);
     const [start, setStart] = useState(false);
-    const [finish, setFinish] = useState(null);
-    const [allowToChoose, setAllowToChoose] = useState(true);
 
     // Refs
     const container = useRef();
     const liText = useRef();
     const metaContainer = useRef();
 
+    const allowToChoose = useRef(true);
+    const allowToChooseInterval = useRef(true);
 
     useEffect(() => {
         document.title = 'Adasik - Mental Flex';
@@ -56,30 +59,16 @@ const MentalFlex = ({ shouldStart, timer, handleResult, dataFromSocket, setMaxBo
     useEffect(() => {
         const info = data.find(val => val.id === randomNum);
         setInfo(info);
-
-        if (liText && liText.current) {
-            liText.current.style.display = 'none';
-            liText.current.style.opacity = '0';
-            liText.current.style.transform = 'scale(0.5)';
-        }
-
-        setTimeout(() => {
-            liText.current.style.display = 'block';
-        }, 50);
-
-         setTimeout(() => {
-             liText.current.style.opacity = '1';
-             liText.current.style.transform = 'scale(1)';
-        }, 100);
     }, [randomNum]);
 
     useEffect(() => {
-        if (timer <= 0) {
-            // if (timerInterval) clearInterval(timerInterval);
-            setFinish(true);
-            setStart(false);
+        if (liText?.current) {
+            setTimeout(() => {
+                liText.current.style.opacity = '1';
+                liText.current.style.transform = 'scale(1)';
+            }, 50);
         }
-    }, [timer]);
+    }, [info]);
 
     function checkTheAnswer(answer) {
         answer = answer === 'yes';
@@ -106,11 +95,18 @@ const MentalFlex = ({ shouldStart, timer, handleResult, dataFromSocket, setMaxBo
         }
     }
 
-    function updateLi() {
-        if (info) {
-            const fn = () => <li ref={ liText } style={{ color: info.color, opacity: '0', transform: 'scale(0.5)' }}>{ info.text }</li>;
-            return useMemo(fn, [info]);
+    function beforeUpdate() {
+        if (liText && liText.current) {
+            liText.current.style.display = 'none';
+            liText.current.style.opacity = '0';
+            liText.current.style.transform = 'scale(0.5)';
+
+            setTimeout(() => {
+                liText.current.style.display = 'block';
+                update();
+            }, 50);
         }
+
     }
 
     function update() {
@@ -118,14 +114,19 @@ const MentalFlex = ({ shouldStart, timer, handleResult, dataFromSocket, setMaxBo
     }
 
     function btnOnClick(e) {
-        if (start && !finish) {
+        if (start && !finish && allowToChooseInterval?.current) {
+            allowToChoose.current = false;
+            allowToChooseInterval.current = false;
             const btnId = Number(e.target.dataset.id);
             let btnText;
             if (btnId === 1) btnText = 'no';
             else if (btnId === 2) btnText = 'yes';
             const res = checkTheAnswer(btnText);
             printResult(res);
-            update();
+            beforeUpdate();
+            setTimeout(() => {
+                allowToChooseInterval.current = true;
+            }, 230);
         }
     }
 
@@ -136,17 +137,21 @@ const MentalFlex = ({ shouldStart, timer, handleResult, dataFromSocket, setMaxBo
             if (e.keyCode === 37) bool = 'no';
             else if (e.keyCode === 39) bool = 'yes';
 
-            if (bool && allowToChoose) {
-                setAllowToChoose(false);
+            if (bool && allowToChoose?.current && allowToChooseInterval?.current) {
+                allowToChoose.current = false;
+                allowToChooseInterval.current = false;
                 const res = checkTheAnswer(bool);
                 printResult(res);
-                update();
+                beforeUpdate();
+                setTimeout(() => {
+                    allowToChooseInterval.current = true;
+                }, 230);
             }
         }
     }
 
     function handleContainerKeyUp() {
-        setAllowToChoose(true);
+        allowToChoose.current = true;
     }
 
     return (
@@ -162,15 +167,17 @@ const MentalFlex = ({ shouldStart, timer, handleResult, dataFromSocket, setMaxBo
                 />
                 <Result
                     type={ result }
-                    fast={ true }
                 />
                 <Clock
-                    current={ 90 - timer }
                     ultimate={ 90 }
+                    shouldStart={ shouldStart }
+                    setFinish={ setFinish }
+                    gameSocket={ gameSocket }
+                    isFromSocket={ isFromSocket }
                 />
             </div>
             <ul className="mental-flex--colors">
-                { updateLi() }
+                { info && <li ref={ liText } style={{ color: info.color }}>{ info.text }</li> }
             </ul>
             <Button
                 btnOnClick={ btnOnClick }
@@ -180,4 +187,4 @@ const MentalFlex = ({ shouldStart, timer, handleResult, dataFromSocket, setMaxBo
     );
 };
 
-export default MentalFlex;
+export default React.memo(MentalFlex);

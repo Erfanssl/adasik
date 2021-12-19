@@ -1,0 +1,912 @@
+import React from "react";
+
+const violetSquare = (
+    <svg
+        id="svg6670"
+        viewBox="0 0 748.8 542.97"
+        className="shape--seven"
+    >
+        <defs
+            id="defs3"
+        >
+            <radialGradient
+                id="radialGradient6658"
+                xlinkHref="#linearGradient6578"
+                gradientUnits="userSpaceOnUse"
+                cy="5050.3"
+                cx="2671.7"
+                gradientTransform="matrix(.021416 .48626 -.96681 .042580 7425.4 3538.2)"
+                r="437.34"
+            />
+            <linearGradient
+                id="linearGradient6578"
+            >
+                <stop
+                    id="stop6580"
+                    style={{"stop-color":"#aa0088"}}
+                    offset="0"
+                />
+                <stop
+                    id="stop6582"
+                    style={{"stop-color":"#aa0088","stopOpacity":0}}
+                    offset="1"
+                />
+            </linearGradient
+            >
+            <linearGradient
+                id="linearGradient6660"
+                y2="5046.1"
+                gradientUnits="userSpaceOnUse"
+                x2="2518.8"
+                gradientTransform="translate(-.0000029548 -0.0000014)"
+                y1="4571.1"
+                x1="2518.8"
+            >
+                <stop
+                    id="stop6596"
+                    style={{"stop-color":"#2b0022"}}
+                    offset="0"
+                />
+                <stop
+                    id="stop6598"
+                    style={{"stop-color":"#2b0022","stopOpacity":0}}
+                    offset="1"
+                />
+            </linearGradient
+            >
+            <linearGradient
+                id="linearGradient6662"
+                y2="4889.9"
+                gradientUnits="userSpaceOnUse"
+                x2="2568.8"
+                gradientTransform="translate(-.0000036 -0.000001)"
+                y1="4364.9"
+                x1="2575"
+            >
+                <stop
+                    id="stop6608"
+                    style={{"stop-color":"#ffffff"}}
+                    offset="0"
+                />
+                <stop
+                    id="stop6610"
+                    style={{"stop-color":"#ffffff","stopOpacity":0}}
+                    offset="1"
+                />
+            </linearGradient
+            >
+            <radialGradient
+                id="radialGradient6664"
+                xlinkHref="#linearGradient6578"
+                gradientUnits="userSpaceOnUse"
+                cy="5050.3"
+                cx="2671.7"
+                gradientTransform="matrix(.013458 .33772 -.60758 .029573 5673.4 3959.1)"
+                r="437.34"
+            />
+            <linearGradient
+                id="linearGradient6666"
+                y2="5064.9"
+                xlinkHref="#linearGradient6619"
+                gradientUnits="userSpaceOnUse"
+                x2="2612.5"
+                gradientTransform="translate(-.067532 -7.8433)"
+                y1="4502.4"
+                x1="2631.2"
+            />
+            <linearGradient
+                id="linearGradient6619"
+            >
+                <stop
+                    id="stop6621"
+                    style={{"stop-color":"#ffffff"}}
+                    offset="0"
+                />
+                <stop
+                    id="stop6623"
+                    style={{"stop-color":"#ffffff","stopOpacity":0}}
+                    offset="1"
+                />
+            </linearGradient
+            >
+            <linearGradient
+                id="linearGradient8661"
+                y2="4733.6"
+                xlinkHref="#linearGradient6619"
+                gradientUnits="userSpaceOnUse"
+                x2="2631.2"
+                gradientTransform="translate(-.067532 -7.8433)"
+                y1="4671.1"
+                x1="2631.2"
+            />
+        </defs
+        >
+        <g
+            id="layer1"
+            transform="translate(36.037 -186.03)"
+        >
+            <g
+                id="g6649"
+                transform="matrix(.80392 0 0 .80392 -1756.7 -3526.2)"
+            >
+                <rect
+                    id="rect4485"
+                    style={{"fill":"#550044"}}
+                    ry="74.356"
+                    height="634.24"
+                    width="874.67"
+                    y="4640"
+                    x="2171.9"
+                />
+                <rect
+                    id="rect6576"
+                    style={{"fill":"url(#radialGradient6658)"}}
+                    ry="74.356"
+                    height="634.24"
+                    width="874.67"
+                    y="4640"
+                    x="2171.9"
+                />
+                <rect
+                    id="rect6592"
+                    style={{"fill":"url(#linearGradient6660)"}}
+                    ry="74.356"
+                    height="634.24"
+                    width="874.67"
+                    y="4640"
+                    x="2171.9"
+                />
+                <rect
+                    id="rect6604"
+                    style={{"fill":"url(#linearGradient6662)"}}
+                    ry="74.356"
+                    height="634.24"
+                    width="874.67"
+                    y="4640"
+                    x="2171.9"
+                />
+                <rect
+                    id="rect6641"
+                    style={{"fill":"url(#radialGradient6664)"}}
+                    ry="51.641"
+                    height="440.49"
+                    width="549.67"
+                    y="4724.3"
+                    x="2371.9"
+                />
+                <path
+                    id="rect6614"
+                    style={{"fill":"url(#linearGradient6666)"}}
+                    d="m2937.6 4650.8c-232.56 0.3031-465.14-0.2936-697.69 0.3125-28.01 2.6361-51.589 29.802-49.162 58.125-0.3544 25.28 0.1606 50.563-0.057 75.844 79.382 61.696 169.28 115 269.19 134.66 53.596 9.8895 108.65 5.1771 162.93 4.7399 135.88-3.4821 272.16-13.775 405.22-41.802-0.8139-31.2 0.051-62.505-0.1629-93.75-0.26-31.286 0.61-62.68-1.0807-93.895-5.2164-26.519-32-46.961-59.068-44.058-10.04-0.2025-20.084-0.221-30.126-0.1715z"
+                />
+                <path
+                    id="path6645"
+                    style={{"fill":"url(#linearGradient8661)"}}
+                    d="m2937.6 4650.8c-232.56 0.3031-465.14-0.2936-697.69 0.3125-28.01 2.6361-51.589 29.802-49.162 58.125-0.3544 25.28 0.1606 50.563-0.057 75.844 79.382 61.696 169.28 115 269.19 134.66 53.596 9.8895 108.65 5.1771 162.93 4.7399 135.88-3.4821 272.16-13.775 405.22-41.802-0.8139-31.2 0.051-62.505-0.1629-93.75-0.26-31.286 0.61-62.68-1.0807-93.895-5.2164-26.519-32-46.961-59.068-44.058-10.04-0.2025-20.084-0.221-30.126-0.1715z"
+                />
+            </g>
+        </g>
+    </svg>
+
+);
+
+const cyanSquare = (
+    <svg
+        id="svg4723"
+        viewBox="0 0 701.81 664.45"
+        className="shape--six"
+    >
+        <defs
+            id="defs3"
+        >
+            <linearGradient
+                id="linearGradient3359"
+                y2="20.473"
+                gradientUnits="userSpaceOnUse"
+                x2="389.87"
+                y1="667.94"
+                x1="379.43"
+            >
+                <stop
+                    id="stop3355"
+                    style={{"stop-color":"#00ffff"}}
+                    offset="0"
+                />
+                <stop
+                    id="stop3357"
+                    style={{"stop-color":"#00ffff","stopOpacity":0}}
+                    offset="1"
+                />
+            </linearGradient
+            >
+            <linearGradient
+                id="linearGradient3299"
+                y2="4602.6"
+                gradientUnits="userSpaceOnUse"
+                x2="1469.1"
+                y1="4807.4"
+                x1="1471.4"
+            >
+                <stop
+                    id="stop3964-65-3"
+                    style={{"stop-color":"#ffffff"}}
+                    offset="0"
+                />
+                <stop
+                    id="stop3966-5-7"
+                    style={{"stop-color":"#ffffff","stopOpacity":0}}
+                    offset="1"
+                />
+            </linearGradient
+            >
+            <filter
+                id="filter3958-8-5"
+                colorInterpolationFilters="sRGB"
+            >
+                <feGaussianBlur
+                    id="feGaussianBlur3960-0-5"
+                    stdDeviation="3.7445471"
+                />
+            </filter
+            >
+            <linearGradient
+                id="linearGradient3363"
+                y2="4696.8"
+                gradientUnits="userSpaceOnUse"
+                x2="1475.8"
+                gradientTransform="matrix(1.6176 0 0 1.5712 -2078.8 -6935.6)"
+                y1="5124.3"
+                x1="1480.3"
+            >
+                <stop
+                    id="stop3976-56-6"
+                    style={{"stop-color":"#000000"}}
+                    offset="0"
+                />
+                <stop
+                    id="stop3978-18-9"
+                    style={{"stop-color":"#000000","stopOpacity":0}}
+                    offset="1"
+                />
+            </linearGradient
+            >
+            <linearGradient
+                id="linearGradient3760"
+                y2="5150.9"
+                gradientUnits="userSpaceOnUse"
+                x2="1492.1"
+                gradientTransform="matrix(1.7088 0 0 3.6635 -2214.7 -18184)"
+                y1="4909.8"
+                x1="1499"
+            >
+                <stop
+                    id="stop4056-76-3"
+                    style={{"stop-color":"#ffffff"}}
+                    offset="0"
+                />
+                <stop
+                    id="stop4058-1-1"
+                    style={{"stop-color":"#ffffff","stopOpacity":0}}
+                    offset="1"
+                />
+            </linearGradient
+            >
+        </defs
+        >
+        <g
+            id="g3719"
+            transform="translate(12.336 2.2684)"
+        >
+            <rect
+                id="rect3073"
+                style={{"fill":"#000080"}}
+                ry="64.546"
+                height="607.71"
+                width="644.1"
+                y="27.352"
+                x="18.527"
+            />
+            <rect
+                id="rect3311"
+                style={{"fill":"url(#linearGradient3359)"}}
+                ry="64.546"
+                height="607.71"
+                width="644.1"
+                y="27.352"
+                x="18.527"
+            />
+            <path
+                id="rect3085"
+                style={{"opacity":0.88,"filter":"url(#filter3958-8-5)","fill":"url(#linearGradient3299)"}}
+                d="m1655.5 4444.8c-4.793 0.5602-1.703 5.5631 1.7187 5.6875 18.515 7.8774 28.751 29.128 25.711 48.75-0.5387 89.326 1.237 178.71-1.0238 268-4.5621 21.944-28.442 36.766-50.219 33.153-96.339-0.5175-192.72 1.1117-289.03-0.9341-17.224-3.4141-30.038-18.915-33.474-35.615-2.4992-9.4552-4.5365 1.9534-4.1674 6.0214-0.9617 11.387 2.9521 23.441 12.579 30.125 9.322 7.6329 21.992 8.3985 33.5 7.1186 104.33-0.3933 208.7 0.892 313-0.7436 18.474-4.0375 29.092-24.974 25.465-42.75-0.5424-97.886 1.1097-195.85-0.9028-293.69-3.5787-14.574-18.078-25.681-33.156-25.125zm-322.56 0.4375c-19.294 2.3707-31.84 23.648-28.092 42.125 0.5441 10.149-1.013 20.746 0.8727 30.609 1.7428 6.6781 4.5781-3.6467 3.8752-6.6402 0.4203-15.714-2.9176-33.723 7.9063-46.812 6.2555-9.2117 16.709-13.421 26.187-18.438-3.582-0.394-7.1305-1.1153-10.75-0.8437z"
+                transform="matrix(-1.6176 0 0 -1.6176 2758.8 7800)"
+            />
+            <rect
+                id="rect3361"
+                style={{"fill":"url(#linearGradient3363)"}}
+                ry="62.697"
+                height="590.31"
+                width="644.1"
+                y="37.795"
+                x="17.244"
+            />
+            <path
+                id="path5352"
+                style={{"fill":"url(#linearGradient3760)"}}
+                d="m603.35 45.519c-149.21 5.2935-298.97-1.0999-448.39 2.0983-29.971 0.98591-60.882 0.73874-90.245 3.6138-16.814 22.239-14.299 51.283-15.879 77.339 1.4421 85.745 0.5882 171.49 0.7138 257.24 38.086 54.57 81.172 111.23 145.62 138.86 30.507 11.921 66.401 5.4431 91.785-13.769 59.781-36.775 107.41-87.288 163.34-128.88 49.375-42.669 101.25-89.29 168.89-102.43 5.8881-0.83159 13.477 0.034 10.226-8.1212-0.96261-69.7 7.3606-140.53-7.6388-209.27-3.1137-7.3237-8.4791-17.552-18.423-16.681z"
+            />
+        </g>
+    </svg>
+);
+
+const diamond = (
+    <svg id="svg1" viewBox="0 0 100 100" className="shape--four">
+        <defs id="defs3">
+            <linearGradient id="linearGradient1615" x2=".52451" y1=".21538" x1=".33824" y2=".36923">
+                <stop id="stop1576" stopColor="#fff" stopOpacity=".5" offset="0"/>
+                <stop id="stop1577" stopColor="#fff" stopOpacity="0" offset="1"/>
+            </linearGradient>
+        </defs>
+        <g id="g1616" transform="translate(-162.09 -215.75)" fillRule="evenodd">
+            <path id="path1608" strokeLinejoin="round" d="m212.69 226.28c-12.83 19.67-22.18 29.82-41.47 40.66 18.25 10.7 31.13 21.77 41.84 39.65 9.57-16.99 21.29-29.65 41.63-40.18-20.46-7.99-32.31-20.65-42-40.13z" stroke="#f00" strokeWidth="1pt" fill="#f00"/>
+            <path id="path1614" fill="url(#linearGradient1615)" d="m212.6 226.42c-12.82 19.68-22.18 29.82-41.47 40.66 18.26 10.71 31.13 21.77 41.85 39.66 9.57-16.99 21.28-29.66 41.62-40.19-20.46-7.99-32.31-20.65-42-40.13z"/>
+        </g>
+    </svg>
+);
+
+const simpleCircle2 = (
+    <svg id="Layer_1" x="0px" y="0px" viewBox="0 0 479.824 479.824" style={{"enable-background":"new 0 0 479.824 479.824"}} xmlSpace="preserve" className="shape--eight">
+        <linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="-46.2356" y1="598.1365" x2="-46.2356" y2="626.1253" gradientTransform="matrix(16 0 0 -16 979.68 10034.0078)">
+            <stop offset="0" style={{"stop-color":"#4DC3FF"}} />
+            <stop offset="1" style={{"stop-color":"#4DE1FF"}} />
+        </linearGradient>
+        <path style={{"fill":"url(#SVGID_1_)"}} d="M463.128,255.824c9.392-135.52-101.52-247.504-236.8-239.408
+	C109.032,23.376,16.136,120.752,16.136,239.824c0,123.712,100.288,224,224,224c118.352,0,215.248-91.776,223.44-208.032
+	L463.128,255.824z M366.648,259.424c-9.424,61.552-63.12,108.4-126.528,108.4c-70.576,0-128-57.408-128-128
+	c0-67.568,52.656-123.6,119.888-127.584l8.096-0.24c35.76,0,68.88,14.368,93.264,40.512c24.416,26.176,36.48,60.512,33.984,96.64
+	L366.648,259.424z"/>
+        <g>
+            <path style={{"fill":"#297BCC"}} d="M240.104,96.016h-0.464l-8.096,0.24l-0.48,0.016C155.32,100.784,96.152,163.808,96.12,239.824
+		c0.032,79.456,64.56,143.968,144,144c71.424-0.064,131.664-52.576,142.336-121.984l0.144-1.296l0.72-10.256
+		c0.24-3.504,0.368-6.976,0.368-10.448c0.032-36.592-13.552-71.424-38.608-98.24C317.784,112.288,280.184,95.968,240.104,96.016z
+		 M351.4,248.064l-0.656,9.344c-8.352,53.504-55.376,94.48-110.624,94.416c-30.912,0-58.816-12.528-79.152-32.848
+		c-20.304-20.336-32.832-48.24-32.848-79.152c-0.016-59.072,46.064-108.096,104.736-111.6l7.344-0.208
+		c31.424,0.08,60.016,12.496,81.472,35.424c19.568,21.008,29.968,47.648,30,76.4L351.4,248.064z"/>
+            <path style={{"fill":"#297BCC"}} d="M479.688,239.808c0-66.176-26.784-126.224-70.112-169.568C366.296,26.864,306.28,0,240.088,0
+		c-4.88,0-9.792,0.144-14.72,0.448C99.656,7.92,0.152,112.24,0.136,239.824c0.016,132.56,107.44,239.984,240,240
+		c126.8-0.032,230.624-98.304,239.408-222.912c0.064-0.832-0.288-1.6-0.352-2.416C479.464,249.584,479.688,244.672,479.688,239.808z
+		 M447.416,256.352C439,363.44,349.432,447.856,240.136,447.824c-57.488-0.016-109.392-23.264-147.072-60.928
+		c-37.68-37.68-60.928-89.584-60.928-147.072c-0.032-110.56,86.288-200.992,195.136-207.44c4.304-0.256,8.576-0.384,12.816-0.384
+		c57.456,0.016,109.248,23.232,146.848,60.848c37.568,37.648,60.736,89.504,60.752,146.976c0,4.928-0.176,9.904-0.512,14.912
+		C447.128,255.28,447.384,255.792,447.416,256.352z"/>
+        </g>
+    </svg>
+);
+
+const greenCircle = (
+    <svg
+        id="svg1"
+        viewBox="0 0 393.31 393.31"
+        className="shape--three"
+    >
+        <defs
+            id="defs3"
+        >
+            <linearGradient
+                id="linearGradient1697"
+            >
+                <stop
+                    id="stop1698"
+                    style={{"stop-color":"#69db0e"}}
+                    offset="0"
+                />
+                <stop
+                    id="stop1699"
+                    style={{"stop-color":"#397607"}}
+                    offset="1"
+                />
+            </linearGradient
+            >
+            <linearGradient
+                id="linearGradient1076"
+                y2="466.28"
+                xlinkHref="#linearGradient1697"
+                gradientUnits="userSpaceOnUse"
+                x2="520.57"
+                y1="506.29"
+                x1="520.57"
+                inkscapeCollect="always"
+            />
+            <linearGradient
+                id="linearGradient1077"
+                y2="505.08"
+                xlinkHref="#linearGradient1697"
+                gradientUnits="userSpaceOnUse"
+                x2="522.94"
+                y1="469.5"
+                x1="522.94"
+                inkscapeCollect="always"
+            />
+            <linearGradient
+                id="linearGradient1078"
+                y2="463.47"
+                gradientUnits="userSpaceOnUse"
+                y1="183.48"
+                gradientTransform="matrix(1.5539 0 0 .64354 -1.0179 0)"
+                x2="214.59"
+                x1="213.83"
+                inkscapeCollect="always"
+            >
+                <stop
+                    id="stop1703"
+                    style={{"stop-color":"#ffffff","stopOpacity":".69072"}}
+                    offset="0"
+                />
+                <stop
+                    id="stop1704"
+                    style={{"stop-color":"#ffffff","stopOpacity":0}}
+                    offset="1"
+                />
+            </linearGradient
+            >
+        </defs
+        >
+        <sodipodiNamedview
+            id="base"
+            bordercolor="#666666"
+            inkscapePageshadow="2"
+            inkscapeWindow-y="0"
+            pagecolor="#ffffff"
+            inkscapeWindow-maximized="0"
+            inkscapeWindow-width="674"
+            inkscapeZoom="1.2279853"
+            inkscapeWindow-x="0"
+            showgrid="false"
+            borderopacity="1.0"
+            inkscapeCurrent-layer="layer1"
+            inkscapeCx="353.75493"
+            inkscapeCy="-556.63656"
+            inkscapeWindow-height="645"
+            inkscapePageopacity="0.0"
+        />
+        <g
+            id="layer1"
+            inkscapeLabel="Layer 1"
+            inkscapeGroupmode="layer"
+            transform="translate(-6.3522 -6.7714)"
+        >
+            <g
+                id="g1073"
+                transform="translate(-130.29,-93.649)"
+            >
+                <path
+                    id="path1070"
+                    sodipodiRx="20.783747"
+                    sodipodiRy="20.783747"
+                    style={{"stroke-linejoin":"round","stroke":"url(#linearGradient1077)","stroke-width":1.3645,"stroke-linecap":"round","fill":"url(#linearGradient1076)"}}
+                    sodipodiType="arc"
+                    d="m544.07 487.06c0 11.479-9.3052 20.784-20.784 20.784s-20.784-9.3052-20.784-20.784 9.3052-20.784 20.784-20.784 20.784 9.3052 20.784 20.784z"
+                    transform="matrix(9.1612,0,0,9.1612,-4460.6,-4165)"
+                    sodipodiCy="487.06226"
+                    sodipodiCx="523.28259"
+                />
+                <path
+                    id="path1713"
+                    inkscapeConnector-curvature="0"
+                    sodipodiNodetypes="cccccc"
+                    style={{"opacity":.9,"fill-rule":"evenodd","fill":"url(#linearGradient1078)"}}
+                    d="m471.57 246.89c44.37-0.97-12.4-123.16-135.68-123.81-134.56-0.68-162.09 110.96-140.72 113 0 0 36.87 5.06 71.94 14.86 56.47 15.93 125.55-13.07 152.77-17.29 30.34-4.69 47.37 15.4 51.69 13.24z"
+                />
+            </g>
+        </g>
+    </svg>
+
+);
+
+const blueCircle = (
+    <svg
+        id="svg2"
+        viewBox="0 0 300 300"
+        className="shape--two"
+    >
+        <defs
+            id="defs4"
+        >
+            <radialGradient
+                id="radialGradient3141"
+                gradientUnits="userSpaceOnUse"
+                cy="264.19"
+                cx="204.51"
+                gradientTransform="matrix(.38806 .10448 -.24057 .89355 188.7 6.7552)"
+                r="53.316"
+                inkscapeCollect="always"
+            >
+                <stop
+                    id="stop3137"
+                    style={{"stop-color":"#000000"}}
+                    offset="0"
+                />
+                <stop
+                    id="stop3139"
+                    style={{"stop-color":"#000000","stopOpacity":0}}
+                    offset="1"
+                />
+            </radialGradient
+            >
+            <radialGradient
+                id="radialGradient3157"
+                gradientUnits="userSpaceOnUse"
+                cy="264.19"
+                cx="204.51"
+                gradientTransform="matrix(1 0 0 .92911 0 18.729)"
+                r="56.124"
+                inkscapeCollect="always"
+            >
+                <stop
+                    id="stop3153"
+                    style={{"stop-color":"#ffffff"}}
+                    offset="0"
+                />
+                <stop
+                    id="stop3155"
+                    style={{"stop-color":"#ffffff","stopOpacity":0}}
+                    offset="1"
+                />
+            </radialGradient
+            >
+            <linearGradient
+                id="linearGradient3169"
+                y2="121.75"
+                gradientUnits="userSpaceOnUse"
+                x2="134.37"
+                gradientTransform="translate(8.6921 5.9376)"
+                y1="34.522"
+                x1="110.65"
+                inkscapeCollect="always"
+            >
+                <stop
+                    id="stop3163"
+                    style={{"stop-color":"#ffffff"}}
+                    offset="0"
+                />
+                <stop
+                    id="stop3165"
+                    style={{"stop-color":"#ffffff","stopOpacity":0}}
+                    offset="1"
+                />
+            </linearGradient
+            >
+            <filter
+                id="filter3182"
+                height="1.5297"
+                width="1.2804"
+                y="-.26487"
+                x="-.14018"
+                inkscapeCollect="always"
+            >
+                <feGaussianBlur
+                    id="feGaussianBlur3184"
+                    stdDeviation="13.951612"
+                    inkscapeCollect="always"
+                />
+            </filter
+            >
+            <filter
+                id="filter3202"
+                height="1.5516"
+                width="1.5879"
+                y="-.27581"
+                x="-.29394"
+                inkscapeCollect="always"
+            >
+                <feGaussianBlur
+                    id="feGaussianBlur3204"
+                    stdDeviation="16.425908"
+                    inkscapeCollect="always"
+                />
+            </filter
+            >
+        </defs
+        >
+        <sodipodiNamedview
+            id="base"
+            inkscapeZoom="1.2566667"
+            height="300px"
+            borderopacity="1.0"
+            inkscapeCurrent-layer="layer1"
+            inkscapeCx="150"
+            inkscapeWindow-y="203"
+            width="300px"
+            inkscapeGuide-bbox="true"
+            showguides="true"
+            bordercolor="#666666"
+            inkscapeWindow-x="64"
+            guidetolerance="10"
+            objecttolerance="10"
+            inkscapeWindow-width="744"
+            inkscapePageopacity="0.0"
+            inkscapePageshadow="2"
+            pagecolor="#ffffff"
+            gridtolerance="10000"
+            inkscapeCy="148.08669"
+            inkscapeDocument-units="px"
+            inkscapeWindow-height="598"
+        />
+        <g
+            id="layer1"
+            inkscapeLabel="Layer 1"
+            inkscapeGroupmode="layer"
+        >
+            <path
+                id="path2160"
+                sodipodiRx="132.09549"
+                sodipodiRy="126.92308"
+                style={{"fill":"#0f04b4"}}
+                sodipodiType="arc"
+                d="m280.11 154.77a132.1 126.92 0 1 1 -264.2 0 132.1 126.92 0 1 1 264.2 0z"
+                sodipodiCy="154.77454"
+                sodipodiCx="148.0106"
+            />
+            <path
+                id="path3189"
+                sodipodiRx="132.09549"
+                sodipodiRy="126.92308"
+                style={{"stroke-linejoin":"round","opacity":".032222","stroke":"#060000","stroke-linecap":"round","stroke-width":"5.617","fill":"#2400ff"}}
+                sodipodiType="arc"
+                d="m280.11 154.77a132.1 126.92 0 1 1 -264.2 0 132.1 126.92 0 1 1 264.2 0z"
+                sodipodiCy="154.77454"
+                sodipodiCx="148.0106"
+            />
+            <path
+                id="path3133"
+                sodipodiRx="53.315651"
+                sodipodiRy="49.336868"
+                style={{"stroke-linejoin":"round","filter":"url(#filter3202)","stroke":"url(#radialGradient3141)","stroke-linecap":"round","stroke-width":"5.617","fill":"url(#radialGradient3157)"}}
+                sodipodiType="arc"
+                d="m257.82 264.19a53.316 49.337 0 1 1 -106.63 0 53.316 49.337 0 1 1 106.63 0z"
+                transform="matrix(1.3266 -.40124 .32993 .55721 -186.18 172.78)"
+                sodipodiCy="264.19098"
+                sodipodiCx="204.50928"
+            />
+            <path
+                id="path3159"
+                sodipodiNodetypes="cccc"
+                style={{"filter":"url(#filter3182)","fill-rule":"evenodd","fill":"url(#linearGradient3169)"}}
+                d="m118.51 44.134c-39.251 10.212-78.392 54.952-83.596 71.306-26.616 74.13 269.32-4.28 180.76-56.699-24.18-18.918-67.35-21.931-97.16-14.607z"
+            />
+        </g>
+    </svg>
+);
+
+const blueRect = (
+    <svg
+        id="svg2"
+        className="shape--one"
+        viewBox="0 0 350.04 178.3"
+        version="1.1"
+        style={{"transform": "scaleY(2.1)"}}
+    >
+        <defs
+            id="defs4"
+        >
+            <linearGradient
+                id="linearGradient3163"
+                y2="250.95"
+                gradientUnits="userSpaceOnUse"
+                x2="304.25"
+                gradientTransform="matrix(.92784 0 0 .55959 14.885 163.37)"
+                y1="368.71"
+                x1="304.25"
+                inkscapeCollect="always"
+            >
+                <stop
+                    id="stop3159"
+                    style={{"stop-color":"#7375ff"}}
+                    offset="0"
+                />
+                <stop
+                    id="stop3161"
+                    style={{"stop-color":"#0000ff", "stopOpacity": 0}}
+                    offset="1"
+                />
+            </linearGradient
+            >
+            <linearGradient
+                id="linearGradient3189"
+                y2="368.59"
+                gradientUnits="userSpaceOnUse"
+                x2="308.21"
+                gradientTransform="matrix(.98016 0 0 .56723 -2.5638 109.63)"
+                y1="251.6"
+                x1="308.21"
+                inkscapeCollect="always"
+            >
+                <stop
+                    id="stop3185"
+                    style={{"stop-color":"#ffffff"}}
+                    offset="0"
+                />
+                <stop
+                    id="stop3187"
+                    style={{"stop-color":"#0000ff","stopOpacity":0}}
+                    offset="1"
+                />
+            </linearGradient
+            >
+            <linearGradient
+                id="linearGradient3221"
+                y2="242.17"
+                gradientUnits="userSpaceOnUse"
+                x2="305.78"
+                y1="380.93"
+                x1="305.78"
+                inkscapeCollect="always"
+            >
+                <stop
+                    id="stop3217"
+                    style={{"stop-color":"#0000ff"}}
+                    offset="0"
+                />
+                <stop
+                    id="stop3219"
+                    style={{"stop-color":"#0000ff", "stopOpacity":".52672"}}
+                    offset="1"
+                />
+            </linearGradient
+            >
+            <filter
+                id="filter3231"
+                inkscapeCollect="always"
+                colorInterpolationFilters="sRGB"
+            >
+                <feGaussianBlur
+                    id="feGaussianBlur3233"
+                    stdDeviation="2.5373908"
+                    inkscapeCollect="always"
+                />
+            </filter
+            >
+            <filter
+                id="filter3243"
+                inkscapeCollect="always"
+                colorInterpolationFilters="sRGB"
+            >
+                <feGaussianBlur
+                    id="feGaussianBlur3245"
+                    stdDeviation="2.5332174"
+                    inkscapeCollect="always"
+                />
+            </filter
+            >
+            <linearGradient
+                id="linearGradient3257"
+                y2="242.17"
+                gradientUnits="userSpaceOnUse"
+                x2="305.78"
+                gradientTransform="translate(2.6098 5.3537)"
+                y1="380.93"
+                x1="305.78"
+                inkscapeCollect="always"
+            >
+                <stop
+                    id="stop3261"
+                    style={{"stop-color":"#000000"}}
+                    offset="0"
+                />
+                <stop
+                    id="stop3263"
+                    style={{"stop-color":"#0000ff","stopOpacity":0}}
+                    offset="1"
+                />
+            </linearGradient
+            >
+            <filter
+                id="filter3289"
+                height="1.2708"
+                width="1.1218"
+                colorInterpolationFilters="sRGB"
+                y="-.13541"
+                x="-.060885"
+                inkscapeCollect="always"
+            >
+                <feGaussianBlur
+                    id="feGaussianBlur3291"
+                    stdDeviation="7.9160049"
+                    inkscapeCollect="always"
+                />
+            </filter
+            >
+        </defs
+        >
+        <sodipodiNamedview
+            id="base"
+            bordercolor="#666666"
+            inkscapePageshadow="2"
+            guidetolerance="10"
+            pagecolor="#ffffff"
+            gridtolerance="10000"
+            inkscapeWindow-height="840"
+            inkscapeWindow-maximized="0"
+            inkscapeZoom="3.648159"
+            objecttolerance="10"
+            showgrid="false"
+            borderopacity="1.0"
+            inkscapeCurrent-layer="layer1"
+            inkscapeCx="173.71267"
+            inkscapeCy="91.827677"
+            inkscapeWindow-y="0"
+            inkscapeWindow-x="0"
+            inkscapeWindow-width="1432"
+            inkscapePageopacity="0.0"
+            inkscapeDocument-units="px"
+        />
+        <g
+            id="layer1"
+            inkscapeLabel="Layer 1"
+            inkscapeGroupmode="layer"
+            transform="translate(-128.72 -226.98)"
+        >
+            <rect
+                id="rect3247"
+                style={{"opacity":".48333","fill-rule":"evenodd","filter":"url(#filter3289)","fill":"url(#linearGradient3257)"}}
+                ry="21.037"
+                height="140.3"
+                width="312.04"
+                y="245.98"
+                x="147.71"
+            />
+            <rect
+                id="rect2383"
+                style={{"fill-rule":"evenodd","color":"#000000","fill":"url(#linearGradient3221)"}}
+                ry="21.037"
+                height="140.3"
+                width="312.04"
+                y="240.63"
+                x="145.1"
+            />
+            <rect
+                id="rect3155"
+                style={{"filter":"url(#filter3243)","fill-rule":"evenodd","fill":"url(#linearGradient3163)"}}
+                transform="matrix(1.0641 0 0 1.0155 -13.104 -4.8137)"
+                ry="10.032"
+                height="66.912"
+                width="270.85"
+                y="303.83"
+                x="158.85"
+            />
+            <rect
+                id="rect3181"
+                style={{"fill-rule":"evenodd","filter":"url(#filter3231)","fill":"url(#linearGradient3189)"}}
+                transform="matrix(1.0641 0 0 1.0155 -10.973 -4.8137)"
+                ry="10.066"
+                height="67.134"
+                width="271.18"
+                y="252.35"
+                x="156.99"
+            />
+        </g>
+    </svg>
+
+);
+
+const simpleCircle1 = (<svg version="1.1" id="Layer_1" x="0px" y="0px" className="shape--five"
+                            viewBox="0 0 479.824 479.824" style={{"enable-background":"new 0 0 479.824 479.824"}} xmlSpace="preserve">
+    <radialGradient id="SVGID_1_" cx="-360.883" cy="989.9741" r="2" gradientTransform="matrix(-125.3488 125.3488 -125.3488 -125.3488 79205.1953 169457.375)" gradientUnits="userSpaceOnUse">
+        <stop  offset="0" style={{"stop-color":"#4DE1FF"}}/>
+        <stop  offset="1" style={{"stop-color":"#4DA6FF"}}/>
+    </radialGradient>
+    <path style={{"fill":"url(#SVGID_1_)"}} d="M463.128,255.824c9.392-135.52-101.52-247.504-236.8-239.408
+	C109.032,23.376,16.136,120.752,16.136,239.824c0,123.712,100.288,224,224,224c118.352,0,215.248-91.776,223.44-208.032"/>
+    <g>
+        <path style={{"fill":"#297BCC"}} d="M479.688,239.808c0-66.176-26.784-126.224-70.112-169.568C366.296,26.864,306.28,0,240.088,0
+		c-4.88,0-9.792,0.144-14.72,0.448C99.64,7.92,0.152,112.24,0.136,239.824c0.016,132.56,107.44,239.984,240,240
+		c126.8-0.032,230.624-98.304,239.408-222.912l-0.432-0.032C479.496,251.152,479.688,245.456,479.688,239.808z M447.592,254.752
+		c-7.632,107.856-97.6,193.104-207.456,193.072c-57.488-0.016-109.392-23.264-147.072-60.928
+		c-37.68-37.68-60.928-89.584-60.928-147.072c-0.032-110.56,86.288-200.992,195.136-207.44h0.016
+		c4.304-0.256,8.576-0.384,12.8-0.384c57.456,0.016,109.248,23.232,146.848,60.848c37.568,37.648,60.736,89.504,60.752,146.976
+		c0,4.928-0.176,9.888-0.512,14.896L447.592,254.752z"/>
+        <polygon style={{"fill": "#297BCC"}} points="225.368,0.448 225.368,0.448 225.384,0.448"/>
+    </g>
+</svg>);
+
+export { blueCircle, blueRect, cyanSquare, diamond, greenCircle, simpleCircle1, simpleCircle2, violetSquare };

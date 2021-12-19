@@ -5,7 +5,11 @@ import {
     AUTH_SIGN_UP_WIPE_DATA,
     AUTH_SIGN_IN_SEND_DATA,
     AUTH_SIGN_IN_WIPE_DATA,
-    AUTH_SIGN_OUT_SEND_DATA
+    AUTH_SIGN_OUT_SEND_DATA,
+    AUTH_SIGN_IN_FORGOT_VALIDATE,
+    AUTH_SIGN_IN_FORGOT_QUESTIONS,
+    AUTH_SIGN_IN_FORGOT_RESET,
+    AUTH_SIGN_OUT_WIPE_DATA
 } from "./authTypes";
 
 import {
@@ -184,6 +188,112 @@ export const authSignInSendData = (data) => async (dispatch) => {
     }
 };
 
+export const authSignInForgotValidate = (identifier) => async (dispatch) => {
+    try {
+        const signInSendQuery = await fetch('/api/auth/signIn/forgot-validate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ identifier })
+        });
+
+        const signInData = await signInSendQuery.json();
+
+        if (signInData.ForgotValidationError) {
+            dispatch({
+                type: AUTH_SIGN_IN_FORGOT_VALIDATE,
+                payload: { ForgotValidationError: true }
+            });
+        }
+
+        else if (signInData.ForgotValidationSucceed) {
+            dispatch({
+                type: AUTH_SIGN_IN_FORGOT_VALIDATE,
+                payload: { ForgotValidationSucceed: true, securityQuestions: signInData.securityQuestions }
+            });
+        }
+    } catch (err) {
+        dispatch({
+            type: AUTH_SIGN_IN_FORGOT_VALIDATE,
+            payload: { ForgotError: true }
+        });
+    }
+};
+
+export const authSignInForgotQuestions = (data) => async (dispatch) => {
+    try {
+        const signInSendQuery = await fetch('/api/auth/signIn/forgot-questions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        const signInData = await signInSendQuery.json();
+
+        if (signInData.AnswersError) {
+            dispatch({
+                type: AUTH_SIGN_IN_FORGOT_QUESTIONS,
+                payload: { AnswersError: true }
+            });
+        }
+
+        else if (signInData.AnswersCorrect) {
+            dispatch({
+                type: AUTH_SIGN_IN_FORGOT_QUESTIONS,
+                payload: { AnswersCorrect: true }
+            });
+        }
+    } catch (err) {
+        dispatch({
+            type: AUTH_SIGN_IN_FORGOT_QUESTIONS,
+            payload: { ForgotError: true }
+        });
+    }
+};
+
+export const authSignInForgotReset = (data) => async (dispatch) => {
+    try {
+        const signInSendQuery = await fetch('/api/auth/signIn/forgot-reset', {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        const signInData = await signInSendQuery.json();
+
+        if (signInData.ResetValidationError) {
+            dispatch({
+                type: AUTH_SIGN_IN_FORGOT_RESET,
+                payload: { ResetValidationError: true }
+            });
+        }
+
+        else if (signInData.ResetError) {
+            dispatch({
+                type: AUTH_SIGN_IN_FORGOT_RESET,
+                payload: { ResetError: true }
+            });
+        }
+
+        else if (signInData.ResetSucceed) {
+            dispatch({
+                type: AUTH_SIGN_IN_FORGOT_RESET,
+                payload: { ResetSucceed: true }
+            });
+        }
+    } catch (err) {
+        dispatch({
+            type: AUTH_SIGN_IN_FORGOT_QUESTIONS,
+            payload: { ForgotError: true }
+        });
+    }
+};
+
 export const authSignInWipeData = () => async (dispatch) => {
     dispatch({
         type: AUTH_SIGN_IN_WIPE_DATA
@@ -215,4 +325,10 @@ export const authSignOutSendData = () => async (dispatch) => {
             payload: { Error: true }
         });
     }
+};
+
+export const authSignOutWipeData = () => async (dispatch) => {
+    dispatch({
+        type: AUTH_SIGN_OUT_WIPE_DATA
+    })
 };

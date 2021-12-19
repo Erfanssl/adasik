@@ -18,7 +18,7 @@ const ImagePicker = ({
                          sendSettingsProfileAvatar,
                          avatar,
                          setAvatar
-}) => {
+                     }) => {
     const [pic, setPic] = useState('');
     const [picBuffer, setPicBuffer] = useState('');
     const [imageLoading, setImageLoading] = useState(false);
@@ -65,8 +65,6 @@ const ImagePicker = ({
     const imagePickerInput = useRef();
     const imageUp = useRef();
 
-    console.log(settingsProfileData)
-
     useEffect(() => {
         if (imageEl && imageEl.current) {
             const imageX = imageEl.current.getClientRects()[0].x;
@@ -85,10 +83,6 @@ const ImagePicker = ({
             square.current.style.height = (min - 10) + 'px';
         }
     }, [imageEl, pic])
-
-    // useEffect(() => {
-    //     console.log(imageLoading);
-    // }, [imageLoading]);
 
     useEffect(() => {
         if (squareMovePermission && imageLocation.x !== 0) {
@@ -183,7 +177,6 @@ const ImagePicker = ({
         const imageHeight = imageEl.current.offsetHeight;
         const squareWidth = square.current.offsetWidth;
         const squareHeight = square.current.offsetHeight;
-        console.log({ left, top, imageWidth, imageHeight, squareWidth, squareHeight });
         setFinalSquareLocation({ left, top, imageWidth, imageHeight, squareWidth, squareHeight });
         setSquareMovePermission(false);
     }
@@ -209,9 +202,9 @@ const ImagePicker = ({
             }
             {
                 imageLoading &&
-                    <Loading
-                        text="Loading the Image..."
-                    />
+                <Loading
+                    text="Loading the Image..."
+                />
             }
             <div className="settings--profile__avatar-container">
                 <div className="image--container">

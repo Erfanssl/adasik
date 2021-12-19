@@ -6,7 +6,7 @@ const BoxOne = ({ score }) => {
     const [animatedScore, setAnimatedScore] = useState(0);
 
     useEffect(() => {
-        const increment = Math.floor(score / 50);
+        const increment = Math.max(Math.floor(score / 50), 1);
         const interval = setInterval(() => {
             setAnimatedScore(s => {
                 if ((s + increment) >= score) {

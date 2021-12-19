@@ -27,6 +27,7 @@ import numberFormatter from "../../../../../utility/numberFormatter";
 import likesFormatter from "../../../../../utility/likesFormatter";
 import pageViewSocketConnection from "../../../../../utility/pageViewSocketConnection";
 import wordCapitalize from "../../../../../utility/wordCapitalize";
+import textCutter from "../../../../../utility/textCutter";
 
 // assets
 // social icons
@@ -45,7 +46,6 @@ import unlock from '../../../../../assets/icons/unlock.svg';
 // other icons
 import badge from '../../../../../assets/icons/badge.svg';
 import timePastFormatter from "../../../../../utility/timePastFormatter";
-import textCutter from "../../../../../utility/textCutter";
 
 const pieDims = { height: 280, width: 280, radius: 140 };
 
@@ -318,10 +318,17 @@ const UsersProfile = ({
     function renderFriends() {
         if (Object.keys(usersProfileData).length) {
             return usersProfileData.friends.map(({ username, status, avatar }) => {
+                function handleFriendClick() {
+                    setUsernameChange(username);
+                }
+
                 return (
-                    <li key={ username } className={ "users-profile--friends__item " + (status === 'online' ? "users-profile--person__online" : "users-profile--person__offline") }>
-                        <Link to={ `/profile/${ username }` }>
-                            <img src={ avatar } alt={ username } />
+                    <li key={ username } onClick={ handleFriendClick } className={ "users-profile--friends__item" }>
+                        <Link to={ `/profile/${ username }` } className={ (status === 'online' ? "users-profile--person__online" : "users-profile--person__offline") }>
+                            <img src={ avatar } title={ username } alt={ username } />
+                            <div className="username">
+                                <p>{ textCutter(username, 10) }</p>
+                            </div>
                         </Link>
                     </li>
                 );
@@ -504,14 +511,14 @@ const UsersProfile = ({
 
     if (usersProfileData && usersProfileData.Error && usersProfileData.Error === 'Not Found') {
         return (
-            <div className="users-profile--container" style={ popUpConfig.show ? { height: '93vh', overflow: 'hidden' } : {} }>
+            <div className="users-profile--container" style={ popUpConfig.show ? { height: '100%', overflow: 'hidden' } : {} }>
                 <NotFound text="User Not Found" />
             </div>
         );
     }
 
     else return (
-        <div className="users-profile--container" style={ popUpConfig.show || showLoading ? { height: '93vh', overflow: 'hidden' } : {} }>
+        <div className="users-profile--container" style={ popUpConfig.show || showLoading ? { height: '100%', overflow: 'hidden' } : {} }>
             { (!usersProfileData || !Object.keys(usersProfileData).length || showLoading) && <Loading /> }
             {
                 popUpConfig.show &&
@@ -538,14 +545,16 @@ const UsersProfile = ({
                     </div>
                     <div className="users-profile--verbal__user-info">
                         <div className="users-profile--user__name">
-                            {
-                                !!Object.keys(usersProfileData).length && usersProfileData.isFriend &&
-                                <div className="users-profile--friend-badge__container">
-                                    <p>Friend</p>
-                                    <img src={ badge } alt="friend badge" />
-                                </div>
-                            }
-                            <p>{ !!Object.keys(usersProfileData).length && usersProfileData.username }</p>
+                            <div className="holder">
+                                {
+                                    !!Object.keys(usersProfileData).length && usersProfileData.isFriend &&
+                                    <div className="users-profile--friend-badge__container">
+                                        <p>Friend</p>
+                                        <img src={ badge } alt="friend badge" />
+                                    </div>
+                                }
+                                <p>{ !!Object.keys(usersProfileData).length && usersProfileData.username }</p>
+                            </div>
                         </div>
                         <div className="users-profile--user__last-seen">
                             { !!Object.keys(usersProfileData).length && renderStatus() }
@@ -572,7 +581,7 @@ const UsersProfile = ({
                 </div>
                 <div className="users-profile--verbal__right">
                     <div className="users-profile--right__row">
-                        <p><span>Name:</span> { !!Object.keys(usersProfileData).length && usersProfileData.info.general.name }</p>
+                        <p><span>Name:</span> { !!Object.keys(usersProfileData).length && textCutter(usersProfileData.info.general.name.split(' ').map(w => wordCapitalize(w)).join(' '), 20) }</p>
                         <p><span>Total Score:</span> { !!Object.keys(usersProfileData).length && numberFormatter(usersProfileData.info.specific.whole.totalScore) }</p>
                         <p><span>Universal Rank:</span> { !!Object.keys(usersProfileData).length && numberFormatter(usersProfileData.info.specific.whole.rank) }</p>
                     </div>
@@ -589,11 +598,11 @@ const UsersProfile = ({
                     </div>
                     <div className="users-profile--right__row">
                         <p><span>Trainings:</span> { !!Object.keys(usersProfileData).length && numberFormatter(usersProfileData.info.specific.whole.trainings) }</p>
-                        { !!Object.keys(usersProfileData).length && usersProfileData.info.general.job && <p><span>Job:</span> { usersProfileData.info.general.job }</p> }
+                        { !!Object.keys(usersProfileData).length && usersProfileData.info.general.job && <p><span>Job:</span> { textCutter(usersProfileData.info.general.job.split(' ').map(w => wordCapitalize(w)).join(' '), 20) }</p> }
                         { !!Object.keys(usersProfileData).length && usersProfileData.info.general.education && <p><span>Education:</span> { renderEducationText(usersProfileData.info.general.education) }</p> }
                     </div>
                     <div className="users-profile--right__row">
-                        { !!Object.keys(usersProfileData).length && usersProfileData.info.general.location && <p><span>Country:</span> { textCutter(usersProfileData.info.general.location.country) }</p> }
+                        { !!Object.keys(usersProfileData).length && usersProfileData.info.general.location && usersProfileData.info.general.location.country && <p><span>Country:</span> { textCutter(usersProfileData.info.general.location.country.split(',')[0], 20) }</p> }
                     </div>
                     { !!Object.keys(usersProfileData).length && !usersProfileData.redirect && renderActionButtons() }
                     <div className="users-profile--line-separator" />
@@ -623,23 +632,23 @@ const UsersProfile = ({
                         </div>
                     </div>
                 </div>
-                <div className="profile--verbal__right--two">
+                <div className="users-profile--verbal__right--two">
                     <div className="items--container">
-                            <p><span>Name:</span> { !!Object.keys(usersProfileData).length && usersProfileData.info.general.name }</p>
-                            <p><span>Total Score:</span> { !!Object.keys(usersProfileData).length && numberFormatter(usersProfileData.info.specific.whole.totalScore) }</p>
-                            <p><span>Universal Rank:</span> { !!Object.keys(usersProfileData).length && numberFormatter(usersProfileData.info.specific.whole.rank) }</p>
-                            <p><span>Level:</span> { !!Object.keys(usersProfileData).length && numberFormatter(usersProfileData.info.specific.whole.level.level) }</p>
-                            <p><span>Training Score:</span> { !!Object.keys(usersProfileData).length && numberFormatter(usersProfileData.info.specific.whole.trainingScore) }</p>
-                            <p><span>Member Since:</span> { !!Object.keys(usersProfileData).length && new Date(usersProfileData.info.general.memberSince).toDateString().split(' ').map((el, i) => i % 2 !== 0 ? el : ' ') }</p>
-                            {/*<p><span>Group:</span> { !!Object.keys(usersProfileData).length && usersProfileData.info.specific.whole.group.name }</p>*/}
-                            { !!Object.keys(usersProfileData).length && usersProfileData.info.general.age && <p><span>Age:</span> { usersProfileData.info.general.age }</p> }
-                            { !!Object.keys(usersProfileData).length && typeof usersProfileData.friends !== 'string' && <p><span>Friends:</span> { numberFormatter(usersProfileData.friends.length) }</p> }
-                            <p><span>Challenges:</span> { !!Object.keys(usersProfileData).length && numberFormatter(usersProfileData.info.specific.whole.games.total) }</p>
-                            <p><span>Trainings:</span> { !!Object.keys(usersProfileData).length && numberFormatter(usersProfileData.info.specific.whole.trainings) }</p>
-                            { !!Object.keys(usersProfileData).length && usersProfileData.info.general.job && <p><span>Job:</span> { usersProfileData.info.general.job }</p> }
-                            { !!Object.keys(usersProfileData).length && usersProfileData.info.general.education && <p><span>Education:</span> { renderEducationText(usersProfileData.info.general.education) }</p> }
-                            { !!Object.keys(usersProfileData).length && usersProfileData.info.general.location && <p><span>Country:</span> { textCutter(usersProfileData.info.general.location.country) }</p> }
-                            { !!Object.keys(usersProfileData).length && !usersProfileData.redirect && renderActionButtons() }
+                        <p><span>Name:</span> { !!Object.keys(usersProfileData).length && textCutter(usersProfileData.info.general.name.split(' ').map(w => wordCapitalize(w)).join(' '), 20) }</p>
+                        <p><span>Total Score:</span> { !!Object.keys(usersProfileData).length && numberFormatter(usersProfileData.info.specific.whole.totalScore) }</p>
+                        <p><span>Universal Rank:</span> { !!Object.keys(usersProfileData).length && numberFormatter(usersProfileData.info.specific.whole.rank) }</p>
+                        <p><span>Level:</span> { !!Object.keys(usersProfileData).length && numberFormatter(usersProfileData.info.specific.whole.level.level) }</p>
+                        <p><span>Training Score:</span> { !!Object.keys(usersProfileData).length && numberFormatter(usersProfileData.info.specific.whole.trainingScore) }</p>
+                        <p><span>Member Since:</span> { !!Object.keys(usersProfileData).length && new Date(usersProfileData.info.general.memberSince).toDateString().split(' ').map((el, i) => i % 2 !== 0 ? el : ' ') }</p>
+                        {/*<p><span>Group:</span> { !!Object.keys(usersProfileData).length && usersProfileData.info.specific.whole.group.name }</p>*/}
+                        { !!Object.keys(usersProfileData).length && usersProfileData.info.general.age && <p><span>Age:</span> { usersProfileData.info.general.age }</p> }
+                        { !!Object.keys(usersProfileData).length && typeof usersProfileData.friends !== 'string' && <p><span>Friends:</span> { numberFormatter(usersProfileData.friends.length) }</p> }
+                        <p><span>Challenges:</span> { !!Object.keys(usersProfileData).length && numberFormatter(usersProfileData.info.specific.whole.games.total) }</p>
+                        <p><span>Trainings:</span> { !!Object.keys(usersProfileData).length && numberFormatter(usersProfileData.info.specific.whole.trainings) }</p>
+                        { !!Object.keys(usersProfileData).length && usersProfileData.info.general.job && <p><span>Job:</span> { textCutter(usersProfileData.info.general.job.split(' ').map(w => wordCapitalize(w)).join(' '), 20) }</p> }
+                        { !!Object.keys(usersProfileData).length && usersProfileData.info.general.education && <p><span>Education:</span> { renderEducationText(usersProfileData.info.general.education) }</p> }
+                        { !!Object.keys(usersProfileData).length && usersProfileData.info.general.location && usersProfileData.info.general.location.country && <p><span>Country:</span> { textCutter(usersProfileData.info.general.location.country.split(',')[0], 20) }</p> }
+                        { !!Object.keys(usersProfileData).length && !usersProfileData.redirect && renderActionButtons() }
                     </div>
                     <div className="profile--line-separator" />
                     <div className="users-profile--right__bottom-container">
@@ -694,7 +703,7 @@ const UsersProfile = ({
                         {
                             !!Object.keys(usersProfileData).length &&  !gamesData.data.reduce((acc, gData) => gData.orders + acc, 0) &&
                             <div className="no--games">
-                                <p>{ usersProfileData.info.general.name.split(' ')[0] } has Completed no Challenges!</p>
+                                <p>{ textCutter(usersProfileData.info.general.name.split(' ')[0], 10) } has Completed no Challenges!</p>
                             </div>
                         }
                         <h3>Challenges</h3>

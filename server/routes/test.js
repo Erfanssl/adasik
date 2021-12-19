@@ -184,51 +184,61 @@ testRouter.post('/personality-general', currentUser, auth, async (req, res) => {
 
         if (!allowToTest) return res.status(403).send({ 'Error': 'You are not allowed to take this test right now' });
 
-
+        // shame, selfConsciousness, trustOthers, fantasy, selfLove
         // we need to analyze the responses
         // we keep the information about the questions in questionInfoObj key is the id of the question
         // and the value will be the affected categories with negative or positive change and the coefficient
         const questionsInfoObj = {
-            '1': ['extroversion + 4', 'ambitious + 3', 'obsessive + 2', 'confidence + 2'],
-            '2': ['stability + 3', 'simplifier + 4'],
-            '3': ['emotional + 4', 'empathy + 4'],
-            '4': ['curiosity - 3'],
-            '5': ['emotional + 3', 'forgiveness + 4', 'aggressive - 2'],
-            '6': ['logic + 4'],
+            '1': ['extroversion + 3', 'ambitious + 3', 'confidence + 2', 'social + 1'],
+            '2': ['stability + 1', 'simplifier + 4'],
+            '3': ['emotional + 4', 'empathy + 4', 'softy + 2'],
+            '4': ['curiosity - 3', 'stability + 1'],
+            '5': ['emotional + 1', 'forgiveness + 4', 'aggressive - 2', 'stability + 1'],
+            '6': ['logic + 4', 'stability + 3'],
             '7': ['curiosity - 2', 'ambitious - 2', 'softy + 2', 'aggressive - 2'],
             '8': ['extroversion - 4', 'depressive + 2', 'social - 3'],
             '9': ['empathy - 4', 'softy - 3', 'forgiveness - 3', 'emotional - 1', 'aggressive + 3'],
-            '10': ['energy + 4', 'depressive - 2'],
+            '10': ['energy + 4', 'depressive - 4'],
             '11': ['believeInAfterLife + 4'],
-            '12': ['emotional + 4', 'softy + 4', 'stability - 3'],
+            '12': ['emotional + 4', 'softy + 4', 'stability - 4', 'aggressive + 1', 'selfConsciousness + 4'],
             '13': ['stability - 3', 'competence - 2', 'confidence - 2', 'concentration - 4'],
-            '14': ['depressive - 3', 'optimism + 4'],
-            '15': ['thinkAboutMeaningOfLife + 4'],
-            '16': ['emotional + 3', 'extroversion + 3'],
-            '17': ['curiosity + 4', 'ambitious + 4', 'energy + 3'],
-            '18': ['confidence + 4', 'riskTaker + 4'],
-            '19': ['abstract - 4', 'logic - 3'],
-            '20': ['emotional + 4', 'softy + 4', 'depressive + 3'],
-            '21': ['obsessive + 2', 'workInParallel - 4', 'organized + 3'],
-            '22': ['competence - 4', 'confidence - 4', 'stability - 3', 'softy + 4'],
-            '23': ['emotional - 3', 'logic + 3'],
-            '24': ['stability + 4', 'obsessive - 2', 'logic - 2', 'concentration - 3', 'moody + 3'],
-            '25': ['confidence - 3'],
-            '26': ['social + 4', 'extroversion + 4'],
-            '27': ['organized + 4', 'obsessive + 3'],
-            '28': ['social - 3', 'extroversion - 3', 'management - 4'],
-            '29': ['mentalClarity - 4', 'stability - 2'],
-            '30': ['competence + 4', 'confidence + 4', 'ambitious + 3'],
-            '31': ['obsessive + 3'],
+            '14': ['depressive - 4', 'optimism + 4'],
+            '15': ['thinkAboutMeaningOfLife + 4', 'stability + 1'],
+            '16': ['emotional + 3', 'extroversion + 2', 'stability - 1'],
+            '17': ['curiosity + 4', 'ambitious + 4', 'energy + 2'],
+            '18': ['confidence + 4', 'riskTaker + 4', 'stability - 1', 'softy - 2'],
+            '19': ['abstract - 4', 'logic - 3', 'stability - 1'],
+            '20': ['emotional + 4', 'softy + 4', 'depressive + 1', 'stability - 2'],
+            '21': ['obsessive + 2', 'workInParallel - 4', 'organized + 3', 'stability + 1'],
+            '22': ['competence - 4', 'confidence - 4', 'stability - 2'],
+            '23': ['emotional - 4', 'logic + 3', 'stability + 3'],
+            '24': ['stability - 3', 'obsessive - 2', 'logic - 2', 'concentration - 3', 'moody + 3'],
+            '25': ['confidence - 3', 'stability - 1', 'emotional + 1', 'obsessive + 1', 'aggressive + 1'],
+            '26': ['social + 4', 'extroversion + 3'],
+            '27': ['organized + 4', 'obsessive + 3', 'stability + 3'],
+            '28': ['social - 3', 'extroversion - 4', 'management - 4'],
+            '29': ['mentalClarity - 4', 'stability - 2', 'depressive + 2'],
+            '30': ['competence + 4', 'confidence + 4', 'ambitious + 3', 'depressive - 1'],
+            '31': ['obsessive + 1', 'organized + 2'],
             '32': ['competence + 4', 'obsessive + 3'],
-            '33': ['aggressive + 4', 'stability - 3'],
+            '33': ['aggressive + 4', 'stability - 4'],
             '34': ['stability - 4', 'concentration - 3', 'moody + 4'],
             '35': ['believeInGod + 4'],
-            '36': ['stability - 3', 'concentration - 2', 'organized - 2', 'moody + 1'],
-            '37': ['emotional - 3', 'extroversion - 3', 'social - 3'],
-            '38': ['exercise + 4'],
-            '39': ['obsessive + 3', 'depressive + 3'],
-            '40': ['confidence + 4', 'optimism + 4', 'energy + 3']
+            '36': ['stability - 2', 'concentration - 2', 'organized - 2', 'moody + 2'],
+            '37': ['emotional - 3', 'stability - 1'],
+            '38': ['exercise + 4', 'depressive - 1'],
+            '39': ['obsessive + 2', 'depressive + 3'],
+            '40': ['stability + 3', 'aggressive - 2', 'mentalClarity + 1'],
+            '41': ['competence - 3', 'softy + 2', 'obsessive - 1'],
+            '42': ['extroversion - 2', 'social - 4'],
+            '43': ['selfLove - 4', 'depressive + 1'],
+            '44': ['stability + 3', 'logic + 2', 'aggressive - 2'],
+            '45': ['extroversion - 3', 'social - 1'],
+            '46': ['curiosity + 4', 'depressive - 1'],
+            '47': ['stability - 2', 'fantasy + 4', 'logic - 4', 'softy + 3'],
+            '48': ['trustOthers - 4', 'social - 1', 'aggressive + 1'],
+            '49': ['shame + 4', 'stability - 3', 'emotional + 2', 'softy + 3', 'confidence - 4', 'selfConsciousness + 2'],
+            '50': ['confidence + 4', 'optimism + 4', 'energy + 3', 'depressive - 2', 'obsessive - 2']
         };
 
         const detailedPersonalityProperties = [
@@ -391,23 +401,35 @@ testRouter.post('/personality-general', currentUser, auth, async (req, res) => {
         // for detailed properties
         Object.keys(detailedPersonalityObj).forEach(detailedPersonalityItem => {
             // calculate the difference
-            traitsDifference.detailed[detailedPersonalityItem] = Math.abs(Number(detailedPersonalityObj[detailedPersonalityItem]) - Number(traitsResult.detailed[detailedPersonalityItem]));
-            // calculate new value
-            newTraitsData.detailed[detailedPersonalityItem] =
+            traitsDifference.detailed[detailedPersonalityItem] = parseFloat(
                 (
-                    numberOfTestsInPersonalityType * Number(detailedPersonalityObj[detailedPersonalityItem]) + Number(traitsResult.detailed[detailedPersonalityItem])
-                ) / (numberOfTestsInPersonalityType + 1)
+                    Number(detailedPersonalityObj[detailedPersonalityItem]) - Number(traitsResult.detailed[detailedPersonalityItem])
+                ).toFixed(2)
+            );
+            // calculate new value
+            newTraitsData.detailed[detailedPersonalityItem] = parseFloat(
+                (
+                    (numberOfTestsInPersonalityType * Number(detailedPersonalityObj[detailedPersonalityItem]) + Number(traitsResult.detailed[detailedPersonalityItem]))
+                    / (numberOfTestsInPersonalityType + 1)
+                ).toFixed(2)
+            );
         });
 
         // for abstract properties
         Object.keys(abstractPersonalityObj).forEach(abstractPersonalityItem => {
             // calculate the difference
-            traitsDifference.abstract[abstractPersonalityItem] = Math.abs(Number(abstractPersonalityObj[abstractPersonalityItem]) - Number(traitsResult.abstract[abstractPersonalityItem]));
-            // calculate new value
-            newTraitsData.abstract[abstractPersonalityItem] =
+            traitsDifference.abstract[abstractPersonalityItem] = parseFloat(
                 (
-                    numberOfTestsInPersonalityType * Number(abstractPersonalityObj[abstractPersonalityItem]) + Number(traitsResult.abstract[abstractPersonalityItem])
-                ) / (numberOfTestsInPersonalityType + 1)
+                    Number(abstractPersonalityObj[abstractPersonalityItem]) - Number(traitsResult.abstract[abstractPersonalityItem])
+                ).toFixed(2)
+            );
+            // calculate new value
+            newTraitsData.abstract[abstractPersonalityItem] = parseFloat(
+                (
+                    (numberOfTestsInPersonalityType * Number(abstractPersonalityObj[abstractPersonalityItem]) + Number(traitsResult.abstract[abstractPersonalityItem]))
+                    / (numberOfTestsInPersonalityType + 1)
+                ).toFixed(2)
+            );
         });
 
         // now we should generate some analysis
@@ -436,7 +458,12 @@ testRouter.post('/personality-general', currentUser, auth, async (req, res) => {
                 mentalClarity,
                 moody,
                 organized,
-                management
+                management,
+                shame,
+                selfConsciousness,
+                trustOthers,
+                fantasy,
+                selfLove
             } = newTraitsData.abstract;
 
             let firstSentence = 'You don\'t want to make things complicated and want to get better at your job!';
@@ -486,7 +513,7 @@ testRouter.post('/personality-general', currentUser, auth, async (req, res) => {
             if (traitsDifference.detailed.curiosity >= .1) sentence += 'You look slightly less Curios than before! \n';
             else if (traitsDifference.detailed.curiosity <= -.1) sentence += 'You seem to have a better Curiosity. \n';
 
-            if (traitsDifference.detailed.depressive >= .1) sentence += 'Your seem to be a bit more Depressed than before. \n';
+            if (traitsDifference.detailed.depressive >= .1) sentence += 'You seem to be a bit more Depressed than before. \n';
             else if (traitsDifference.detailed.depressive <= -.1) sentence += 'You look less Depressed than before. \n';
 
             if (traitsDifference.detailed.obsessive >= .1) sentence += 'Your Obsessive result seems to be a little lower than before. \n';
@@ -507,8 +534,8 @@ testRouter.post('/personality-general', currentUser, auth, async (req, res) => {
             if (traitsDifference.detailed.aggressive >= .1) sentence += 'You look more Aggressive than before. \n';
             else if (traitsDifference.detailed.aggressive <= -.1) sentence += 'You look less Aggressive than before. \n';
 
-            if (traitsDifference.detailed.extroversion >= .1) sentence += 'You seem to be more Introversion in comparison to previous tests. \n';
-            else if (traitsDifference.detailed.extroversion <= -.1) sentence += 'You seem to be more Extroversion in comparison to previous tests. \n';
+            if (traitsDifference.detailed.extroversion >= .1) sentence += 'You seem to be more Introvert in comparison to previous test(s). \n';
+            else if (traitsDifference.detailed.extroversion <= -.1) sentence += 'You seem to be more Extrovert in comparison to previous test(s). \n';
 
             if (!sentence) return 'No difference';
 
@@ -543,6 +570,15 @@ testRouter.post('/personality-general', currentUser, auth, async (req, res) => {
                 tests: testData
             }
         });
+
+        // we check to see if someone score more than .75 in perfectionism, then his/her stability should get lower
+        if (newTraitsData.abstract.perfectionism >= .75 && newTraitsData.detailed.stability >= .5) {
+            newTraitsData.detailed.stability = newTraitsData.detailed.stability - .15;
+        }
+
+        if (newTraitsData.abstract.perfectionism >= .9 && newTraitsData.detailed.stability >= .55) {
+            newTraitsData.detailed.stability = newTraitsData.detailed.stability - .25;
+        }
 
         // now we update the users collection
         await User.updateOne({

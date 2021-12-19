@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+          content="width=device-width, user-scalable=yes, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Adasik</title>
     <link rel="manifest" href="manifest.json">
@@ -23,10 +23,7 @@
     <meta name="msapplication-TileColor" content="#182c25">
     <meta name="theme-color" content="#1e453e">
     <link rel="icon" href="/icons/adasik-logo-144x144.png">
-</head>
-<body>
-
-<style>
+    <style>
     *,
     *::before,
     *::after {
@@ -37,7 +34,7 @@
 
     @font-face {
         font-family: 'Roboto-Regular';
-        src: url("./images/Roboto-Regular.03523cf578d69fa923226ff457b92d90.ttf");
+        src: url("/images/Roboto-Regular.03523cf578d69fa923226ff457b92d90.ttf");
     }
 
     .spinner {
@@ -84,7 +81,7 @@
 
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        justify-content: space-evenly;
         align-items: center;
         overflow: hidden;
         padding: 0;
@@ -99,6 +96,7 @@
         margin-top: 2rem;
         color: #fff;
         font-family: Roboto-Regular;
+        font-size: 1.65rem;
     }
 
     @media only screen and (max-width: 46.875em) { /*750px*/
@@ -107,7 +105,8 @@
         }
     }
 </style>
-
+</head>
+<body>
 <div id="root">
     <div class="pre--render">
         <img src="/images/adasik-logo-big.343e23b664d0644666ff4b00b15bb962.png" alt="Adasik">

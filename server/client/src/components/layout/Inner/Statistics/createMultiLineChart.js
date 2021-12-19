@@ -1,5 +1,6 @@
 import * as d3 from "d3";
 import numberFormatter from "../../../../utility/numberFormatter";
+import likesFormatter from "../../../../utility/likesFormatter";
 
 const totalScore2 = [
     {
@@ -159,17 +160,24 @@ function renderMultiLineChart(data, selector) {
             .range([0, width]);
 
         const y = d3.scaleLinear()
-            .domain([0, d3.max(data, d => d.value )])
             .range([height, 0]);
+
+        if (d3.min(data, d => d.value) < 0) {
+            y.domain([d3.min(data, d => d.value), d3.max(data, d => d.value)]);
+        } else y.domain([0, d3.max(data, d => d.value)]);
 
         const xAxis = d3.axisBottom(x)
             .ticks(data.length - 1);
 
         const yAxis = d3.axisLeft(y)
-            .ticks(5)
+            .ticks(Math.min(d3.max(data, d => d.value), 5))
             .tickSizeInner(-width)
             .tickSizeOuter(0)
-            .tickPadding(10);
+            .tickPadding(10)
+            .tickFormat(d => {
+                if (d >= 1000000) return likesFormatter(d);
+                else return numberFormatter(d);
+            });
 
         const valueline = d3.line()
             .curve(d3.curveMonotoneX)
@@ -302,8 +310,8 @@ function renderMultiLineChart(data, selector) {
                         .duration(200)
                         .style("opacity", 1);
                     tooltip.html("<span>" + numberFormatter(i[calls]) + "</span>")
-                        .style("left", (selector ? d.clientX - 300 : d.offsetX + 25) + "px")
-                        .style("top", (selector ? d.clientY - 110 : d.offsetY + 70) + "px");
+                        .style("left", (selector ? d.clientX - selector.getClientRects()[0].x - 15 : d.clientX - document.querySelector('.chart-wrapper').getClientRects()[0].x) + "px")
+                        .style("top", (selector ? d.clientY - selector.getClientRects()[0].y - 35 : d.clientY - document.querySelector('.chart-wrapper').getClientRects()[0].y + 50) + "px");
                 })
                 .on("mouseout", function (d) {
                     tooltip.transition()

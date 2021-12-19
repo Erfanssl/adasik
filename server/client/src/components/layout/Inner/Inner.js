@@ -28,12 +28,28 @@ const Settings = lazy(() => import('./Settings/Settings'));
 const Tests = lazy(() => import('./Tests/Tests'));
 const TestInside = lazy(() => import('./Tests/TestInside/TestInside'));
 
+class ErrorBoundary extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { error: null };
+    }
 
+    static getDerivedStateFromError(err) {
+        if (err) {
+            return { error: err };
+        }
+    }
+
+    render() {
+        return this.props.children;
+    }
+}
 
 const Inner = ({
                    statusSocket,
                    appNotificationData,
                    isOffline,
+                   identifier,
                    fetchAppNotification,
                    receiveNotificationChallengesRequest,
                    receiveNotificationChallengesTurn,
@@ -47,61 +63,81 @@ const Inner = ({
     const [challengesReFetch, setChallengesReFetch] = useState([false]);
     const [challengeInsideReFetch, setChallengeInsideReFetch] = useState([false]);
     const [friendsReFetch, setFriendsReFetch] = useState([false]);
-    const [messageSendersList, setMessageSendersList] = useState([false]);
 
     // refs
     const inner = useRef();
     const cardEl = useRef();
+
+    const messageSendersList = useRef([]);
+    const friendSendersList = useRef([]);
+    const challengeSendersList = useRef([]);
+    const currentNotification = useRef('initial');
 
     useEffect(() => {
         fetchAppNotification();
     },[]);
 
     useEffect(() => {
-        if (messageSendersList && messageSendersList[0] === true) {
-            receiveNotificationMessenger();
-        }
-    }, [messageSendersList]);
-
-    useEffect(() => {
         if (statusSocket) {
             statusSocket.on('new-message', ({ id }) => {
-                setDashboardReFetch([true]);
-                setMessageSendersList(list => {
-                    if (!list.includes(id)) {
-                        return [true, ...list.slice(1), id];
+                setTimeout(() => {
+                    setDashboardReFetch([true]);
+                    currentNotification.current = 'messenger';
+
+                    if (!messageSendersList.current.includes(id)) {
+                        messageSendersList.current.push(id);
+                        receiveNotificationMessenger();
+                    }
+                }, 400);
+            });
+
+            statusSocket.on('friend-request', ({ id }) => {
+                setTimeout(() => {
+                    setDashboardReFetch([true]);
+                    currentNotification.current = 'friends';
+
+                    if (!friendSendersList.current.includes(id)) {
+                        friendSendersList.current.push(id);
+                        receiveNotificationFriends();
                     }
 
-                    return [false, ...list.slice(1)];
-                });
+                    if (props.match.path === '/friends') {
+                        setFriendsReFetch([true]);
+                    }
+                }, 700);
             });
 
-            statusSocket.on('friend-request', () => {
-                receiveNotificationFriends();
-                setDashboardReFetch([true]);
-                if (props.match.path === '/friends') {
-                    setFriendsReFetch([true]);
-                }
-            });
+            statusSocket.on('challenge-request', ({ id }) => {
+                setTimeout(() => {
+                    setDashboardReFetch([true]);
+                    currentNotification.current = 'challenges';
 
-            statusSocket.on('challenge-request', () => {
-                receiveNotificationChallengesRequest();
-                setDashboardReFetch([true]);
-                if (props.match.path === '/challenges') {
-                    setChallengesReFetch([true]);
-                }
+                    if (!challengeSendersList.current.includes(id)) {
+                        challengeSendersList.current.push(id);
+                        receiveNotificationChallengesRequest();
+                    }
+
+                    if (props.match.path === '/challenges') {
+                        setChallengesReFetch([true]);
+                    }
+                }, 900);
             });
 
             statusSocket.on('challenge-turn', () => {
-                receiveNotificationChallengesTurn();
-                setDashboardReFetch([true]);
-                if (props.match.path === '/challenges') {
-                    setChallengesReFetch([true]);
-                }
+                setTimeout(() => {
+                    receiveNotificationChallengesTurn();
+                    currentNotification.current = 'challenges';
 
-                if (props.match.path.split('/').length === 3) {
-                    setChallengeInsideReFetch([true]);
-                }
+                    setDashboardReFetch([true]);
+
+                    if (props.match.path === '/challenges') {
+                        setChallengesReFetch([true]);
+                    }
+
+                    if (props.match.path.split('/').length === 3) {
+                        setChallengeInsideReFetch([true]);
+                    }
+                }, 900);
             });
         }
     }, [statusSocket]);
@@ -160,7 +196,9 @@ const Inner = ({
             case 'messenger':
                 return (
                     <Suspense fallback={ <Loading /> }>
-                        <Messenger { ...props } />
+                        <ErrorBoundary>
+                            <Messenger { ...props } />
+                        </ErrorBoundary>
                     </Suspense>
                 );
             case 'training':
@@ -267,27 +305,31 @@ const Inner = ({
                 />
             </div>
             <div className="inner--container">
-                <div className="inner--left-container">
-                    <Suspense fallback={ <Loading /> }>
-                        <Nav
-                            setShowPopUp={ setShowPopUp }
-                            popUpRes={ popUpRes }
-                            notificationData={ appNotificationData }
-                            isOffline={ isOffline }
-                        />
-                    </Suspense>
-                </div>
+                {
+                    identifier && identifier.text &&
+                    <div className="inner--left-container">
+                        <Suspense fallback={ <Loading /> }>
+                            <Nav
+                                setShowPopUp={ setShowPopUp }
+                                popUpRes={ popUpRes }
+                                notificationData={ appNotificationData }
+                                isOffline={ isOffline }
+                                currentNotification={ currentNotification }
+                            />
+                        </Suspense>
+                    </div>
+                }
                 {
                     showPopUP.show && showPopUP.type === 'sign-out' &&
-                        <div className="inner--pop-up__container">
-                            <div ref={ cardEl } className="inner--pop-up__card-container">
-                                <p>Are you sure you want to Sign out?</p>
-                                <div className="btn--collection">
-                                    <button onClick={ handleYesBtnClick } className="yes--btn">Yes</button>
-                                    <button onClick={ handleNoBtnClick } className="no--btn">No</button>
-                                </div>
+                    <div className="inner--pop-up__container">
+                        <div ref={ cardEl } className="inner--pop-up__card-container">
+                            <p>Are you sure you want to Sign out?</p>
+                            <div className="btn--collection">
+                                <button onClick={ handleYesBtnClick } className="yes--btn">Yes</button>
+                                <button onClick={ handleNoBtnClick } className="no--btn">No</button>
                             </div>
                         </div>
+                    </div>
                 }
                 <div className="inner--right-container">
                     { renderComponent() }
@@ -300,7 +342,8 @@ const Inner = ({
 function mapStateToProps(state) {
     return {
         appNotificationData: state.appNotification,
-        statusSocket: state.sockets.status
+        statusSocket: state.sockets.status,
+        identifier: state.identifier
     };
 }
 
@@ -310,4 +353,4 @@ export default connect(mapStateToProps, {
     receiveNotificationChallengesTurn,
     receiveNotificationFriends,
     receiveNotificationMessenger
-})(Inner);
+})(React.memo(Inner));

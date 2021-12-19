@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 
 const websitePageviewSchema = new mongoose.Schema({
     pageviewUrl: String,
-    timespent: Number
+    timespent: Number,
+    ip: String
 }, { timestamps: true });
 
 const websitePageviewSessionSchema = new mongoose.Schema({

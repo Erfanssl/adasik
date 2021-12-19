@@ -4,11 +4,8 @@ const jwt = require('jsonwebtoken');
 const keys = require('../config/keys');
 
 const ADDRESS = 'http://127.0.0.1:3000';
-const authorizationStore = store.authorization;
 
 async function onGameSocketConnect(socket) {
-
-
     socket.on('gameInfo', clientInfo => {
         // we construct the authorization
         const messageJwt = jwt.sign({ username: clientInfo.username }, keys.JWT_SOCKET_SECRET);
@@ -83,9 +80,7 @@ function gameSocketLogic(DBInfo, clientInfo, socket, authorization) {
     };
     let maxBooster = maxBoosterFromDB || 1;
 
-    let interval = store.game.interval;
-    clearInterval(store.game.interval);
-
+    if (store.game[username] && store.game[username].interval) clearInterval(store.game[username].interval);
 
     socket.emit('initialInfo', {
         score,
@@ -101,7 +96,7 @@ function gameSocketLogic(DBInfo, clientInfo, socket, authorization) {
             if (reaction[i + 1]) averageArr.push(reaction[i + 1] - reaction[i]);
         }
 
-        clearInterval(store.game.interval);
+        if (store.game[username] && store.game[username].interval) clearInterval(store.game[username].interval);
     }
 
     if (isNew) {
@@ -149,7 +144,7 @@ function gameSocketLogic(DBInfo, clientInfo, socket, authorization) {
         }
 
         if (result === 'wrong') {
-            booster = 1;
+            booster = Math.ceil(booster / 2);
             consecutiveTrue = 0;
         }
     });
@@ -162,7 +157,7 @@ function gameSocketLogic(DBInfo, clientInfo, socket, authorization) {
     socket.on('disconnect', (reason) => {
         if (timeRemained > 0 && !finish) {
             const averageArr = [];
-            if (averageResponseTimeFromDB) averageArr.push(averageResponseTimeFromDB);
+            if (averageResponseTimeFromDB) averageArr.push(averageResponseTimeFromDB, averageResponseTimeFromDB);
 
             for (let i = 0; i < reaction.length; i++) {
                 if (reaction[i + 1]) averageArr.push(reaction[i + 1] - reaction[i]);
@@ -198,14 +193,15 @@ function gameSocketLogic(DBInfo, clientInfo, socket, authorization) {
         }
     });
 
-    store.game.interval = setInterval(() => {
+    store.game[username] = {};
+    store.game[username].interval = setInterval(() => {
         timeRemained -= .1;
         socket.emit('time', timeRemained);
         if (timeRemained <= 0) finish = true;
         if (finish) {
             socket.on('disconnect', () => {});
             const averageArr = [];
-            if (averageResponseTimeFromDB) averageArr.push(averageResponseTimeFromDB);
+            if (averageResponseTimeFromDB) averageArr.push(averageResponseTimeFromDB, averageResponseTimeFromDB);
 
             for (let i = 0; i < reaction.length; i++) {
                 if (reaction[i + 1]) averageArr.push(reaction[i + 1] - reaction[i]);
@@ -215,7 +211,7 @@ function gameSocketLogic(DBInfo, clientInfo, socket, authorization) {
 
             if (isNaN(average)) average = -1;
 
-            clearInterval(store.game.interval);
+            if (store.game[username] && store.game[username].interval) clearInterval(store.game[username].interval);
 
             // to set the finish and other data in the db
             makeRequest(`${ ADDRESS }/api/challenge/game/finish`, 'PATCH', {

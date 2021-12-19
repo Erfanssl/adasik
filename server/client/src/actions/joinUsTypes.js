@@ -1,0 +1,1 @@
+export const JOIN_US_SEND_DATA = 'JOIN_US_SEND_DATA';

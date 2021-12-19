@@ -19,12 +19,8 @@ const Like = mongoose.model('Like');
 const Block = mongoose.model('Block');
 const Test = mongoose.model('Test');
 
-
-// TODO: 2-FACTOR AUTH
-
 signUpRouter.post('/', async (req, res) => {
     try {
-        // TODO: use CSRF tokens
         const { username:preUsername, email, password } = req.body;
         const username = preUsername.toLowerCase();
 
@@ -36,11 +32,11 @@ signUpRouter.post('/', async (req, res) => {
         function validateUsername(username) {
             let allowChar = false;
 
-            if (username.trim().toLowerCase() === 'anonymous') return false;
-            if (username.trim().length < 4 || username.trim().length > 16) return false;
+            if (username.toLowerCase() === 'anonymous') return false;
+            if (username.length < 4 || username.length > 16) return false;
 
             let finalAllowChar = true;
-            for (let i = 0; i < username.trim().length; i++) {
+            for (let i = 0; i < username.length; i++) {
                 allowChar = false;
                 if (
                     (username[i].charCodeAt(0) >= 65 && username[i].charCodeAt(0) <= 90) ||
@@ -102,14 +98,15 @@ signUpRouter.post('/', async (req, res) => {
         // we need to get the rank of the user
         let chosenRank;
         // we first check to see if there is a user
-        const isUserRank = await Ranking.findOne();
-        if (!isUserRank) {
-            chosenRank = [{ rank: 0 }];
-        }
+        // const isUserRank = await Ranking.findOne();
+        const isUserRank = true;
+        // if (!isUserRank) {
+        //     chosenRank = [{ rank: 0 }];
+        // }
 
         if (isUserRank) {
             const userPreRank = await Ranking.find({ totalScore: 10 }).sort({ rank: -1 }).limit(1);
-            if (userPreRank) chosenRank = userPreRank;
+            if (userPreRank.length) chosenRank = userPreRank;
             if (!userPreRank.length) {
                 const userSecondPreRank = await Ranking.find({ totalScore: { $lt: 10 } }).sort({ rank: 1 }).limit(1);
                 // if there is, means we have worse rank compare to the user so, we should rank it up
@@ -133,6 +130,15 @@ signUpRouter.post('/', async (req, res) => {
                 text: 'online',
                 date: new Date()
             },
+            messengerStatus: {
+                text: 'offline',
+                date: new Date()
+            },
+            securityQuestions: {
+                one: {},
+                two: {}
+            },
+            adminMessage: [],
             info: {
                 general: {
                     name: '',
@@ -230,7 +236,12 @@ signUpRouter.post('/', async (req, res) => {
                             mentalClarity: 0,
                             moody: 0,
                             organized: 0,
-                            management: 0
+                            management: 0,
+                            shame: 0,
+                            selfConsciousness: 0,
+                            trustOthers: 0,
+                            fantasy: 0,
+                            selfLove: 0
                         },
                         brain: {
                             responseInhibition: 0,
@@ -247,7 +258,7 @@ signUpRouter.post('/', async (req, res) => {
         // Ranking
         // we need to get the list of below ranks
         if (isUserRank) {
-            const usersRankList = await Ranking.find({ rank: { $gte: userNewRank } }, { _id: 0, rank: 1 });
+            const usersRankList = await Ranking.find({ rank: { $gte: userNewRank } }, { _id: 0, rank: 1, userId: 1 });
 
             if (usersRankList.length) {
                 // we increment the below ranks by one
@@ -256,6 +267,15 @@ signUpRouter.post('/', async (req, res) => {
                 }, {
                     $inc: {
                         rank: 1
+                    }
+                });
+
+                // and now we update their ranking in their profile data
+                await User.updateMany({
+                    _id: { $in: usersRankList.map(idDoc => idDoc.userId) }
+                }, {
+                    $inc: {
+                        'info.specific.whole.rank': 1
                     }
                 });
             }
@@ -286,7 +306,7 @@ signUpRouter.post('/', async (req, res) => {
         // friends
         await Friend.create({
             userId: user._id,
-            pending: [],
+            pending: ['607e4d592686c05fc279857f'],
             friends: [],
             userReceivedRequestCounter: {
                 accepted: 0,
@@ -325,44 +345,43 @@ signUpRouter.post('/', async (req, res) => {
         const userMessageId = new mongoose.Types.ObjectId();
         const createdAt = Date.now();
 
-        // await Messenger.create({
-        //         userId: user._id,
-        //         persons: [{
-        //             userId: '601679d33a1230395ce4ee51',
-        //             messages: [{
-        //                 _id: userMessageId,
-        //                 message: messageEncryption('Welcome to Adasik!'),
-        //                 type: 'regular',
-        //                 from: '601679d33a1230395ce4ee51',
-        //                 to: user._id,
-        //                 status: 'sent',
-        //                 isBuff: false,
-        //                 toMessageId: adasikMessageId,
-        //                 createdAt,
-        //                 updatedAt: createdAt
-        //             }],
-        //             unseen: 1
-        //         }]
-        //     });
-
         await Messenger.create({
-            userId: user._id,
-            persons: []
-        });
+                userId: user._id,
+                persons: [{
+                    userId: '607e4d592686c05fc279857f',
+                    messages: [{
+                        _id: userMessageId,
+                        message: messageEncryption('Welcome to Adasik!'),
+                        type: 'regular',
+                        from: '607e4d592686c05fc279857f',
+                        to: user._id,
+                        status: 'sent',
+                        isBuff: false,
+                        toMessageId: adasikMessageId,
+                        createdAt,
+                        updatedAt: createdAt
+                    }],
+                    unseen: 1
+                }]
+            });
+
+        // await Messenger.create({
+        //     userId: user._id,
+        //     persons: []
+        // });
 
         // we should add it to the other user messages
         await Messenger.updateOne({
-            userId: '601679d33a1230395ce4ee51'
+            userId: '607e4d592686c05fc279857f'
         }, {
             $push: {
                 'persons': {
                     userId: user._id,
-                    username: username,
                     messages: [{
                         _id: adasikMessageId,
-                        message: 'Welcome to Adasik!',
+                        message: messageEncryption('Welcome to Adasik!'),
                         type: 'regular',
-                        from: '601679d33a1230395ce4ee51',
+                        from: '607e4d592686c05fc279857f',
                         to: user._id,
                         status: 'sent',
                         isBuff: false,

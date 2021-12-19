@@ -43,299 +43,28 @@ const MAXIMUM_REQUEST_NUMBER = 50;
 *   2. for requests
 * */
 
-// const id1 = new mongoose.Types.ObjectId();
-// const id1Ref = new mongoose.Types.ObjectId();
-// const id2 = new mongoose.Types.ObjectId();
-// const id2Ref = new mongoose.Types.ObjectId();
-// Challenge.create([
-//     {
-//         userId: '601679d33a1230395ce4ee51',
-//         challenges: {
-//             active: [
-//                 {
-//                     _id: id1,
-//                     opponentChallengeId: id1Ref,
-//                     home: {
-//                         userId: '601679d33a1230395ce4ee51',
-//                         gamesInRounds: [
-//                             {
-//                                 gameId: '6029e836e1c84011482c138a',
-//                                 gameName: 'Memory Racer',
-//                                 finish: true,
-//                                 score: 2600,
-//                                 start: new Date(),
-//                                 round: 1
-//                             },
-//                             {
-//                                 gameId: '6029e836e1c84011482c138c',
-//                                 gameName: 'Mental Flex',
-//                                 finish: true,
-//                                 score: 4500,
-//                                 start: new Date(),
-//                                 round: 2
-//                             }
-//                         ]
-//                     },
-//                     away: {
-//                         userId: '601679d33a1230395ce4ee54',
-//                         gamesInRounds: [
-//                             {
-//                                 gameId: '6029e836e1c84011482c138a',
-//                                 gameName: 'Memory Racer',
-//                                 finish: true,
-//                                 score: 1500,
-//                                 start: new Date(),
-//                                 round: 1
-//                             },
-//                             {
-//                                 gameId: '6029e836e1c84011482c138c',
-//                                 gameName: 'Mental Flex',
-//                                 finish: true,
-//                                 score: 5500,
-//                                 start: new Date(),
-//                                 round: 2
-//                             }
-//                         ]
-//                     },
-//                     turn: 'home',
-//                     url: dataEncryption('601679d33a1230395ce4ee51' + '.' + id1),
-//                     pending: false
-//                 }
-//             ],
-//             inactive: [
-//                 {
-//                     _id: id2,
-//                     opponentChallengeId: id2Ref,
-//                     home: {
-//                         userId: '601679d33a1230395ce4ee51',
-//                         gamesInRounds: [
-//                             {
-//                                 gameId: '6029e836e1c84011482c138c',
-//                                 finish: true,
-//                                 score: 2600,
-//                                 start: new Date(),
-//                                 round: 1
-//                             },
-//                             {
-//                                 gameId: '6029e836e1c84011482c138a',
-//                                 finish: true,
-//                                 score: 6000,
-//                                 start: new Date(),
-//                                 round: 2
-//                             },
-//                             {
-//                                 gameId: '6029e836e1c84011482c138b',
-//                                 finish: true,
-//                                 score: 4080,
-//                                 start: new Date(),
-//                                 round: 3
-//                             }
-//                         ]
-//                     },
-//                     away: {
-//                         userId: '601679d33a1230395ce4ee5a',
-//                         gamesInRounds: [
-//                             {
-//                                 gameId: '6029e836e1c84011482c138c',
-//                                 finish: true,
-//                                 score: 1500,
-//                                 start: new Date(),
-//                                 round: 1
-//                             },
-//                             {
-//                                 gameId: '6029e836e1c84011482c138a',
-//                                 finish: true,
-//                                 score: 5500,
-//                                 start: new Date(),
-//                                 round: 2
-//                             },
-//                             {
-//                                 gameId: '6029e836e1c84011482c138b',
-//                                 finish: true,
-//                                 score: 4050,
-//                                 start: new Date(),
-//                                 round: 3
-//                             }
-//                         ]
-//                     },
-//                     result: 'win',
-//                     endType: 'normal'
-//                 }
-//             ]
-//         },
-//         requests: [
-//             '601679d33a1230395ce4ee57'
-//         ],
-//         userRequestCounter: {
-//             pending: 0,
-//             accepted: 0,
-//             rejected: 0
-//         }
-//     },
-//     {
-//         userId: '601679d33a1230395ce4ee54',
-//         challenges: {
-//             active: [
-//                 {
-//                     _id: id1Ref,
-//                     opponentChallengeId: id1,
-//                     home: {
-//                         userId: '601679d33a1230395ce4ee51',
-//                         gamesInRounds: [
-//                             {
-//                                 gameId: '6029e836e1c84011482c138a',
-//                                 finish: true,
-//                                 score: 2600,
-//                                 start: new Date(),
-//                                 round: 1
-//                             },
-//                             {
-//                                 gameId: '6029e836e1c84011482c138c',
-//                                 finish: true,
-//                                 score: 4500,
-//                                 start: new Date(),
-//                                 round: 2
-//                             }
-//                         ]
-//                     },
-//                     away: {
-//                         userId: '601679d33a1230395ce4ee54',
-//                         gamesInRounds: [
-//                             {
-//                                 gameId: '6029e836e1c84011482c138a',
-//                                 finish: true,
-//                                 score: 1500,
-//                                 start: new Date(),
-//                                 round: 1
-//                             },
-//                             {
-//                                 gameId: '6029e836e1c84011482c138c',
-//                                 finish: true,
-//                                 score: 5500,
-//                                 start: new Date(),
-//                                 round: 2
-//                             }
-//                         ]
-//                     },
-//                     turn: 'home',
-//                     url: dataEncryption('601679d33a1230395ce4ee51' + '.' + id1),
-//                     pending: false
-//                 }
-//             ]
-//         },
-//         userRequestCounter: {
-//             pending: 0,
-//             accepted: 0,
-//             rejected: 0
-//         }
-//     },
-//     {
-//         userId: '601679d33a1230395ce4ee57',
-//         challenges: {
-//             inactive: [
-//                 {
-//                     _id: id2Ref,
-//                     opponentChallengeId: id2,
-//                     home: {
-//                         userId: '601679d33a1230395ce4ee51',
-//                         gamesInRounds: [
-//                             {
-//                                 gameId: '6029e836e1c84011482c138c',
-//                                 finish: true,
-//                                 score: 2600,
-//                                 start: new Date(),
-//                                 round: 1
-//                             },
-//                             {
-//                                 gameId: '6029e836e1c84011482c138a',
-//                                 finish: true,
-//                                 score: 6000,
-//                                 start: new Date(),
-//                                 round: 2
-//                             },
-//                             {
-//                                 gameId: '6029e836e1c84011482c138b',
-//                                 finish: true,
-//                                 score: 4080,
-//                                 start: new Date(),
-//                                 round: 3
-//                             }
-//                         ]
-//                     },
-//                     away: {
-//                         userId: '601679d33a1230395ce4ee57',
-//                         gamesInRounds: [
-//                             {
-//                                 gameId: '6029e836e1c84011482c138c',
-//                                 finish: true,
-//                                 score: 1500,
-//                                 start: new Date(),
-//                                 round: 1
-//                             },
-//                             {
-//                                 gameId: '6029e836e1c84011482c138a',
-//                                 finish: true,
-//                                 score: 5500,
-//                                 start: new Date(),
-//                                 round: 2
-//                             },
-//                             {
-//                                 gameId: '6029e836e1c84011482c138b',
-//                                 finish: true,
-//                                 score: 4050,
-//                                 start: new Date(),
-//                                 round: 3
-//                             }
-//                         ]
-//                     },
-//                     result: 'lose',
-//                     endType: 'normal'
-//                 }
-//             ]
-//         },
-//         userRequestCounter: {
-//             pending: 1,
-//             accepted: 0,
-//             rejected: 0
-//         }
-//     }
-// ]);
-//
-// Ranking.create(
-//     [
-//         {
-//             userId: '601679d33a1230395ce4ee54',
-//             rank: 2,
-//             totalScore: 20447
-//         },
-//         {
-//             userId: '601679d33a1230395ce4ee57',
-//             rank: 3,
-//             totalScore: 20440
-//         },
-//         {
-//             userId: '601679d33a1230395ce4ee5a',
-//             rank: 4,
-//             totalScore: 10500
-//         },
-//         {
-//             userId: '601679d33a1230395ce4ee51',
-//             rank: 1,
-//             totalScore: 20448
-//         }
-//     ]
-// );
-
 // rank calculator
 async function rankCalculator(totalScore, increment, userId) {
     // we get the rank of the user, we need the newest data so we query here
     const userRankQuery = await Ranking.findOne({ userId }, { rank: 1 });
     const { rank } = userRankQuery;
 
-    if (increment === 0) return rank;
+    if (increment === 0) {
+        // we add it to history
+        await History.updateOne({
+            userId
+        }, {
+            $push: {
+                rank,
+                totalScore
+            }
+        });
+
+        return rank;
+    }
 
     // we check if the increment is positive or negative
-    if (increment > 0) {
+    else if (increment > 0) {
         let currentRank = rank;
         let nextRank = rank - 1;
         let newRank;
@@ -346,12 +75,34 @@ async function rankCalculator(totalScore, increment, userId) {
 
             // if equal --> we should consider the number of wins and loses
             if (!nextRankData) break;
-            if (nextRankData.totalScore >= totalScore + increment) break;
+            if (nextRankData.totalScore >= (totalScore + increment)) break;
             currentRank = nextRank;
             nextRank -= 1;
         }
 
-        if (currentRank === rank) return rank;
+        if (currentRank === rank) {
+            await Ranking.updateOne({
+                userId
+            }, {
+                $set: {
+                    rank,
+                    totalScore: totalScore + increment
+                }
+            });
+
+            // we add it to history
+            await History.updateOne({
+                userId
+            }, {
+                $push: {
+                    rank,
+                    totalScore: totalScore + increment
+                }
+            });
+
+            return rank;
+        }
+
         newRank = currentRank;
 
         // means there was positive a change in the ranking
@@ -370,7 +121,7 @@ async function rankCalculator(totalScore, increment, userId) {
         });
 
         // we set the new rank and totalScore of the user
-        await Ranking.updateMany({
+        await Ranking.updateOne({
             userId
         }, {
             $set: {
@@ -416,20 +167,42 @@ async function rankCalculator(totalScore, increment, userId) {
         let newRank;
 
         // we need to get the highest rank --> worst rank
-        const highestRank = await Ranking.findOne({}).sort({ rank: -1 }).limit(1);
+        const highestRank = await Ranking.find({}).sort({ rank: -1 }).limit(1);
 
-        while (prevRank <= highestRank.rank) {
+        while (prevRank <= highestRank[0].rank) {
             // we query for the nextRank's totalScore to compare it to user's currentRank
 
             const prevRankData = await Ranking.findOne({ rank: prevRank });
             if (!prevRankData) break;
             // if equal --> we should consider the number of wins and loses
-            if (prevRankData.totalScore <= totalScore + increment) break;
+            if (prevRankData.totalScore <= (totalScore + increment)) break;
             currentRank = prevRank;
             prevRank += 1;
         }
 
-        if (currentRank === rank) return rank;
+        if (currentRank === rank) {
+            await Ranking.updateOne({
+                userId
+            }, {
+                $set: {
+                    rank,
+                    totalScore: totalScore + increment
+                }
+            });
+
+            // we add it to history
+            await History.updateOne({
+                userId
+            }, {
+                $push: {
+                    rank,
+                    totalScore: totalScore + increment
+                }
+            });
+
+            return rank;
+        }
+
         newRank = currentRank;
 
         // means there was positive a change in the ranking
@@ -448,7 +221,7 @@ async function rankCalculator(totalScore, increment, userId) {
         });
 
         // we set the new rank and totalScore of the user
-        await Ranking.updateMany({
+        await Ranking.updateOne({
             userId
         }, {
             $set: {
@@ -504,6 +277,51 @@ async function finishTheChallenge({ type, userId, challengeId, otherUserId, user
                 'challenges.active': { _id: challengeId }
             }
         });
+
+        // we need to take it out of the challenge queue
+        const scores = Object.keys(challengeQueue);
+        const levels = challengeQueue['0'];
+
+        // we get the totalScore of the user
+        const scoreAndLevelQuery = await User.aggregate([
+            {
+                $match: {
+                    _id: mongoose.Types.ObjectId(userId)
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    'totalScore': '$info.specific.whole.totalScore',
+                    'level': '$info.specific.whole.level.level'
+                }
+            }
+        ]);
+
+        const { totalScore, level } = scoreAndLevelQuery[0];
+
+        // finding the closest possible score to the user
+        function closeFinder(dataArr, value) {
+            const temp = [];
+
+            dataArr.forEach(val => {
+                temp.push(Math.abs(value - parseInt(val)));
+            });
+
+            return dataArr[temp.indexOf(Math.min(...temp))]
+        }
+
+        // closest base on totalScore
+        const closestScore = closeFinder(scores, totalScore);
+
+        // closest base on level
+        const closestLevel = closeFinder(levels, level);
+
+        await ChallengeQueue.updateOne({}, {
+            $pull: {
+                [`${ closestScore }.${ closestLevel }`]: { userId, challengeId }
+            }
+        })
 
         return;
     }
@@ -588,9 +406,10 @@ async function finishTheChallenge({ type, userId, challengeId, otherUserId, user
         if (result === 'win') {
             if (baseDivideDistance < 1) {
                 if (sign === '+') {
-                    increment = +(Math.ceil(baseDivideDistance * 20));
+                    if (baseDivideDistance === 0) increment = +2;
+                    else increment = +(Math.ceil(baseDivideDistance * 20));
                 } else if (sign === '-') {
-                    increment = +(Math.ceil(baseDivideDistance * 300));
+                    increment = +(Math.ceil(baseDivideDistance * 100));
                 }
             } else if (baseDivideDistance >= 1) {
                 if (sign === '+') {
@@ -602,7 +421,8 @@ async function finishTheChallenge({ type, userId, challengeId, otherUserId, user
         } else if (result === 'lose') {
             if (baseDivideDistance < 1) {
                 if (sign === '+') {
-                    increment = -(Math.floor(baseDivideDistance * 200));
+                    if (baseDivideDistance === 0) increment = -1;
+                    else increment = -(Math.floor(baseDivideDistance * 50));
                 } else if (sign === '-') {
                     increment = -(Math.floor(baseDivideDistance * 15));
                 }
@@ -616,6 +436,7 @@ async function finishTheChallenge({ type, userId, challengeId, otherUserId, user
         } else if (result === 'draw') {
             if (baseDivideDistance < 1) {
                 if (sign === '+') {
+                    if (baseDivideDistance === 0) increment = +1;
                     increment = -(Math.floor(baseDivideDistance * 100));
                 } else if (sign === '-') {
                     increment = +(Math.ceil(baseDivideDistance * 110));
@@ -1059,7 +880,7 @@ challengeRouter.get('/', currentUser, auth, async (req, res) => {
 
         return res.send(data);
     } catch (err ) {
-        return res.status(500).send({ 'Error': 'Could not get the data ' + err });
+        return res.status(500).send({ 'Error': 'Could not get the data.' });
     }
 });
 
@@ -1274,6 +1095,14 @@ challengeRouter.get('/start', currentUser, auth, async (req, res) => {
             }, {
                 arrayFilters: [ { 'elem._id': opponentChallengeId } ]
             });
+
+            return res.status(201).send({
+                Message: 'Successfully created a challenge.',
+                data: {
+                    url,
+                    newChallenge: false
+                }
+            });
         } else {
             // means no match found, so we create the challenge for the user and push it to the queue base on selectedQueue
             const challengeId = new mongoose.Types.ObjectId();
@@ -1313,7 +1142,7 @@ challengeRouter.get('/start', currentUser, auth, async (req, res) => {
             });
 
             return res.status(201).send({
-                'Message': 'Successfully created a challenge.',
+                Message: 'Successfully created a challenge.',
                 data: {
                     url,
                     newChallenge: true
@@ -1321,7 +1150,7 @@ challengeRouter.get('/start', currentUser, auth, async (req, res) => {
             });
         }
     } catch (err) {
-        return res.status(400).send({ 'Error': 'Could not create a challenge.' });
+        return res.status(400).send({ Error: 'Could not create a challenge.' });
     }
 });
 
@@ -1583,7 +1412,7 @@ challengeRouter.get('/:challengeEncryptedUrl', currentUser, auth, async (req, re
 
         res.send(challengeQuery[0]);
     } catch (err) {
-        return res.status(404).send({ 'Error': 'Not Found  ' + err });
+        return res.status(404).send({ 'Error': 'Not Found.' });
     }
 });
 
@@ -2436,18 +2265,26 @@ challengeRouter.patch('/game/finish', currentUser, auth, async (req, res) => {
             ]);
 
             // to get the number of games the user has played for calculating accuracy
-            const totalGamesPlayedCount = await Game.aggregate([
+            const totalGamesPlayedCountQuery = await Game.aggregate([
                 {
                     $match: {
                         userId: mongoose.Types.ObjectId(req.user.id)
                     }
                 },
                 {
-                    $project: {
-                        count: { $size: '$games' }
+                    $unwind: '$games'
+                },
+                {
+                    $match: {
+                        'games.type': 'challenge'
                     }
+                },
+                {
+                    $count: 'count'
                 }
             ]);
+
+            const totalGamesPlayedCount = totalGamesPlayedCountQuery.length ? totalGamesPlayedCountQuery[0].count : 0;
 
             const typeNewResult = {
                 detailed: {},
@@ -2481,8 +2318,6 @@ challengeRouter.patch('/game/finish', currentUser, auth, async (req, res) => {
                     / (typeAbundanceValue + userPlayedGameTypeCoefficient)
                 );
 
-
-
                 // now we can set the new value of the type
                 if (typeNewValue < 0) typeNewValue = 0;
                 if (typeNewValue > 1) typeNewValue = 1;
@@ -2512,8 +2347,8 @@ challengeRouter.patch('/game/finish', currentUser, auth, async (req, res) => {
             // calculate the accuracy
             const newAccuracy = parseFloat((right / (right + wrong)).toFixed(2));
             let newTotalAccuracy = parseFloat((
-                (totalGamesPlayedCount[0].count * gameTypeUserScoreQuery[0].accuracy) + newAccuracy
-                / (totalGamesPlayedCount[0].count + 1)
+                ((totalGamesPlayedCount * gameTypeUserScoreQuery[0].accuracy) + newAccuracy)
+                / (totalGamesPlayedCount + 1)
             ).toFixed(2));
 
             if (newTotalAccuracy > 1) newTotalAccuracy = 1;
@@ -2734,7 +2569,7 @@ challengeRouter.patch('/game/finish', currentUser, auth, async (req, res) => {
 
         return res.send({ 'Message': 'Successful' });
     } catch (err) {
-        return res.status(400).send({ 'Error': 'Could not update the data ' + err });
+        return res.status(400).send({ 'Error': 'Could not update the data.' });
     }
 });
 
@@ -2859,7 +2694,7 @@ challengeRouter.post('/request', currentUser, auth, async (req, res) => {
             },
             {
                 $project: {
-                    _id: 0,
+                    _id: 1,
                     status: 1,
                     username: 1
                 }

@@ -38,6 +38,7 @@
     img {
       width: 100%;
       height: 100%;
+      border-radius: 50%;
     }
   }
 
@@ -49,12 +50,17 @@
     align-items: center;
     width: 100%;
     position: relative;
+    height: 4rem;
+
+    .holder {
+      position: absolute;
+    }
   }
 
   &--friend-badge__container {
     position: absolute;
-    top: -54%;
-    right: 20%;
+    top: -78%;
+    right: -3rem;
     height: 120%;
 
     img {
@@ -106,6 +112,10 @@
     justify-content: space-between;
     font-size: 1.7rem;
 
+    @include responsive(tab-port) {
+      margin: 2rem auto 4rem;
+    }
+
     &:hover {
       background-image: linear-gradient(120deg, #63d471 0%, #285835 74%);
     }
@@ -149,6 +159,7 @@
   &--like__result-container {
     font-size: 1.7rem;
     position: absolute;
+    width: 100%;
     top: 115%;
     left: 50%;
     transform: translateX(-50%);
@@ -162,7 +173,7 @@
     }
   }
 
-  &--verbal__right, &--verbal__right--two {
+  &--verbal__right {
     flex: 12;
     display: flex;
     flex-direction: column;
@@ -183,6 +194,49 @@
 
     @include responsive(tab-port) {
       display: none;
+    }
+  }
+
+  &--verbal__right--two {
+    display: none;
+
+    @include responsive(tab-port) {
+      display: flex;
+      flex: 12;
+      flex-direction: column;
+    }
+
+    .items--container {
+      width: 80%;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+
+      @include responsive(phone-big) {
+        justify-content: center;
+        text-align: center;
+      }
+
+      @include responsive(tab-port) {
+        display: flex;
+        //justify-content: center;
+      }
+
+      p {
+        width: 25rem;
+        //margin-left: 7rem;
+        font-size: 1.8rem;
+        margin-bottom: 3rem;
+
+        @include responsive(phone-big) {
+          width: 40rem;
+        }
+
+        span {
+          color: rgba(255, 255, 255, .75);
+        }
+      }
     }
   }
 
@@ -211,6 +265,11 @@
         width: 100%;
         display: flex;
         justify-content: center;
+
+        @include responsive(phone) {
+          width: 164%;
+          left: -30%;
+        }
 
         @media only screen and (max-width: 31.25em) { //500px
           top: -58%;
@@ -271,7 +330,13 @@
         }
 
         .spinner--container {
-          transform: scale(.7);
+          position: absolute;
+          left: 50%;
+          transform: scale(.7) translateX(-50%);
+
+          @include responsive(phone) {
+            transform: scale(.6) translateX(-50%);
+          }
         }
 
         &:first-child {
@@ -342,122 +407,6 @@
 
           img {
             width: 65%;
-          }
-        }
-      }
-    }
-  }
-
-  &--verbal__right--two {
-    display: none;
-
-    .items--container {
-      width: 80%;
-      margin: 0 auto;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-
-      @include responsive(phone-big) {
-        justify-content: center;
-        text-align: center;
-      }
-
-      @include responsive(tab-port) {
-        display: flex;
-        //justify-content: center;
-      }
-
-      p {
-        width: 25rem;
-        //margin-left: 7rem;
-        font-size: 1.8rem;
-        margin-bottom: 3rem;
-
-        @include responsive(phone-big) {
-          width: 40rem;
-        }
-
-        span {
-          color: rgba(255, 255, 255, .75);
-        }
-      }
-
-      .actions {
-        margin: 1rem auto 2rem;
-
-        div {
-          width: 8rem;
-          height: 8rem;
-          margin-right: 8rem;
-          background-color: white;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          border-radius: 50%;
-          cursor: pointer;
-
-          @include responsive(tab-port) {
-            margin-right: 4rem;
-          }
-
-          &:first-child {
-            margin-left: 7rem;
-          }
-
-          img {
-            transition: filter .2s;
-          }
-
-          &:hover {
-            img {
-              filter: brightness(1.2);
-            }
-          }
-
-          &.action--block {
-            background-color: transparent;
-
-            img {
-              width: 110%;
-            }
-          }
-
-          &.action--challenge {
-            background-color: #20bf55;
-            background-image: linear-gradient(315deg, #20bf55 0%, #01baef 74%);
-
-            img {
-              width: 90%;
-            }
-          }
-
-          &.action--add-friend {
-            background-color: #7f5a83;
-            background-image: linear-gradient(175deg, #7f5a83 0%, #0d324d 74%);
-
-            img {
-              width: 65%;
-            }
-          }
-
-          &.action--report {
-            background-color: #f9d29d;
-            background-image: linear-gradient(315deg, #f9d29d 0%, #ffd8cb 74%);
-
-            img {
-              width: 100%;
-            }
-          }
-
-          &.action--chat {
-            background-color: #130f40;
-            background-image: linear-gradient(175deg, #282079 0%, #130f40 74%);
-
-
-            img {
-              width: 65%;
-            }
           }
         }
       }
@@ -662,12 +611,12 @@
       margin: 1rem 0;
     }
 
-    @include responsive(phone-small) {
-      padding: 0 3rem;
+    @media only screen and (max-width: 22.5em) { //360px
+      padding: 0 1rem;
 
       &:not(:last-child) {
         svg {
-          transform: scale(1.15);
+          transform: scale(1.04);
           margin-top: 3rem;
         }
       }
@@ -683,6 +632,11 @@
       justify-content: center;
       align-items: center;
       font-size: 2.2rem;
+      border-radius: .8rem;
+
+      p {
+        text-align: center;
+      }
     }
 
     h3 {
@@ -725,13 +679,17 @@
 
     .no--friends {
       position: absolute;
-      width: 99%;
+      width: 96%;
       height: 100%;
       font-size: 2.2rem;
       letter-spacing: .4rem;
       display: flex;
       justify-content: center;
       align-items: center;
+
+      p {
+        text-align: center;
+      }
     }
   }
 
@@ -748,12 +706,20 @@
     height: 13.5rem;
     background-color: transparent;
     border-radius: 50%;
-    overflow: hidden;
     cursor: pointer;
     margin: 1.4rem .8rem;
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
+
+    a {
+      border-radius: 50%;
+      height: 100%;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+    }
 
     @include responsive(tab-land) {
       width: 12.5rem;
@@ -774,6 +740,38 @@
     img {
       width: 100%;
       height: 100%;
+      border-radius: 50%;
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+
+    &:hover .username {
+      transform: scale(1);
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .username {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      left: 0;
+      top: 0;
+      background-color: rgba(0, 0, 0, .8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      visibility: hidden;
+      transform: scale(0);
+      transition: all .3s;
+
+      p {
+        color: #fff;
+        font-size: 1.6rem;
+      }
     }
   }
 

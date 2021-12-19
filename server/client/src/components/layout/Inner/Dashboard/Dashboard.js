@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './Dashboard.scss';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -15,14 +15,22 @@ import BoxOne from "./BoxOne/BoxOne";
 import BoxTwo from "./BoxTwo/BoxTwo";
 import BoxThree from "./BoxThree/BoxThree";
 import BoxFour from "./BoxFour/BoxFour";
+import Loading from "../../utils/Loading/Loading";
 
 // icons
 import check from '../../../../assets/icons/check.svg';
 import empty from '../../../../assets/icons/empty.svg'
 
 
-const Dashboard = ({ fetchDashboard, dashboardData, statusSocket, dashboardSendTools, dashboardReFetch }) => {
-    const [prompt, setPrompt] = useState(null);
+const Dashboard = ({
+                       fetchDashboard,
+                       dashboardData,
+                       statusSocket,
+                       dashboardSendTools,
+                       dashboardReFetch,
+                       installEvent,
+                       setInstallEvent
+}) => {
     const [dataLoaded, setDataLoaded] = useState(false);
 
     useEffect(() => {
@@ -49,7 +57,7 @@ const Dashboard = ({ fetchDashboard, dashboardData, statusSocket, dashboardSendT
     }, []);
 
     useEffect(() => {
-        if (dashboardData && Object.keys(dashboardData).length && dashboardData.assignments && !Array.isArray(dashboardData.assignments)) setDataLoaded(true);
+        if (dashboardData && Object.keys(dashboardData).length && dashboardData.assignments) setDataLoaded(true);
     }, [dashboardData]);
 
     useEffect(() => {
@@ -58,20 +66,14 @@ const Dashboard = ({ fetchDashboard, dashboardData, statusSocket, dashboardSendT
         }
     }, [dashboardReFetch]);
 
-    window.addEventListener('beforeinstallprompt', event => {
-        event.preventDefault();
-        setPrompt(event);
-
-        return false;
-    });
-
     function handleInstallBtn() {
-        if (prompt) {
-            prompt.prompt();
+        if (installEvent) {
+            installEvent.prompt();
 
-            prompt.userChoice.then(choiceResult => {
+            installEvent.userChoice.then(choiceResult => {
                 if (choiceResult.outcome === 'accepted') {
                     dashboardSendTools('install');
+                    setInstallEvent(null);
                 }
 
                 if (choiceResult.outcome === 'dismissed') {
@@ -101,7 +103,7 @@ const Dashboard = ({ fetchDashboard, dashboardData, statusSocket, dashboardSendT
                         })
                         .then(sub => {
                             if (sub === null) {
-                                const vapidPublicKey = 'BDh5U8KiKCsjoD5HvlUgLkD6L6YfWwK0RO6Xa-xL1rr0gIHPbhngE4wLECpfh5obf4yU2R0WLXweJqrNkiWFzy4';
+                                const vapidPublicKey = 'BJ_qddkp-F_RO6uXbnOZtZxhkj1WLHAmRBl2DcwNTe4g3a16l5Ej8ZLTuvrjpNwV0s2ETE9tNyvcxkQ3LfIDqhE';
                                 const transformedVapid = urlBase64ToUint8Array(vapidPublicKey);
                                 return sw.pushManager.subscribe({
                                     userVisibleOnly: true,
@@ -293,10 +295,11 @@ const Dashboard = ({ fetchDashboard, dashboardData, statusSocket, dashboardSendT
 
     return (
         <div className="dashboard--container">
+            { !dataLoaded && <Loading text="Fetching Data..." /> }
             <div className="dashboard--greeting">
                 {
                     !dataLoaded ?
-                        <p>Updating Data...</p> :
+                        <p>Fetching Data...</p> :
                         <p>Good { partOfDay(new Date().getHours()) } <span className="dashboard--username">{ dashboardData.userInfo?.fullName.split(' ')[0] }</span></p>
                 }
             </div>
@@ -337,24 +340,27 @@ const Dashboard = ({ fetchDashboard, dashboardData, statusSocket, dashboardSendT
                         { dataLoaded && renderTraining() }
                         { dataLoaded && renderChallenge() }
                     </div>
-                   <div className="box--bucket">
-                       { dataLoaded && renderTest() }
-                       <div className="dashboard--plan__group-container">
-                           <h3>Group</h3>
-                           <p>Coming Soon...</p>
-                       </div>
-                   </div>
+                    <div className="box--bucket">
+                        { dataLoaded && renderTest() }
+                        {
+                            dataLoaded &&
+                            <div className="dashboard--plan__group-container">
+                                <h3>Group</h3>
+                                <p>Coming Soon...</p>
+                            </div>
+                        }
+                    </div>
                 </div>
             </div>
             {
-                dataLoaded && (!dashboardData.userInfo.install || !dashboardData.userInfo.notification) &&
+                dataLoaded && (installEvent || Notification.permission !== 'granted') &&
                 <div className="dashboard--tools-container">
                     <div className="header--container">
                         <h2>Experience Adasik Better</h2>
-                        <p>In order to use all of Adasik's features, we recommend you to do following{ (!dashboardData.userInfo.notification && !dashboardData.userInfo.notification) ? 's' : '' }:</p>
+                        <p>In order to use all of Adasik's features, we recommend you to do following{ (installEvent && Notification.permission !== 'granted') ? 's' : '' }:</p>
                     </div>
                     {
-                        !dashboardData.userInfo.install &&
+                        installEvent &&
                         <div className="feature--one">
                             <h2>Install Adasik</h2>
                             <p className="info">You can Install Adasik on your Computer or Phone. It's an in-browser installation; so, you're not actually installing it as a separate app.</p>
@@ -366,7 +372,7 @@ const Dashboard = ({ fetchDashboard, dashboardData, statusSocket, dashboardSendT
                         </div>
                     }
                     {
-                        !dashboardData.userInfo.notification &&
+                        Notification.permission !== 'granted' &&
                         <div className="feature--two">
                             <h2>Enable Notification</h2>
                             <p className="info">You can also Enable the notification to be aware whenever a you have a new message, challenge's request, friend request or if it's your turn to play in a challenge.</p>
@@ -393,4 +399,4 @@ function mapStateToProps(state) {
 
 export default requireAuth(
     connect(mapStateToProps, { fetchDashboard, dashboardSendTools })(Dashboard)
-)
+);

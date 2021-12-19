@@ -1,0 +1,57 @@
+{
+  "name": "Adasik",
+  "short_name": "Adasik",
+  "icons": [
+    {
+      "src": "/icons/adasik-logo-48x48.png",
+      "type": "image/png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "/icons/adasik-logo-96x96.png",
+      "type": "image/png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "/icons/adasik-logo-144x144.png",
+      "type": "image/png",
+      "sizes": "144x144",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/adasik-logo-144x144-maskable.png",
+      "type": "image/png",
+      "sizes": "144x144",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/adasik-logo-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icons/adasik-logo-256x256.png",
+      "type": "image/png",
+      "sizes": "256x256"
+    },
+    {
+      "src": "/icons/adasik-logo-384x384.png",
+      "type": "image/png",
+      "sizes": "384x384"
+    },
+    {
+      "src": "/icons/adasik-logo-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0d1915",
+  "theme_color": "#1e453e",
+  "description": "The most advanced mind games platform. Completely free.",
+  "dir": "ltr",
+  "lang": "en-US"
+}

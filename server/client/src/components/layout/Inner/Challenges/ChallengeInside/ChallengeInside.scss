@@ -262,6 +262,10 @@
       left: 40%;
     }
 
+    @include responsive(phone-big) {
+      left: 18%;
+    }
+
     @media only screen and (max-width: 31.25em) { //500px
       top: 75%;
     }
@@ -285,7 +289,6 @@
     justify-content: flex-end;
     align-items: flex-start;
     z-index: 20;
-
     position: relative;
 
     & .challenge--username-container {
@@ -366,6 +369,10 @@
 
       @include responsive(tab-port-big) {
         right: 40%;
+      }
+
+      @include responsive(phone-big) {
+        right: 18%;
       }
     }
 
@@ -456,6 +463,7 @@
 
     img {
       width: 100%;
+      border-radius: 50%;
     }
   }
 
@@ -502,7 +510,7 @@
         @include responsive(tab-land) {
           transform: unset;
           font-size: 1.5rem;
-          top: 75%;
+          top: 83%;
           left: 8%;
         }
       }
@@ -514,7 +522,7 @@
         @include responsive(tab-land) {
           transform: unset;
           font-size: 1.5rem;
-          top: 75%;
+          top: 83%;
           left: unset;
           right: 8%;
         }
@@ -750,6 +758,12 @@
 
       @include responsive(phone) {
         margin-top: .3rem;
+      }
+    }
+
+    .spinner--container {
+      @include responsive(phone) {
+        transform: scale(.7);
       }
     }
 

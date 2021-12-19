@@ -1,5 +1,6 @@
 import {
-    FETCH_STATISTICS_DATA
+    FETCH_STATISTICS_DATA,
+    WIPE_STATISTICS_DATA
 } from './statisticsTypes';
 
 export const fetchStatisticsData = () => async (dispatch) => {
@@ -14,4 +15,10 @@ export const fetchStatisticsData = () => async (dispatch) => {
     } catch (err) {
 
     }
+};
+
+export const wipeStatisticsData = () => async (dispatch) => {
+    dispatch({
+        type: WIPE_STATISTICS_DATA
+    });
 };

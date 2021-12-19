@@ -1,7 +1,10 @@
 import React, { useRef, useEffect, useState } from 'react';
 import './Statistics.scss';
 import { connect } from 'react-redux';
-import { fetchStatisticsData } from "../../../../actions/statisticsAction";
+import {
+    fetchStatisticsData,
+    wipeStatisticsData
+} from "../../../../actions/statisticsAction";
 import Loading from "../../utils/Loading/Loading";
 import requireAuth from "../../../../middlewares/requireAuth";
 
@@ -15,8 +18,9 @@ import pageViewSocketConnection from "../../../../utility/pageViewSocketConnecti
 
 const Statistics = ({
                         statisticsData,
-                        fetchStatisticsData
-}) => {
+                        fetchStatisticsData,
+                        wipeStatisticsData
+                    }) => {
     const [progress, setProgress] = useState('total');
 
     const canvas1 = useRef();
@@ -32,19 +36,29 @@ const Statistics = ({
 
         return () => {
             pageViewSocket.disconnect();
+            wipeStatisticsData();
         };
     }, []);
 
     useEffect(() => {
         if (statisticsData && statisticsData.history) {
             const barChartData = [];
-            for (let i = 0; i < statisticsData.history.assignment.length; i++) {
-                barChartData.push({ name: i + 1, percent: (statisticsData.history.assignment[i]) * 100 });
+            if (window.innerWidth > 600) {
+                for (let i = 0; i < statisticsData.history.assignment.length; i++) {
+                    barChartData.push({ name: i + 1, percent: (statisticsData.history.assignment[i]) * 100 });
+                }
+            } else {
+                const newDataArr = statisticsData.history.assignment.slice(-10);
+                for (let i = 0; i < newDataArr.length; i++) {
+                    barChartData.push({ name: i + 1, percent: (newDataArr[i]) * 100 });
+                }
             }
+
             if (barChart && barChart.current) {
                 const svg = document.querySelector('.statistics--bar-chart-container svg');
                 if (svg) svg.parentNode.removeChild(svg);
             }
+
             renderBarChart(barChart, barChartData, true);
         }
 
@@ -57,7 +71,12 @@ const Statistics = ({
                 const svg = document.querySelector('.statistics--games-container svg');
                 if (svg) svg.parentNode.removeChild(svg);
             }
-            renderPieChart(games, pieChartData, null, true);
+
+            if (window.innerWidth > 600) {
+                renderPieChart(games, pieChartData, null, true);
+            } else {
+                renderPieChart(games, pieChartData, { height: 200, width: 200, radius: 100 }, true);
+            }
         }
 
         if (statisticsData && statisticsData.gamesData && statisticsData.gamesData?.length) {
@@ -85,7 +104,7 @@ const Statistics = ({
             const brainData = [[]];
 
             Object.keys(statisticsData.brain).forEach(dataKey => {
-                brainData[0].push({ axis: wordCapitalize(dataKey), value: statisticsData.brain[dataKey] });
+                brainData[0].push({ axis: dataKey.replace(/[A-Z]/, w => ' ' + w).replace(/^.+?/, w => w.toUpperCase()), value: statisticsData.brain[dataKey] });
             });
 
             createRadar(canvas1, brainData, 'big', true);
@@ -117,15 +136,21 @@ const Statistics = ({
 
             switch (progress) {
                 case 'total':
-                    const totalScore = dataArrMaker(statisticsData.history.totalScore);
+                    let totalScore;
+                    if (window.innerWidth > 600) totalScore = dataArrMaker(statisticsData.history.totalScore);
+                    else totalScore = dataArrMaker(statisticsData.history.totalScore.slice(-10));
                     renderMultiLineChart(totalScore);
                     break;
                 case 'training':
-                    const trainingScore = dataArrMaker(statisticsData.history.trainingScore);
+                    let trainingScore;
+                    if (window.innerWidth > 600) trainingScore = dataArrMaker(statisticsData.history.trainingScore);
+                    else trainingScore = dataArrMaker(statisticsData.history.trainingScore.slice(-10));
                     renderMultiLineChart(trainingScore);
                     break;
                 case 'rank':
-                    const rank = dataArrMaker(statisticsData.history.rank);
+                    let rank;
+                    if (window.innerWidth > 600) rank = dataArrMaker(statisticsData.history.rank);
+                    else rank = dataArrMaker(statisticsData.history.rank.slice(-10));
                     renderMultiLineChart(rank);
                     break;
             }
@@ -164,7 +189,11 @@ const Statistics = ({
                     </div>
                 }
                 <div className="statistics--line-chart__header-container">
-                    <h2>Your Progress During the Last 30 Records</h2>
+                    {
+                        window.innerWidth > 600 ?
+                            <h2>Your Progress During the Last 30 Records</h2> :
+                            <h2>Your Progress During the Last 10 Records</h2>
+                    }
                     <ul className="statistics--line-chart__items-group">
                         <li className="active--progress-item" data-name="total" onClick={ handleProgressItemClick }>Total Score</li>
                         <li data-name="training" onClick={ handleProgressItemClick }>Training Score</li>
@@ -183,7 +212,11 @@ const Statistics = ({
     function renderBarChartSection() {
         return (
             <div ref={ barChart } className="statistics--bar-chart-container">
-                <h2>Your Assignment's Completion During the Last 30 Records</h2>
+                {
+                    window.innerWidth > 600 ?
+                        <h2>Your Assignment's Completion During the Last 30 Records</h2> :
+                        <h2>Your Assignment's Completion During the Last 10 Records</h2>
+                }
             </div>
         );
     }
@@ -229,5 +262,6 @@ function mapStateToProps(state) {
 }
 
 export default requireAuth(connect(mapStateToProps, {
-    fetchStatisticsData
-})(Statistics));
+    fetchStatisticsData,
+    wipeStatisticsData
+})(React.memo(Statistics)));

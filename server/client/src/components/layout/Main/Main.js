@@ -45,21 +45,33 @@ const Main = ({ signIn, signUp }) => {
         );
     }
 
-    function handleTermsClick() {
+    function handleTermsClick(scrollY) {
         if (termsContainer && termsContainer.current) {
             termsContainer.current.classList.add('active');
+
+            if (scrollY) {
+                termsContainer.current.style.top = scrollY + (termsContainer?.current.offsetHeight / 1.5) + 'px';
+            }
         }
     }
 
-    function handlePrivacyClick() {
+    function handlePrivacyClick(scrollY) {
         if (privacyContainer && privacyContainer.current) {
             privacyContainer.current.classList.add('active');
+
+            if (scrollY) {
+                privacyContainer.current.style.top = scrollY + (privacyContainer?.current.offsetHeight / 1.5) + 'px';
+            }
         }
     }
 
-    function handleAboutClick() {
+    function handleAboutClick(scrollY) {
         if (aboutUsContainer && aboutUsContainer.current) {
             aboutUsContainer.current.classList.add('active');
+
+            if (scrollY) {
+                aboutUsContainer.current.style.top = scrollY + (aboutUsContainer?.current.offsetHeight / 1.5) + 'px';
+            }
         }
     }
 
@@ -79,7 +91,11 @@ const Main = ({ signIn, signUp }) => {
             <Fifth />
             <Sixth />
             <Seventh />
-            <Footer />
+            <Footer
+                handleTermsClick={ handleTermsClick }
+                handlePrivacyClick={ handlePrivacyClick }
+                handleAboutClick={ handleAboutClick }
+            />
         </div>
     );
 };

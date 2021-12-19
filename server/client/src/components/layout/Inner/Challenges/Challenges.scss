@@ -68,6 +68,7 @@
   &--container {
     padding: 2rem .7rem;
     position: relative;
+    min-height: 93vh;
   }
 
   &--pop-up__new-challenge {
@@ -305,6 +306,13 @@
         width: 95%;
       }
 
+      .spinner--container {
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
       button {
         margin: 3rem 0;
         font-size: 1.7rem;
@@ -444,7 +452,7 @@
       justify-content: space-between;
 
       @include responsive(tab-land-small) {
-       flex-direction: column;
+        flex-direction: column;
         align-items: center;
       }
 
@@ -551,6 +559,7 @@
       position: absolute;
       top: 0;
       left: 50%;
+      width: 55%;
       transform: translate(-50%, -47%);
       height: 4rem;
       border-radius: .5rem;
@@ -592,6 +601,7 @@
       position: absolute;
       top: 70%;
       left: 0;
+      opacity: .95;
       background-color: #485461;
       background-image: linear-gradient(315deg, #485461 0%, #28313b 74%);
 
@@ -642,7 +652,7 @@
 
     @include responsive(tab-land) {
       flex-direction: column;
-      align-items: center; // TODO
+      align-items: center;
     }
   }
 
@@ -655,6 +665,10 @@
     @include responsive(tab-land) {
       margin-bottom: 2rem;
       margin-right: 0;
+    }
+
+    .spinner--container {
+      transform: scale(.6) translateY(4rem);
     }
 
     .no-result {
@@ -754,13 +768,43 @@
     position: absolute;
     width: 100%;
     height: 100%;
-
     border-radius: 50%;
     overflow: hidden;
 
+    &:hover .hover {
+      opacity: 1;
+      visibility: visible;
+      transform: scale(1);
+    }
+
+    .hover {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, .6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      visibility: hidden;
+      transform: scale(0);
+      transition: all .4s;
+
+      a {
+        color: #000;
+        font-size: 1.65rem;
+
+        &:hover {
+          color: #2a2a72;
+        }
+      }
+    }
+
     img {
       width: 100%;
-      //transform: translateY(-2rem);
     }
   }
 
@@ -1096,7 +1140,7 @@
 
     img {
       width: 100%;
-      //transform: translate(-.1rem, -1rem);
+      border-radius: 50%;
     }
   }
 

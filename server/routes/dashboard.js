@@ -31,9 +31,7 @@ dashboardRouter.get('/', currentUser, auth, async (req, res) => {
                     _id: 1,
                     username: 1,
                     fullName: '$info.general.name',
-                    whole: '$info.specific.whole',
-                    install: '$info.general.install',
-                    notification: '$info.general.notification'
+                    whole: '$info.specific.whole'
                 }
             }
         ]);
@@ -145,6 +143,7 @@ dashboardRouter.get('/', currentUser, auth, async (req, res) => {
         const prevAssignment = prevAssignmentQuery[0];
 
         let assignmentDataUpdated = false;
+        let newAssignment;
 
         if (!prevAssignment || Date.now() > (new Date(prevAssignment?.createdAt).getTime() + ONE_DAY)) {
             if (prevAssignment) {
@@ -251,7 +250,7 @@ dashboardRouter.get('/', currentUser, auth, async (req, res) => {
                 });
             }
 
-            await DailyAssignment.create({
+            newAssignment = await DailyAssignment.create({
                 userId: req.user.id,
                 training: trainingArr,
                 challenge: [
@@ -275,7 +274,7 @@ dashboardRouter.get('/', currentUser, auth, async (req, res) => {
             assignmentDataUpdated = true;
         }
 
-        const assignments = assignmentDataUpdated ? await DailyAssignment.find({ userId: req.user.id }) : prevAssignment;
+        const assignments = assignmentDataUpdated ? newAssignment : prevAssignment;
 
         userInfo[0]._id = dataEncryption(userInfo[0]._id.toString());
         const data = {

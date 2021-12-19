@@ -14,7 +14,10 @@ function statusHandler(url, socket, type) {
                 const username = decrypt(data.text);
 
                 if (type === 'messenger') messengerStore[username] = socket.id;
-                else statusStore[username] = socket.id;
+                else statusStore[username] = {
+                    id: socket.id,
+                    connections: statusStore[username] ? statusStore[username].connections + 1 : 1
+                }
                 // statusStore[username] = socket.id;
 
                 const messageJwt = jwt.sign({ username }, keys.JWT_SOCKET_SECRET);
@@ -46,19 +49,21 @@ function statusHandler(url, socket, type) {
                         throw err;
                     });
 
-
                 // when client gets disconnected
                 socket.on('disconnect', () => {
-                    makeRequest(url, 'POST', {
-                        headers: {
-                            Authorization: authorization,
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ status: 'offline' })
-                    })
-                        .then(users => {
-                            if (statusStore[username]) delete statusStore[username];
-                            if (type === 'messenger') {
+                    if (type === 'general' && statusStore[username] && statusStore[username].connections > 1) {
+                        statusStore[username].connections--;
+                    }
+
+                    else if (type === 'messenger') {
+                        makeRequest(url, 'POST', {
+                            headers: {
+                                Authorization: authorization,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ status: 'offline' })
+                        })
+                            .then(users => {
                                 if (messengerStore[username]) delete messengerStore[username];
                                 users = JSON.parse(users);
                                 // we get their socketId in the statusStore then we tell them that the user is offline
@@ -66,14 +71,26 @@ function statusHandler(url, socket, type) {
 
                                 usersId.forEach(id => {
                                     if (id) {
+                                        // only Messenger receives this
                                         socket.to(id).emit('userOffline', username);
                                     }
                                 });
-                            }
-                        });
+                            });
+                    }
+
+                    else if (type === 'general' && statusStore[username] && statusStore[username].connections <= 1) {
+                        makeRequest(url, 'POST', {
+                            headers: {
+                                Authorization: authorization,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ status: 'offline' })
+                        })
+                            .then((users) => {
+                                if (statusStore[username]) delete statusStore[username];
+                            });
+                    }
                 });
-
-
             }
         });
     } catch (err) {

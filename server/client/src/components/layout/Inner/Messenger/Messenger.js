@@ -17,7 +17,8 @@ import {
     deleteMessageForEveryone,
     deleteMessageFromSocket,
     wipeTempMessage,
-    messengerUpdateUserStatus
+    messengerUpdateUserStatus,
+    wipeIndividualConversation
 } from "../../../../actions/messengerAction";
 import { fetchMessengerSocket } from "../../../../actions/socketsAction";
 import Input from "./Input/Input";
@@ -28,6 +29,7 @@ import requireAuth from "../../../../middlewares/requireAuth";
 import timePastFormatter from "../../../../utility/timePastFormatter";
 import groupMessageDateFormatter from "../../../../utility/groupMessageDateFormatter";
 import pageViewSocketConnection from "../../../../utility/pageViewSocketConnection";
+import Spinner from "../../utils/Spinner/Spinner";
 
 import {
     receiveNotificationMessenger
@@ -61,6 +63,7 @@ const Messenger = ({
                        deleteMessageForEveryone,
                        deleteMessageFromSocket,
                        wipeTempMessage,
+                       wipeIndividualConversation,
                        receiveNotificationMessenger,
                        messengerUpdateUserStatus,
                        messengerStart,
@@ -101,8 +104,10 @@ const Messenger = ({
     const [typingStatus, setTypingStatus] = useState([]);
     const [recordingStatus, setRecordingStatus] = useState([]);
     const [shouldClear, setShouldClear] = useState([false]);
-    // const [unseenMessages, setUnseenMessages] = useState([]);
-    // const [currentConversation, setCurrentConversation] = useState('');
+    const [sendingAudio, setSendingAudio] = useState(false);
+    const [showConversationSpinner, setShowConversationSpinner] = useState(false);
+    const [newMessageCountWithScrollUp, setNewMessageCountWithScrollUp] = useState(0);
+
 
     // refs
     const mainContainer = useRef();
@@ -114,8 +119,11 @@ const Messenger = ({
     const analyzerCanvas = useRef();
     const messengerMainContainer = useRef();
     const messengerSideContainer = useRef();
+    const goBottomContainer = useRef();
 
-
+    const scrolled = useRef(false);
+    const isFirstDown = useRef(false);
+    const newPost = useRef(false);
 
     // for connecting and disconnecting to the socket
     useEffect(() => {
@@ -132,7 +140,7 @@ const Messenger = ({
             setReRender(r => !r);
         }, 1000 * 60);
 
-        const messengerSocket = io.connect('/sss-socket/messenger'/*{ transports: ['websocket'], upgrade: false }*/);
+        const messengerSocket = io.connect('/messenger'/*{ transports: ['websocket'], upgrade: false }*/);
 
         setSocket(messengerSocket);
         fetchMessengerSocket(messengerSocket);
@@ -166,18 +174,27 @@ const Messenger = ({
             });
         });
 
-        messengerSocket.on('messageReceive', ({ message, fromUsername, userInfo }) => {
+        messengerSocket.on('messageReceive', (response) => {
+            if (!response) return;
+
+            const { message, fromUsername, userInfo } = response;
             message.side = 'guest';
             if (message.isBuf) message.message = message.messageBuf.receiverMessage;
             setSocketConfig({ changed: true, type: 'messageReceive', data: { message, fromUsername, userInfo } });
             // updateMessageStatus(message.toMessageId, 'delivered', message.to);
         });
 
-        messengerSocket.on('messageUpdatedReceive', ({ message, isLast }) => {
+        messengerSocket.on('messageUpdatedReceive', (response) => {
+            if (!response) return;
+
+            const { message, isLast } = response;
             setSocketConfig({ changed: true, type: 'messageUpdatedReceive', data: { message, isLast } });
         });
 
-        messengerSocket.on('messageDeletedReceive', ({ message, isLast }) => {
+        messengerSocket.on('messageDeletedReceive', (response) => {
+            if (!response) return;
+
+            const { message, isLast } = response;
             setSocketConfig({ changed: true, type: 'messageDeletedReceive', data: { message, isLast } });
         });
 
@@ -245,6 +262,11 @@ const Messenger = ({
                 const { message, fromUsername, userInfo } = socketConfig.data;
                 submitNewMessageFromSocket(message, message.from, conversationPersonId === message.from, userInfo);
 
+                // if the use is reading old messages
+                if ((conversationData && conversationData.username.toLowerCase() === fromUsername.toLowerCase() && mainContainer?.current && mainContainer.current.scrollTop + mainContainer.current.offsetHeight) < (mainContainer?.current?.scrollHeight - 100)) {
+                    setNewMessageCountWithScrollUp(count => count + 1);
+                }
+
                 socket.emit('messageReceiveStatus', {
                     fromUsername,
                     message,
@@ -264,7 +286,7 @@ const Messenger = ({
 
             if (socketConfig.type === 'messageUpdatedReceive') {
                 const { message, isLast } = socketConfig.data;
-                updateMessageTextFromSocket(message.message, message.from, message.toMessageId, isLast, message.type, conversationPersonId === message.from);
+                if (message) updateMessageTextFromSocket(message.message, message.from, message.toMessageId, isLast, message.type, conversationPersonId === message.from);
 
                 setSocketConfig({ changed: false, type: '', data: null });
             }
@@ -303,6 +325,8 @@ const Messenger = ({
         if (conversationData && conversationData.shouldConversationReload) {
             fetchMessages();
         }
+
+        if (conversationData) setShowConversationSpinner(false);
     }, [conversationData, conversations]);
 
     useEffect(() => {
@@ -388,11 +412,17 @@ const Messenger = ({
 
                         if (messageType === 'reply') {
                             data.reply = selectedMessageToReply.id;
+                            data.tempReply = selectedMessageToReply.toMessageId;
                             data.type = 'reply';
                         }
 
                         submitNewMessage(data, conversationPersonId, socket, statusSocket, buf, userInfo).then(setSelectedConversation.bind(null, 0));
+                        newPost.current = true;
                         setRecorderStart(false);
+                        setSendingAudio(true);
+                        setTimeout(() => {
+                            setSendingAudio(false);
+                        }, 2000);
                     });
                 };
 
@@ -481,16 +511,7 @@ const Messenger = ({
 
     function onEC(e, em) {
         if (messageInputEl?.current) {
-            const number = messageInputEl.current.selectionStart;
-            const message = messageInputEl.current.value;
-            const arr = message.split('');
-            const second = arr.slice(number);
-            arr[number] = em.emoji
-            arr.splice(number + 1);
-            messageInputEl.current.value = [...arr, ...second].join('');
-
-            setMessageInput(messageInputEl.current.value);
-            messageInputEl.current.focus();
+            setMessageInput({ emoji: em.emoji });
         }
     }
 
@@ -513,11 +534,13 @@ const Messenger = ({
 
         if (messageType === 'reply') {
             data.reply = selectedMessageToReply.id;
+            data.tempReply = selectedMessageToReply.toMessageId;
             data.type = 'reply';
         }
 
         if (messageType === 'update' || messageType === 'replyUpdate') updateMessageText(messageInput, conversationPersonId, selectedMessageToEdit.id, selectedMessageToEdit.isLast, messageType, socket, data, selectedMessageToEdit.toMessageId);
         else submitNewMessage(data, conversationPersonId, socket, statusSocket, false, userInfo).then(setSelectedConversation.bind(null, 0));
+        newPost.current = true;
 
         setShouldMessageSent(false);
         setMessageType('regular');
@@ -543,14 +566,28 @@ const Messenger = ({
                 }
             });
 
-            if (conversationData.messageBucket <= 2) {
+            if (isFirstDown && isFirstDown.current === false && !conversationData.fromSocket) {
+                moveScrollDown();
+            }
+
+            if (newPost && newPost.current === true) {
+                moveScrollDown();
+                newPost.current = false;
+            }
+
+            if (mainContainer?.current && conversationData.fromSocket && !scrolled.current) {
                 moveScrollDown();
             }
         }
     }, [conversationData]);
 
     function handleConversationClick(conversationId, conversationPersonId, fullName, messengerStatus, index, username, unseen) {
+        if (conversationData && conversationData.userId === conversationPersonId) return;
+
         fetchIndividualConversation(conversationId, fullName, messengerStatus, true, undefined, username);
+        setShowConversationSpinner(true);
+
+        isFirstDown.current = false;
 
         if (unseen) {
             receiveNotificationMessenger('decrement');
@@ -566,6 +603,7 @@ const Messenger = ({
         setSelectedConversation(index);
         setConversationPersonId(conversationPersonId);
         setSelectedConversationFullName(fullName);
+        setNewMessageCountWithScrollUp(0);
 
         if (messengerSideContainer && messengerSideContainer.current && window.innerWidth <= 1300) {
             messengerSideContainer.current.style.display = 'none';
@@ -580,6 +618,18 @@ const Messenger = ({
     }
 
     function renderMessageInConversationsList(conv) {
+        function messageStyle(message) {
+            const style = {};
+
+            if (message[0].charCodeAt(0) >= 1570 && message[0].charCodeAt(0) <= 1740) {
+                style.direction = 'rtl';
+                style.fontFamily = 'Tahoma';
+                style.fontSize = '1.3rem';
+            }
+
+            return style;
+        }
+
         const typingStatusExists = typingStatus.length && typingStatus.find(obj => obj.username === conv.username);
         const recordingStatusExists = recordingStatus.length && recordingStatus.find(obj => obj.username === conv.username);
 
@@ -594,7 +644,7 @@ const Messenger = ({
         if (conv.messages[0].type === 'deleteForMe' || conv.messages[0].type === 'deleteForEveryone') {
             return <em>message was deleted!</em>;
         } else if (!conv.messages[0].isBuf) {
-            return <p className="messenger--item__message">{ textCutter(conv.messages[0].message) }</p>;
+            return <p style={ messageStyle(conv.messages[0]?.message) } className="messenger--item__message">{ textCutter(conv.messages[0]?.message) }</p>;
         } else if (conv.messages[0].isBuf) {
             return (
                 <div className="messenger--item__voice-container">
@@ -720,9 +770,9 @@ const Messenger = ({
 
     function renderReplyHeader(replyId) {
         const message = conversationData.messages.find(message => message._id === replyId);
-        const text = message.message;
-        const side = message.side;
-        if (message.isBuf) {
+        const text = message?.message;
+        const side = message?.side;
+        if (message && message.isBuf) {
             return (
                 <div className="messenger--message__reply-container" onClick={ handleReplyHeaderClick.bind(null, replyId) }>
                     <p className="reply--name">{ side === 'host' ? 'You' : conversationData.fullName }</p>
@@ -734,10 +784,18 @@ const Messenger = ({
             );
         }
 
+        const style = {};
+
+        if (text && text.charCodeAt(0) >= 1570 && text.charCodeAt(0) <= 1740) {
+            style.direction = 'rtl';
+            style.fontFamily = 'Tahoma';
+            style.fontSize = '1.3rem';
+        }
+
         return (
             <div className="messenger--message__reply-container" onClick={ handleReplyHeaderClick.bind(null, replyId) }>
                 <p className="reply--name">{ side === 'host' ? 'You' : conversationData.fullName }</p>
-                <p>{ textCutter(text) }</p>
+                <p style={ style }>{ textCutter(text) }</p>
             </div>
         );
     }
@@ -749,8 +807,8 @@ const Messenger = ({
         setSelectedTools(parseInt(ele.dataset.show));
     }
 
-    function handleReplyClick(message, side, id, isBuf) {
-        setSelectedMessageToReply({ message, side, id, isBuf });
+    function handleReplyClick(message, side, id, isBuf, toMessageId) {
+        setSelectedMessageToReply({ message, side, id, isBuf, toMessageId });
         setSelectedMessageToEdit({});
         setMessageType('reply');
         messageInputEl?.current.focus();
@@ -759,8 +817,12 @@ const Messenger = ({
     function handleEditClick(message, side, id, type, isLast, toMessageId) {
         setSelectedMessageToEdit({ message, side, id, isLast, toMessageId });
         setSelectedMessageToReply({});
+
         if (type === 'reply') setMessageType('replyUpdate');
         else if (type === 'regular') setMessageType('update');
+        else if (type === 'update') setMessageType('update');
+        else if (type === 'replyUpdate') setMessageType('replyUpdate');
+
         setMessageInput(message);
     }
 
@@ -819,7 +881,6 @@ const Messenger = ({
     }
 
     function renderMessagesInMain() {
-        conversationData.messages.sort((m1, m2) => m1 - m2);
         function makeMessageClassName(i, type, isLast) {
             let className = "messenger--message__tools-container";
 
@@ -849,14 +910,29 @@ const Messenger = ({
             messagesArr.push({ date: key }, ...messagesHolder[key]);
         }
 
-
         return messagesArr.map(({ side, message, createdAt, status, _id, type, reply, to, isBuf, date, from, toMessageId }, i) => {
+            function messageStyle() {
+                const style = {};
+                if (!message.isBuf && message.length === 2 && message.charCodeAt(0) >= 55000) {
+                    style.fontSize = '6rem';
+                    style.textAlign = 'center';
+                }
+
+                if (!message.isBuf && message[0].charCodeAt(0) >= 1570 && message[0].charCodeAt(0) <= 1740) {
+                    style.direction = 'rtl';
+                    style.fontFamily = 'Tahoma';
+                    style.fontSize = '1.47rem';
+                }
+
+                return style;
+            }
+
             if (!side) {
                 return (
                     <div
                         key={ date }
                         className="messenger--main__body-date-container"
-                        style={ (popUpOpen.show || speechRecognitionStart) ? { filter: 'blur(.3rem)' } : {} }
+                        style={ (popUpOpen.show || speechRecognitionStart || showConversationSpinner) ? { filter: 'blur(.3rem)' } : {} }
                     >
                         <p>{ groupMessageDateFormatter(date) }</p>
                     </div>
@@ -867,7 +943,8 @@ const Messenger = ({
             // style object fo conditional styling
             const style = {};
             // if (isBuf) style.minHeight = '12rem';
-            if (popUpOpen.show || speechRecognitionStart) style.filter = 'blur(.3rem)';
+            if (popUpOpen.show || speechRecognitionStart || showConversationSpinner) style.filter = 'blur(.3rem)';
+            if (messagesArr[i + 1] && messagesArr[i + 1].side !== side) style.marginBottom = '1.5rem';
             return (
                 <div
                     key={ _id }
@@ -887,7 +964,7 @@ const Messenger = ({
                             <ul>
                                 {
                                     type !== 'deleteForEveryone' &&
-                                    <li onClick={ handleReplyClick.bind(null, message, side, _id, isBuf) }>Reply</li>
+                                    <li onClick={ handleReplyClick.bind(null, message, side, _id, isBuf, toMessageId) }>Reply</li>
                                 }
                                 {
                                     (side === 'host' && type !== 'deleteForEveryone' && !isBuf) &&
@@ -906,20 +983,15 @@ const Messenger = ({
                     { (type === 'deleteForEveryone' && side === 'guest') && <em className="delete">{ selectedConversationFullName } deleted this message</em> }
                     {
                         (type !== 'deleteForMe' && type !== 'deleteForEveryone' && !isBuf) &&
-                        <p style={(message.length === 2 && message.charCodeAt(0) >= 55000) ?
-                            {
-                                fontSize: '6rem',
-                                textAlign: 'center'
-                            } : {}}
+                        <p style={ messageStyle() }
                         >
                             { message }
-
                         </p>
                     }
                     {
                         (type !== 'deleteForMe' && type !== 'deleteForEveryone' && isBuf) &&
                         <AudioPlayer
-                            source={ '/api/messenger/v/v1/' + message }
+                            source={ message ? '/api/messenger/v/v1/' + message : null }
                             shouldStop={ shouldClear }
                         />
                     }
@@ -972,14 +1044,24 @@ const Messenger = ({
             );
         }
 
+        const style = {};
+        const style2 = {};
+
+        if (selectedMessageToReply?.message && selectedMessageToReply.message.charCodeAt(0) >= 1570 && selectedMessageToReply.message.charCodeAt(0) <= 1740) {
+            style.direction = 'rtl';
+            style.fontFamily = 'Tahoma';
+            style.fontSize = '1.3rem';
+            style2.direction = 'rtl';
+        }
+
         return (
             <div className="messenger--main__reply-container">
                 <div className="reply--title">
                     Reply to
                 </div>
                 <div className="reply--container" onClick={ handleReplyBottomClick }>
-                    <div className="reply--header">{ selectedMessageToReply.side === 'host' ? 'You' : selectedConversationFullName }</div>
-                    <div className="reply--message">{ textCutter(selectedMessageToReply.message, 50) }</div>
+                    <div className="reply--header" style={ style2 }>{ selectedMessageToReply.side === 'host' ? 'You' : selectedConversationFullName }</div>
+                    <div className="reply--message" style={ style }>{ !!selectedMessageToReply && !!selectedMessageToReply.message && textCutter(selectedMessageToReply?.message, 50) }</div>
                 </div>
                 <div className="icon" onClick={ handleReplyClose }>
                     <img src={ closeReply } alt="close" />
@@ -993,6 +1075,16 @@ const Messenger = ({
         scrollToElement(selectedMessageToEdit.id);
     }
 
+    const style = {};
+    const style2 = {};
+
+    if (selectedMessageToEdit?.message && selectedMessageToEdit.message.charCodeAt(0) >= 1570 && selectedMessageToEdit.message.charCodeAt(0) <= 1740) {
+        style.direction = 'rtl';
+        style.fontFamily = 'Tahoma';
+        style.fontSize = '1.3rem';
+        style2.direction = 'rtl';
+    }
+
     function renderEditSection() {
         return (
             <div className="messenger--main__edit-container">
@@ -1000,8 +1092,8 @@ const Messenger = ({
                     Editing
                 </div>
                 <div className="reply--container" onClick={ handleEditBottomClick }>
-                    <div className="reply--header">{ selectedMessageToEdit.side === 'host' ? 'You' : selectedConversationFullName }</div>
-                    <div className="reply--message">{ textCutter(selectedMessageToEdit.message, 50) }</div>
+                    <div className="reply--header" style={ style2 }>{ selectedMessageToEdit.side === 'host' ? 'You' : selectedConversationFullName }</div>
+                    <div className="reply--message" style={ style }>{ !!selectedMessageToEdit && !!selectedMessageToEdit.message && textCutter(selectedMessageToEdit?.message, 50) }</div>
                 </div>
                 <div className="icon" onClick={ handleEditClose }>
                     <img src={ closeReply } alt="close" />
@@ -1040,6 +1132,24 @@ const Messenger = ({
             if (mainContainer.current.scrollTop <= 1) {
                 const { conversationId, fullName, messengerStatus, username } = conversationInfo;
                 fetchIndividualConversation(conversationId, fullName, messengerStatus, false, undefined, username);
+                setShowConversationSpinner(true);
+            }
+
+            if ((mainContainer.current.scrollTop + mainContainer.current.offsetHeight) < (mainContainer.current.scrollHeight - 100)) {
+                if (goBottomContainer?.current) {
+                    goBottomContainer.current.classList.add('active');
+                    scrolled.current = true;
+                }
+            } else {
+                if (goBottomContainer?.current) {
+                    goBottomContainer.current.classList.remove('active');
+                    setNewMessageCountWithScrollUp(0);
+                    scrolled.current = false;
+                }
+            }
+
+            if ((mainContainer.current.scrollTop + mainContainer.current.offsetHeight) >= mainContainer.current.scrollHeight) {
+                isFirstDown.current = true;
             }
         }
     }
@@ -1052,6 +1162,23 @@ const Messenger = ({
         if (messengerMainContainer && messengerMainContainer.current && window.innerWidth <= 1300) {
             messengerMainContainer.current.style.display = 'none';
         }
+
+        wipeIndividualConversation();
+        setSelectedConversation(-1);
+    }
+
+    function handleGoBottomClick() {
+        if (mainContainer?.current) {
+            mainContainer.current.scrollTo(0, mainContainer.current.scrollHeight);
+            setTimeout(() => {
+                setNewMessageCountWithScrollUp(0);
+                scrolled.current = false;
+            }, 1000);
+        }
+    }
+
+    function handleMainBodyContainerClick() {
+        setEmojiContainerShow(false);
     }
 
     function renderMainContainer() {
@@ -1071,10 +1198,11 @@ const Messenger = ({
                 <div
                     ref={ mainContainer }
                     onScroll={ handleMainContainerScroll }
+                    onClick={ handleMainBodyContainerClick }
                     className="messenger--main__body-container"
                     style={ (popUpOpen.show || speechRecognitionStart)? { overflowY: 'hidden' } : {} }
                 >
-                    {/*<div className="mm"></div>*/}
+                    { showConversationSpinner && <div className="spinner--container" style={{ top: mainContainer.current?.scrollHeight - mainContainer.current?.offsetHeight + 'px' }}><Spinner /></div> }
                     { conversationData && renderMessagesInMain() }
                     <div className={ "messenger--main__body--pop-up-container" + (popUpOpen.show ? " show" : "")  } style={{ top: popUpOpen.popUpTop + 'px' }}>
                         <p>Are you sure you want to delete this message for { popUpOpen.type === 'forMe' ? 'yourself' : 'everyone' }?</p>
@@ -1100,6 +1228,18 @@ const Messenger = ({
                     </div>
                     { popUpOpen.show && <div onClick={ handleMainBgClick } className="bg" style={{ top: popUpOpen.mainBgTop + 'px' }} /> }
                     { speechRecognitionStart && <div onClick={ handleMainBgClick } className="bg" style={{ top: mainContainer?.current.scrollTop + 'px' }} /> }
+                </div>
+                <div onClick={ handleGoBottomClick } ref={ goBottomContainer } className="on--scroll-container">
+                    {
+                        newMessageCountWithScrollUp > 0 &&
+                        <div className="new--message">
+                            { newMessageCountWithScrollUp }
+                        </div>
+                    }
+                    <div className="go--bottom">
+                        <img src={ back } alt="down" />
+                        <img src={ back } alt="down" />
+                    </div>
                 </div>
                 <div className="messenger--main__bottom-container">
                     { Object.keys(selectedMessageToReply).length ? renderReplySection() : undefined }
@@ -1207,6 +1347,7 @@ const Messenger = ({
         <div className="messenger--container">
             { !conversations && <Loading /> }
             <div ref={ messengerMainContainer } onClick={ handleMessengerMainContainerClick } className="messenger--main-container">
+                { !conversationData && showConversationSpinner && <div className="spinner--container"><Spinner /></div> }
                 { conversationData && renderMainContainer() }
             </div>
             <div ref={ messengerSideContainer } className="messenger--side-container">
@@ -1250,5 +1391,6 @@ export default requireAuth(connect(mapStateToProps, {
     updateMessageText,
     wipeTempMessage,
     messengerUpdateUserStatus,
-    receiveNotificationMessenger
-})(React.memo(Messenger)))
+    receiveNotificationMessenger,
+    wipeIndividualConversation
+})(React.memo(Messenger)));

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb+srv://cluster0.iyigi.mongodb.net/adasik_one', {
+mongoose.connect('mongodb+srv://dbMrUser:H15$87Mf2@cluster0.iyigi.mongodb.net/adasik_one?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
@@ -34,3 +34,4 @@ require('../model/Like');
 require('../model/Report');
 require('../model/AllTest');
 require('../model/DeletedUser');
+require('../model/JoinUs');

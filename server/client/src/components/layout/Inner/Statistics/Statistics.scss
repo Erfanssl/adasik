@@ -61,6 +61,10 @@
       width: 97%;
     }
 
+    @media only screen and (max-width: 31.25em) { //500px
+      width: 109%;
+    }
+
     h2 {
       @include responsive(small-laptop) {
         align-self: flex-start;
@@ -281,6 +285,10 @@
       width: 97%;
     }
 
+    @media only screen and (max-width: 31.25em) { //500px
+      width: 109%;
+    }
+
     h2 {
       margin-bottom: 5rem;
     }
@@ -325,16 +333,20 @@
     @include responsive(phone) {
       width: 97%;
     }
+
+    @media only screen and (max-width: 31.25em) { //500px
+      width: 109%;
+    }
   }
 }
 
 .games--center-text {
   transition: all .5s;
-  font-size: 2rem !important;
+  font-size: 2rem;
   width: 2rem;
   height: 2rem;
 
-  @media only screen and (max-width: 31.25em) { //500px
-    font-size: 1rem !important;
-  }
+  //@media only screen and (max-width: 31.25em) { //500px
+  //  font-size: 1rem !important;
+  //}
 }

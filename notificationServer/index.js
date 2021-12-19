@@ -101,31 +101,31 @@ const server = http.createServer((req, res) => {
                 const notification = {
                     title: '',
                     content: '',
-                    openUrl: 'http://127.0.0.1:8080/dashboard'
+                    openUrl: 'https://www.adasik.com/dashboard'
                 };
 
                 if (type === 'messenger') {
                     notification.title = 'New Message';
                     notification.content = `You have a new message from ${ username }`;
-                    notification.openUrl = 'http://127.0.0.1:8080/messenger';
+                    notification.openUrl = 'https://www.adasik.com/messenger';
                 }
 
                 else if (type === 'challenge-game') {
                     notification.title = 'Your Turn';
                     notification.content = `Your turn to play against ${ username }`;
-                    notification.openUrl = 'http://127.0.0.1:8080/challenges';
+                    notification.openUrl = 'https://www.adasik.com/challenges';
                 }
 
                 else if (type === 'challenge-request') {
                     notification.title = 'New Challenge Request';
                     notification.content = `You have a new Challenge request from ${ username }`;
-                    notification.openUrl = 'http://127.0.0.1:8080/challenges';
+                    notification.openUrl = 'https://www.adasik.com/challenges';
                 }
 
                 else if (type === 'friend') {
                     notification.title = 'New Friend Request';
                     notification.content = `You have a new Friend request from ${ username }`;
-                    notification.openUrl = 'http://127.0.0.1:8080/friends';
+                    notification.openUrl = 'https://www.adasik.com/friends';
                 }
 
                 else if (type === 'general') {
@@ -137,8 +137,8 @@ const server = http.createServer((req, res) => {
                 // now we send the notification if the type is not general
                 webPush.setVapidDetails(
                     'mailto:erfana11@yahoo.com',
-                    'BDh5U8KiKCsjoD5HvlUgLkD6L6YfWwK0RO6Xa-xL1rr0gIHPbhngE4wLECpfh5obf4yU2R0WLXweJqrNkiWFzy4',
-                    'k74KJAOlxNKsVIiJfDJD9DxaUNoNNSBTU192-SMFInM'
+                    'BJ_qddkp-F_RO6uXbnOZtZxhkj1WLHAmRBl2DcwNTe4g3a16l5Ej8ZLTuvrjpNwV0s2ETE9tNyvcxkQ3LfIDqhE',
+                    'xhwfzWh3J5weeqAqVtSjCUe6vIVARVnWYMXWJRgnMQI'
                 );
 
                 user.forEach(({ endpoint, keys }) => {

@@ -53,7 +53,8 @@ function renderDataHierarchy(strength, data = fakeData, statistics = false) {
         .attr('fill', d => color(d.depth));
 
     function valueNormalizer(val) {
-        return Math.min(val / 10, 3.5);
+        if (window.innerWidth < 400) return Math.min(val / 10, .7);
+        return Math.min(val / 10, 2.5);
     }
 
     nodes.filter(d => !d.children)

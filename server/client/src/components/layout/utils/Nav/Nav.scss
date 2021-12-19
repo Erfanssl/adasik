@@ -1,14 +1,18 @@
 @import '../../../../sass/mixins';
 
 .header--nav {
-  padding: 2% 1% 0 13%;
+  padding: 2% 13% 0 13%;
   display: flex;
   justify-content: space-between;
+
+  @include responsive(tab-port-big) {
+    padding: 2% 7% 0 7%;
+  }
 
   .nav--items, .nav--items--two {
     color: var(--primaryLink);
     font-size: 1.6rem;
-    width: 40%;
+    width: 49%;
     z-index: 10;
     margin-right: 4%;
     margin-top: 1rem;
@@ -21,12 +25,23 @@
     ul {
       display: flex;
       justify-content: space-around;
-      width: 80%;
+      width: 100%;
+      padding: 2rem 0;
+
+      @include responsive(small-desktop) {
+        justify-content: space-between;
+      }
 
       li {
         list-style: none;
         cursor: pointer;
         transition: color .4s;
+
+        &.privacy {
+          @include responsive(tab-land-small) {
+            display: none;
+          }
+        }
 
         color: var(--primaryLink);
 

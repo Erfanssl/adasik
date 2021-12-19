@@ -1,5 +1,5 @@
 function wordCapitalize(word) {
-    return word.replace(/^./, w => w.toUpperCase());
+    return word.toString().toLowerCase().replace(/^./, w => w.toUpperCase());
 }
 
 export default wordCapitalize;

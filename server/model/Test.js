@@ -176,6 +176,31 @@ const testSchema = new mongoose.Schema({
                 type: Number,
                 min: 0,
                 max: 1
+            },
+            shame: {
+                type: Number,
+                min: 0,
+                max: 1
+            },
+            selfConsciousness: {
+                type: Number,
+                min: 0,
+                max: 1
+            },
+            trustOthers: {
+                type: Number,
+                min: 0,
+                max: 1
+            },
+            fantasy: {
+                type: Number,
+                min: 0,
+                max: 1
+            },
+            selfLove: {
+                type: Number,
+                min: 0,
+                max: 1
             }
         }
     }, // base on only one test
@@ -342,6 +367,31 @@ const testSchema = new mongoose.Schema({
                 type: Number,
                 min: 0,
                 max: 1
+            },
+            shame: {
+                type: Number,
+                min: 0,
+                max: 1
+            },
+            selfConsciousness: {
+                type: Number,
+                min: 0,
+                max: 1
+            },
+            trustOthers: {
+                type: Number,
+                min: 0,
+                max: 1
+            },
+            fantasy: {
+                type: Number,
+                min: 0,
+                max: 1
+            },
+            selfLove: {
+                type: Number,
+                min: 0,
+                max: 1
             }
         },
         result: String
@@ -364,3 +414,4 @@ const testHolderSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 mongoose.model('Test', testHolderSchema);
+

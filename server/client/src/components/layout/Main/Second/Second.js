@@ -10,9 +10,10 @@ import mentalFlex from '../../../../assets/mental-flex.svg';
 
 const Second = () => {
     const container = useRef();
+    const container2 = useRef();
 
     return (
-        <div className="second-container">
+        <div className="second-container" id="second-container">
             <div className="second--image-container">
                 <div ref={ container } className="second--image-bg">
                     <Connections
@@ -38,9 +39,9 @@ const Second = () => {
                     Games Backed by Science
                 </h2>
                 <div className="second--image-container--two">
-                    <div ref={ container } className="second--image-bg">
+                    <div ref={ container2 } className="second--image-bg">
                         <Connections
-                            cont={ container }
+                            cont={ container2 }
                             small={ true }
                         />
                     </div>

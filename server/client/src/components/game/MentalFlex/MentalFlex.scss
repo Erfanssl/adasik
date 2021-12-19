@@ -8,15 +8,26 @@
   margin-top: 7rem;
   height: 20rem;
 
+  @media only screen and (max-height: 43.75em) and (min-width: 37.5em) { //700px //600px
+    margin-top: 12rem;
+  }
+
   li {
     list-style: none;
     font-family: Roboto-Bold;
     font-size: 15rem;
     text-transform: capitalize;
-    transition: .2s all;
     border-radius: 2rem;
     box-shadow: 0 0 4.2rem 0.2rem #000;
     padding: 1rem 3rem;
+    transition: all .08s;
+    opacity: 0;
+    transform: scale(.5);
+
+    @include responsive(phone) {
+      opacity: 1;
+      transform: scale(1);
+    }
 
     @media only screen and (max-width: 31.25em) { //500px
       font-size: 10rem;
@@ -81,7 +92,7 @@
 }
 
 .mental-flex--result {
-  color: white;
+  color: #fff;
   font-size: 5rem;
   margin-bottom: 1rem;
 }

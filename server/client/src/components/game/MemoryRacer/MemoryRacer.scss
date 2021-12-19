@@ -68,7 +68,7 @@
   width: 30rem;
   height: 30rem;
   border-radius: 2rem;
-  transition: all .1s;
+  transition: all .08s;
   transform: translateX(150%);
   opacity: 0;
 
@@ -87,12 +87,55 @@
     height: 25rem;
   }
 
+  @media only screen and (max-height: 43.75em) and (min-width: 37.5em) { //700px //600px
+    width: 28rem;
+    height: 28rem;
+    margin-top: 14rem;
+  }
+
   svg {
     position: absolute;
     transform: scale(.42);
+    opacity: 0;
 
     @include responsive(phone-big) {
       transform: scale(.36);
+    }
+  }
+
+  &.shape--one {
+    .shape--one {
+      opacity: 1;
+    }
+  }
+
+  &.shape--two {
+    .shape--two {
+      opacity: 1;
+    }
+  }
+
+  &.shape--three {
+    .shape--three {
+      opacity: 1;
+    }
+  }
+
+  &.shape--four {
+    .shape--four {
+      opacity: 1;
+    }
+  }
+
+  &.shape--five {
+    .shape--five {
+      opacity: 1;
+    }
+  }
+
+  &.shape--six {
+    .shape--six {
+      opacity: 1;
     }
   }
 }

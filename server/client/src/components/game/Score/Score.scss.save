@@ -1,0 +1,40 @@
+@import "../../../sass/mixins";
+
+@mixin score-item-responsive {
+  @include responsive(phone-big) {
+    width: 3rem;
+    height: 3rem;
+    margin: 0 1.2rem;
+  }
+
+  @include responsive(phone) {
+    width: 2.5rem;
+    height: 2.5rem;
+    margin: 0 .8rem;
+  }
+
+  @media only screen and (max-width: 31.25em) { //500px
+    width: 2rem;
+    height: 2rem;
+  }
+
+  @include responsive(phone-small) {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
+.score--container {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  flex-direction: column;
+  height: 20vh;
+  position: relative;
+  color: #fff;
+}
+
+.score--booster-status {
+  display: flex;
+  align-items: center;
+  justi

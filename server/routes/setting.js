@@ -7,8 +7,6 @@ const auth = require('../middlewares/auth');
 const dataEncryption = require('../utils/dataEncryption');
 const bcrypt = require('bcryptjs');
 
-const ADDRESS = 'http://127.0.0.1:3000';
-
 const User = mongoose.model('User');
 const Setting = mongoose.model('Setting');
 const DeletedUser = mongoose.model('DeletedUser');
@@ -40,7 +38,7 @@ settingRouter.post('/profile/avatar/:cropMetadata', currentUser, auth, async (re
         req.pipe(manipulatedImage).pipe(write);
 
         req.on('end', () => {
-            res.send({ url: `${ ADDRESS }${ url }` });
+            res.send({ url });
         });
     } catch (err) {
         res.status(400).send({ 'Error': 'Could not set the avatar' });
@@ -60,12 +58,15 @@ settingRouter.get('/profile', currentUser, auth, async (req, res) => {
                     _id: 0,
                     phoneNumber: 1,
                     prePhoneNumber: 1,
+                    securityQuestions: 1,
                     information: '$info.general'
                 }
             }
         ]);
 
-        res.send({ ...userQuery[0].information, phoneNumber: userQuery[0].phoneNumber, prePhoneNumber: userQuery[0].prePhoneNumber });
+        const isSecurityQuestionsValid = !!userQuery[0].securityQuestions && !!userQuery[0].securityQuestions.one && !!userQuery[0].securityQuestions.two && !!userQuery[0].securityQuestions.one.answer &&  !!userQuery[0].securityQuestions.two.answer;
+
+        res.send({ ...userQuery[0].information, phoneNumber: userQuery[0].phoneNumber, prePhoneNumber: userQuery[0].prePhoneNumber, securityQuestions: isSecurityQuestionsValid });
     } catch (err) {
 
     }
@@ -89,7 +90,8 @@ settingRouter.post('/profile', currentUser, auth, async (req, res) => {
             education,
             howHeardUs,
             social,
-            avatar
+            avatar,
+            securityQuestions
         } = req.body;
 
         if (!fullName || fullName.trim().length <= 0) throw new Error();
@@ -146,6 +148,26 @@ settingRouter.post('/profile', currentUser, auth, async (req, res) => {
             if (birthday.year) dataToSet['info.general.birthday.year'] = birthday.year;
         }
         if (avatar) dataToSet['info.general.avatar'] = avatar;
+        if (
+            securityQuestions && securityQuestions.one && securityQuestions.one.question && securityQuestions.one.answer
+            && securityQuestions.two && securityQuestions.two.question && securityQuestions.two.answer
+        ) {
+            const saltOne = await bcrypt.genSalt(10);
+            const saltTwo = await bcrypt.genSalt(10);
+            const hashedAnswerOne = await bcrypt.hash(securityQuestions.one.answer.trim().toLowerCase(), saltOne);
+            const hashedAnswerTwo = await bcrypt.hash(securityQuestions.two.answer.trim().toLowerCase(), saltTwo);
+
+            dataToSet['securityQuestions'] = {
+                one: {
+                    question: securityQuestions.one.question,
+                    answer: hashedAnswerOne
+                },
+                two: {
+                    question: securityQuestions.two.question,
+                    answer: hashedAnswerTwo
+                }
+            }
+        }
 
         // now we update the values
         await User.updateOne({

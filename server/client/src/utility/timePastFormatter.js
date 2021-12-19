@@ -8,8 +8,10 @@ function timePastFormatter(date) {
     if (dateDiff <= ONE_MINUTE / 2) return 'just now';
     if (dateDiff <= ONE_MINUTE) return 'moment ago';
     if (dateDiff <= (2 * ONE_MINUTE)) return 'a minute ago';
-    if (dateDiff <= (60 * ONE_MINUTE)) return `${ (dateDiff / ONE_MINUTE).toFixed(0) } minutes ago`;
-    if (dateDiff <= (24 * 60 * ONE_MINUTE)) return `${ (dateDiff / (60 * ONE_MINUTE)).toFixed(0) } hours ago`;
+    if (dateDiff < (60 * ONE_MINUTE)) return `${ (dateDiff / ONE_MINUTE).toFixed(0) } minutes ago`;
+    if (dateDiff === (60 * ONE_MINUTE)) return '1 hour ago';
+    const hours = (dateDiff / (60 * ONE_MINUTE)).toFixed(0);
+    if (dateDiff <= (24 * 60 * ONE_MINUTE)) return `${ hours } hour${ hours === '1' ? '' : 's' } ago`;
     // Two days aka yesterday
     if (dateDiff <= (2 * ONE_DAY)) return 'yesterday';
     // more aka the actual date

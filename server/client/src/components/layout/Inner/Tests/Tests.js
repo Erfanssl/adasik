@@ -11,6 +11,7 @@ import requireAuth from "../../../../middlewares/requireAuth";
 import Spinner from "../../utils/Spinner/Spinner";
 import createRadar from "../Statistics/Radar/createRadar";
 import pageViewSocketConnection from "../../../../utility/pageViewSocketConnection";
+import Loading from "../../utils/Loading/Loading";
 
 // helpers
 import wordCapitalize from "../../../../utility/wordCapitalize";
@@ -38,6 +39,7 @@ const Tests = ({
 
         return () => {
             pageViewSocket.disconnect();
+            testInsideWipeWhoAmI();
         };
     }, []);
 
@@ -81,12 +83,11 @@ const Tests = ({
         if (availableIn) {
             return (
                 <div className="tests--type__item--bottom-container available-in">
-                    <p>{ availableIn } days to retake...</p>
+                    <p>{ availableIn } day{ availableIn > 1 ? 's' : '' } to retake...</p>
                 </div>
             );
         }
     }
-
 
     function renderTests() {
         // we first classify them by their types
@@ -140,8 +141,17 @@ const Tests = ({
         testInsideWipeWhoAmI();
     }
 
+    function renderPersonalityInWordsTitle() {
+        if (window.innerWidth < 500) {
+            return <h2>In some words</h2>;
+        }
+
+        return <h2>Your personality in some words</h2>;
+    }
+
     return (
         <div className="tests--container">
+            { (!testData || !testData.main) && <Loading /> }
             <div ref={ whoAmIContainer } className="tests--who-am-i__container">
                 <div onClick={ handleWhoAmiCloseClick } className="close--container">
                     <img src={ close } alt="close" />
@@ -167,7 +177,7 @@ const Tests = ({
                             </h2>
                             <div ref={ whoAmIDiagram } className="diagram--container" />
                             <div className="analysis--container">
-                                { !! testData.whoAmI.personality.result.text.length && <h2>Your personality in some words</h2> }
+                                { !! testData.whoAmI.personality.result.text.length && renderPersonalityInWordsTitle() }
                                 <h3>{  testData.whoAmI.personality.result.text.split('\n')[0] }</h3>
                                 {  testData.whoAmI.personality.result.text.split('\n')[1] && <p>{  testData.whoAmI.personality.result.text.split('\n')[1] }</p> }
                             </div>

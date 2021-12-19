@@ -18,15 +18,17 @@ const AudioPlayer = ({ source, shouldStop }) => {
     const [isMouseUp, setIsMouseUp] = useState(false);
 
     useEffect(() => {
-        let currentAudio = document.createElement('audio');
-        currentAudio.preload = 'auto';
-        currentAudio.src = source;
+        if (source) {
+            let currentAudio = document.createElement('audio');
+            currentAudio.preload = 'auto';
+            currentAudio.src = source;
 
-        currentAudio.oncanplaythrough = () => {
-            setIsAudioReady(true);
-            setAudio(currentAudio);
-            setDuration(currentAudio.duration);
-        };
+            currentAudio.oncanplaythrough = () => {
+                setIsAudioReady(true);
+                setAudio(currentAudio);
+                setDuration(currentAudio.duration);
+            };
+        }
     }, []);
 
     useEffect(() => {
@@ -37,7 +39,7 @@ const AudioPlayer = ({ source, shouldStop }) => {
 
     useEffect(() => {
         let interval;
-        if (!isAudioReady) {
+        if (!isAudioReady && source) {
             const currentAudio = new Audio();
             currentAudio.oncanplaythrough = () => {
                 setIsAudioReady(true);

@@ -15,7 +15,7 @@
     opacity: 0;
     visibility: hidden;
     transition: all .4s;
-    z-index: 100;
+    z-index: 1000;
     transform-origin: center;
 
     @include responsive(small-desktop) {
@@ -44,6 +44,66 @@
       padding: 1rem 2rem;
       border: .1rem solid rgba(255, 255, 255, .2);
       border-radius: 1rem;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      width: 50%;
+
+      @include responsive(tab-port) {
+        width: 70%;
+      }
+
+      @include responsive(phone) {
+        width: 80%;
+      }
+
+      input {
+        margin: 2rem 0 1rem;
+        border-radius: 1rem;
+        font-size: 1.6rem;
+        padding: 1rem;
+        border: none;
+        outline: none;
+      }
+
+      textarea {
+        font-family: Roboto-Regular;
+        margin: 1rem 0;
+        font-size: 1.6rem;
+        border-radius: 1rem;
+        padding: 1rem;
+        outline: none;
+        border: none;
+      }
+
+      button {
+        margin: 1rem 0;
+        border: none;
+        outline: none;
+      }
+
+      p {
+        text-align: center;
+        opacity: 0;
+
+        &.success {
+          opacity: 1;
+          color: #00ff00
+        }
+
+        &.error {
+          opacity: 1;
+          color: #ff0000
+        }
+      }
+
+      .spinner--container {
+        text-align: center;
+        margin-top: 2.5rem;
+        transform: scale(.7);
+      }
     }
   }
 

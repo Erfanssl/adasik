@@ -45,11 +45,19 @@
     font-weight: 300;
     text-align: center;
     font-size: 2rem;
+
+    @include responsive(phone) {
+      font-size: 1.8rem;
+    }
   }
 
   p {
     font-size: 1.4rem;
     margin-left: .5rem;
+
+    @include responsive(phone) {
+      font-size: 1.2rem;
+    }
   }
 }
 
@@ -194,7 +202,6 @@
       height: 100%;
       z-index: 100;
       background-image: url("../../../../../../assets/bg/woven.png");
-
       display: flex;
       justify-content: center;
       align-items: center;
@@ -433,7 +440,6 @@
       @include preGameItemContainer(#fc5a08);
 
 
-
       @include responsive(phone-big) {
         width: 90%;
       }
@@ -505,21 +511,17 @@
         }
 
         &.item__offline {
-          border: var(--statusSizeSmall) solid var(--offlineColor);
+          border: var(--statusSize) solid var(--offlineColor);
         }
 
         &.item__online {
-          border: var(--statusSizeSmall) solid var(--onlineColor);
+          border: var(--statusSize) solid var(--onlineColor);
         }
 
         &:hover .score--container {
           background-image: linear-gradient(135deg, #f1dbbc, #e59b62);
         }
 
-        img {
-          width: 100%;
-          border-radius: 50%;
-        }
 
         .score--container {
           position: absolute;
@@ -545,6 +547,41 @@
             left: 50%;
             font-size: 1.6rem;
             transform: translateX(-50%);
+          }
+        }
+
+        .image--container {
+          width: 100%;
+          height: 100%;
+          position: relative;
+
+          &:hover .username--container {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+          }
+
+          .username--container {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(0, 0, 0, .9);
+            color: #fff;
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0);
+            transition: all .4s;
+          }
+
+          img {
+            width: 100%;
+            border-radius: 50%;
           }
         }
       }
@@ -579,12 +616,15 @@
 
       @include responsive(phone) {
         font-size: 1.5rem;
-        margin-top: 2rem;
+        margin-top: 0;
       }
 
       @include responsive(phone-small) {
         font-size: 1.2rem;
-        margin-top: 2rem;
+      }
+
+      @media only screen and (max-height: 39.875em) and (min-width: 68.75em) { //638px
+        margin-top: 4.9rem;
       }
     }
 
@@ -593,6 +633,10 @@
       margin-left: 6rem;
       font-size: 1.7rem;
       transform: rotate(180deg);
+
+      p {
+        text-align: center;
+      }
 
       .or {
         margin: 1.5rem 0;
@@ -616,12 +660,15 @@
 
       @include responsive(phone) {
         font-size: 1.5rem;
-        margin-top: 1rem;
+        margin-top: -1rem;
       }
 
       @include responsive(phone-small) {
         font-size: 1.2rem;
-        margin-top: 1.7rem;
+      }
+
+      @media only screen and (max-height: 39.875em) and (min-width: 68.75em) { //638px
+        margin-top: 5.2rem;
       }
     }
 
@@ -641,6 +688,11 @@
       color: #fff;
       word-spacing: 1rem;
       overflow: hidden;
+
+      @media only screen and (max-height: 43.75em) { //700px
+        margin-top: 1rem;
+      }
+
 
       @include responsive(desktop) {
         margin-left: 28rem;
@@ -685,6 +737,10 @@
         font-size: 2rem;
       }
 
+      @media only screen and (max-height: 48.75em) and (min-width: 68.75em) { //780px
+        margin-top: 3rem;
+      }
+
       &.continue {
         margin-left: 0;
         margin-top: 3rem;
@@ -726,6 +782,15 @@
       top: 53%;
       transform: translate(-50%, -50%);
       border-radius: 1rem;
+
+      @include responsive(big-desktop) {
+        width: 85%;
+      }
+
+      @include responsive(small-desktop) {
+        width: 96%;
+      }
+
       //overflow-y: auto;
 
       //&::before {
@@ -791,7 +856,7 @@
     &__body-container {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      grid-template-rows: repeat(2, minmax(20rem, 1fr));
+      grid-template-rows: repeat(3, 30rem);
       position: relative;
       height: 100%;
       overflow-y: auto;
@@ -863,8 +928,14 @@
       grid-column: 2 / 3;
       grid-row: 1 / 2;
       justify-self: center;
-      margin: 2rem 6rem 2rem 0;
+      margin: 2rem 6rem 0 0;
       font-size: 2.2rem;
+
+      .highlight {
+        background-color: #fff;
+        color: #000;
+        border-radius: 1rem;
+      }
 
       @include responsive(tab-land-small) {
         display: flex;
@@ -892,15 +963,23 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
-        align-items: center;
+        align-items: flex-start;
         margin-top: 1.5rem;
         list-style: none;
+        transform: translateX(32%);
 
+        @include responsive(phone) {
+          transform: translateX(35%);
+        }
 
         li {
           margin: .5rem -2rem 0.5rem 0;
           padding-left: 1rem;
           display: flex;
+
+          @include responsive(phone) {
+            padding-left: 0;
+          }
 
           p:nth-child(1) {
             width: 3rem;
@@ -908,19 +987,24 @@
           }
 
           p:nth-child(2) {
-            padding: 0 3rem 0 1rem;
-            width: 12rem;
+            padding: 0 2.3rem 0 1rem;
+
+            @include responsive(phone) {
+              padding: 0 2rem 0 1rem;
+            }
           }
         }
       }
-
     }
 
     &__bottom-container {
       grid-column: 1 / 3;
-      grid-row: 2 / 3;
+      grid-row: 2 / 4;
       justify-self: center;
-      margin-top: -17rem;
+
+      @media only screen and (max-height: 43.75em) { //700px
+        margin-top: -6rem;
+      }
 
       @include responsive(tab-land-small) {
         display: flex;
@@ -933,9 +1017,14 @@
 
       .button--container__main {
         width: 40%;
-        margin: 0 auto 3rem;
+        margin: 3rem auto;
         position: sticky;
         bottom: -2%;
+
+        @include responsive(phone-big) {
+          width: 70%;
+          margin-top: 0;
+        }
       }
 
       .head {
@@ -1013,6 +1102,10 @@
       .chart-wrapper {
         border-radius: 4px;
         padding: 20px 35px 10px;
+
+        div {
+          position: relative;
+        }
       }
 
       .axis path,

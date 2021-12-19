@@ -1,7 +1,7 @@
 @import "../../../sass/mixins";
 
 .result--icon-container {
-  opacity: 0;
+  opacity: 1;
   transition: all .2s;
   width: 10rem;
   height: 10rem;
@@ -11,6 +11,39 @@
   transform: scale(0.8) translateY(-70%) translateX(-50%);
   left: 50%;
   top: 50%;
+
+  svg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transform: scale(.5);
+    transition: all .17s;
+  }
+
+  &.right {
+    svg.wrong--icon {
+      opacity: 0;
+      transform: scale(.5);
+    }
+
+    svg.right--icon {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  &.wrong {
+    svg.right--icon {
+      opacity: 0;
+      transform: scale(.5);
+    }
+
+    svg.wrong--icon {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
 
   @include responsive(tab-port) {
     width: 8rem;
@@ -29,26 +62,23 @@
   @media only screen and (max-width: 31.25em) { //500px
     width: 6rem;
     height: 6rem;
-    left: 46%;
+    left: 57%;
   }
 
   @include responsive(phone-small) {
     width: 5rem;
     height: 5rem;
-    left: 48%;
   }
 
   &__right {
-    img {
+    svg {
       width: 100%;
-      height: 100%;
     }
   }
 
   &__wrong {
-    img {
-      width: 108%;
-      height: 108%;
+    svg {
+      width: 100%;
     }
   }
 }

@@ -140,6 +140,8 @@
   &--container {
     padding: 2rem 2rem;
     max-width: 200rem;
+    min-height: 93vh;
+    position: relative;
   }
 
   &--username {

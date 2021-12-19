@@ -53,6 +53,8 @@ const TestInside = ({
     const resultDiagram = useRef();
     const feedbackTextArea = useRef();
 
+    const allowToChoose = useRef(true);
+
     useEffect(() => {
         const testName = match.params.testName.split('-').join(' ');
         if (testName !== 'personality general') setNotFound(true);
@@ -190,31 +192,41 @@ const TestInside = ({
     function renderTestItem() {
         return testInsideData.questions.map((question, i) => {
             function handleChoiceClick(e) {
-                document.querySelectorAll(`.test--test-panel__main--item-container[data-id="${ i + 1 }"] .choices div`).forEach(el => el.classList.remove('active'));
-                e.target.classList.add('active');
-                if (current === head) {
-                    setCurrent(current => current + 1);
-                    setHead(head => head + 1);
-                } else {
-                    setCurrent(head);
-                }
-
-                setAnsweredArr(answeredArr => {
-                    let newAnsweredArr;
-                    if (answeredArr.find(answer => answer.element === current)) {
-                        setChangedTimes(changedTimes => changedTimes + 1);
-                        newAnsweredArr = answeredArr.map(answer => answer.element === current ? { ...answer, choice: parseInt(e.target.dataset.id) } : answer);
+                if (allowToChoose?.current) {
+                    document.querySelectorAll(`.test--test-panel__main--item-container[data-id="${ i + 1 }"] .choices div`).forEach(el => el.classList.remove('active'));
+                    if (e.target.tagName === 'IMG') {
+                        e.target.parentNode.classList.add('active');
+                    } else e.target.classList.add('active');
+                    if (current === head) {
+                        setCurrent(current => current + 1);
+                        setHead(head => head + 1);
                     } else {
-                        newAnsweredArr = [ ...answeredArr ];
-                        if (e.target.dataset.id) newAnsweredArr.push({ element: current, choice: parseInt(e.target.dataset.id) });
-                        if (!e.target.dataset.id) {
-                            setCurrent(current => current - 1);
-                            setHead(head => head - 1);
-                        }
+                        setCurrent(head);
                     }
 
-                    return newAnsweredArr;
-                });
+                    setAnsweredArr(answeredArr => {
+                        let newAnsweredArr;
+                        if (answeredArr.find(answer => answer.element === current)) {
+                            setChangedTimes(changedTimes => changedTimes + 1);
+                            newAnsweredArr = answeredArr.map(answer => answer.element === current ? ({ ...answer, choice: parseInt(e.target.dataset.id) }) : answer);
+                        } else {
+                            newAnsweredArr = [ ...answeredArr ];
+                            if (e.target.dataset.id) newAnsweredArr.push({ element: current, choice: parseInt(e.target.dataset.id) });
+                            if (!e.target.dataset.id) {
+                                setCurrent(current => current - 1);
+                                setHead(head => head - 1);
+                            }
+                        }
+
+                        return newAnsweredArr;
+                    });
+
+                    allowToChoose.current = false;
+
+                    setTimeout(() => {
+                        allowToChoose.current = true;
+                    }, 500);
+                }
             }
 
             return (
@@ -225,25 +237,25 @@ const TestInside = ({
                     <div className="choices">
                         <p className="agree--text">Agree</p>
                         <div data-id="7" onClick={ handleChoiceClick } className="agree" data-choice="agree-1">
-                            <img src={ check } alt="check" />
+                            <img data-id="7" src={ check } alt="check" />
                         </div>
                         <div data-id="6" onClick={ handleChoiceClick } className="agree" data-choice="agree-2">
-                            <img src={ check } alt="check" />
+                            <img data-id="6" src={ check } alt="check" />
                         </div>
                         <div data-id="5" onClick={ handleChoiceClick } className="agree" data-choice="agree-3">
-                            <img src={ check } alt="check" />
+                            <img data-id="5" src={ check } alt="check" />
                         </div>
                         <div data-id="4" onClick={ handleChoiceClick } className="neutral" data-choice="neutral">
-                            <img src={ check } alt="check" />
+                            <img data-id="4" src={ check } alt="check" />
                         </div>
                         <div data-id="3" onClick={ handleChoiceClick } className="disagree" data-choice="disagree-3">
-                            <img src={ check } alt="check" />
+                            <img data-id="3" src={ check } alt="check" />
                         </div>
                         <div data-id="2" onClick={ handleChoiceClick } className="disagree" data-choice="disagree-2">
-                            <img src={ check } alt="check" />
+                            <img data-id="2" src={ check } alt="check" />
                         </div>
                         <div data-id="1" onClick={ handleChoiceClick } className="disagree" data-choice="disagree-1">
-                            <img src={ check } alt="check" />
+                            <img data-id="1" src={ check } alt="check" />
                         </div>
                         <p className="disagree--text">Disagree</p>
                     </div>
@@ -414,7 +426,7 @@ const TestInside = ({
                 </div>
                 <div className="input--container">
                     <h3>You can tell us about the result and the test</h3>
-                    <textarea ref={ feedbackTextArea } rows={ 3 } placeholder="Write yor comment here..." />
+                    <textarea ref={ feedbackTextArea } rows={ 3 } placeholder="Write your comment here..." />
                     { showFeedbackValidateError && !testResultFeedback.accuracy && <p>Please complete one of the questions above</p> }
                     <Button onClick={ handleFeedbackSubmit } text="Submit" form={ true } />
                 </div>
@@ -422,6 +434,11 @@ const TestInside = ({
         );
     }
 
+    function renderPersonalityDifferences() {
+        return testInsideData.result.comparison.split('\n').map(comparison => {
+            return <p key={ comparison }>{ comparison }</p>
+        });
+    }
 
     return (
         <div className="test--container">
@@ -452,7 +469,9 @@ const TestInside = ({
                         <h2 className="head--two">Comparison to before</h2>
                         {
                             testInsideData.result.result.testsSoFar > 1 ?
-                                <p>{ testInsideData.result.comparison !== 'No difference' ? testInsideData.result.comparison : 'No significant differences compare to previous tests.' }</p>:
+                                <div>
+                                    { testInsideData.result.comparison !== 'No difference' ? renderPersonalityDifferences() : <p>'No significant differences compare to previous tests.'</p> }
+                                </div> :
                                 <p>Since it's your first test, we can't provide you any data now</p>
                         }
                     </div>

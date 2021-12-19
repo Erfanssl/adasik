@@ -41,7 +41,7 @@ const Sixth = () => {
                 }
                 <div className="sixth--right__text">
                     <p>
-                        We tell you about your top 10 rivals from all around the world;
+                        We tell you about your top rivals from all around the world;
                     </p>
                     <p>Players with nearest score in comparison to yours.</p>
                     <p>

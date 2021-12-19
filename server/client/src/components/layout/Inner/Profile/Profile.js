@@ -15,6 +15,9 @@ import numberFormatter from "../../../../utility/numberFormatter";
 import likesFormatter from "../../../../utility/likesFormatter";
 import timePastFormatter from "../../../../utility/timePastFormatter";
 import pageViewSocketConnection from "../../../../utility/pageViewSocketConnection";
+import Loading from "../../utils/Loading/Loading";
+import textCutter from "../../../../utility/textCutter";
+import wordCapitalize from "../../../../utility/wordCapitalize";
 
 // assets
 // social icons
@@ -22,8 +25,6 @@ import twitter from '../../../../assets/icons/twitter.svg';
 import instagram from '../../../../assets/icons/instagram.svg';
 import facebook from '../../../../assets/icons/facebook.svg';
 import youtube from '../../../../assets/icons/youtube.svg';
-import textCutter from "../../../../utility/textCutter";
-import wordCapitalize from "../../../../utility/wordCapitalize";
 
 
 const pieDims = { height: 280, width: 280, radius: 140 };
@@ -164,9 +165,12 @@ const Profile = ({ profileData, fetchProfile, usersProfileWipeData }) => {
         if (dataLoaded) {
             return profileData.friends.map(({ username, status, avatar }) => {
                 return (
-                    <li key={ username } className={ "profile--friends__item " + (status === 'online' ? "profile--person__online" : "profile--person__offline") }>
-                        <Link to={ `/profile/${ username }` }>
-                            <img src={ avatar } alt={ username } />
+                    <li key={ username } className={ "profile--friends__item" }>
+                        <Link to={ `/profile/${ username }` } className={ (status === 'online' ? "profile--person__online" : "profile--person__offline") }>
+                            <img src={ avatar } title={ username } alt={ username } />
+                            <div className="username">
+                                <p>{ textCutter(username, 10) }</p>
+                            </div>
                         </Link>
                     </li>
                 );
@@ -180,7 +184,10 @@ const Profile = ({ profileData, fetchProfile, usersProfileWipeData }) => {
     }
 
     return (
-        <div className="profile--container">
+        <div className="profile--container" style={ !dataLoaded ? { height: '100%' } : {} }>
+            {
+                !dataLoaded && <Loading text="Fetching Data..." />
+            }
             <UsersSearch />
             <div className="profile--verbal-container">
                 <div className="profile--verbal__left">
@@ -200,7 +207,7 @@ const Profile = ({ profileData, fetchProfile, usersProfileWipeData }) => {
                 </div>
                 <div className="profile--verbal__right">
                     <div className="profile--right__row">
-                        <p><span>Name:</span> { dataLoaded && profileData.info.general.name }</p>
+                        <p><span>Name:</span> { dataLoaded && textCutter(profileData.info.general.name.split(' ').map(w => wordCapitalize(w)).join(' '), 20) }</p>
                         <p><span>Total Score:</span> { dataLoaded && numberFormatter(profileData.info.specific.whole.totalScore) }</p>
                         <p><span>Universal Rank:</span> { dataLoaded && numberFormatter(profileData.info.specific.whole.rank) }</p>
                     </div>
@@ -212,7 +219,7 @@ const Profile = ({ profileData, fetchProfile, usersProfileWipeData }) => {
                     <div className="profile--right__row">
                         {/*<p><span>Group:</span> { dataLoaded && profileData.info.specific.whole.group.name }</p>*/}
                         <p><span>Age:</span> { dataLoaded && profileData.info.general.age || 'Not Completed' }</p>
-                        <p><span>Job:</span> { dataLoaded && profileData.info.general.job || 'Not Completed' }</p>
+                        <p><span>Job:</span> { dataLoaded && textCutter(profileData.info.general.job.split(' ').map(w => wordCapitalize(w)).join(' '), 20) || 'Not Completed' }</p>
                         <p><span>Friends:</span> { dataLoaded && numberFormatter(profileData.friends.length) }</p>
                     </div>
                     <div className="profile--right__row">
@@ -222,7 +229,7 @@ const Profile = ({ profileData, fetchProfile, usersProfileWipeData }) => {
                     </div>
                     <div className="profile--right__row">
                         <p><span>Likes:</span> { dataLoaded && likesFormatter(profileData.info.general.likes) }</p>
-                        <p><span>Country:</span> { dataLoaded && textCutter(profileData.info.general.location.country) || 'Not Completed' }</p>
+                        <p><span>Country:</span> { dataLoaded && profileData.info.general.location.country ? textCutter(profileData.info.general.location.country.split(',')[0], 20) : 'Not Completed' }</p>
                     </div>
                     <div className="profile--line-separator" />
                     <div className="profile--right__bottom-container">
@@ -243,7 +250,7 @@ const Profile = ({ profileData, fetchProfile, usersProfileWipeData }) => {
                 </div>
                 <div className="profile--verbal__right--two">
                     <div className="items--container">
-                        <p><span>Name:</span> { dataLoaded && profileData.info.general.name }</p>
+                        <p><span>Name:</span> { dataLoaded && textCutter(profileData.info.general.name.split(' ').map(w => wordCapitalize(w)).join(' '), 20) }</p>
                         <p><span>Total Score:</span> { dataLoaded && numberFormatter(profileData.info.specific.whole.totalScore) }</p>
                         <p><span>Universal Rank:</span> { dataLoaded && numberFormatter(profileData.info.specific.whole.rank) }</p>
                         <p><span>Level:</span> { dataLoaded && numberFormatter(profileData.info.specific.whole.level.level) }</p>
@@ -251,13 +258,13 @@ const Profile = ({ profileData, fetchProfile, usersProfileWipeData }) => {
                         <p><span>Member Since:</span> { dataLoaded && new Date(profileData.info.general.memberSince).toDateString().split(' ').map((el, i) => i % 2 !== 0 ? el : ' ') }</p>
                         {/*<p><span>Group:</span> { dataLoaded && profileData.info.specific.whole.group.name }</p>*/}
                         <p><span>Age:</span> { dataLoaded && profileData.info.general.age || 'Not Completed' }</p>
-                        <p><span>Job:</span> { dataLoaded && profileData.info.general.job || 'Not Completed' }</p>
+                        <p><span>Job:</span> { dataLoaded && textCutter(profileData.info.general.job.split(' ').map(w => wordCapitalize(w)).join(' '), 20) || 'Not Completed' }</p>
                         <p><span>Friends:</span> { dataLoaded && numberFormatter(profileData.friends.length) }</p>
                         <p><span>Challenges:</span> { dataLoaded && numberFormatter(profileData.info.specific.whole.games.total) }</p>
                         <p><span>Trainings:</span> { dataLoaded && likesFormatter(profileData.info.specific.whole.trainings) }</p>
                         <p><span>Education:</span> { dataLoaded && renderEducationText(profileData.info.general.education) || 'Not Completed' }</p>
                         <p><span>Likes:</span> { dataLoaded && likesFormatter(profileData.info.general.likes) }</p>
-                        <p><span>Country:</span> { dataLoaded && textCutter(profileData.info.general.location.country) || 'Not Completed' }</p>
+                        <p><span>Country:</span> { dataLoaded && profileData.info.general.location.country ? textCutter(profileData.info.general.location.country.split(',')[0], 20) : 'Not Completed' }</p>
                     </div>
                     <div className="profile--line-separator" />
                     <div className="profile--right__bottom-container">

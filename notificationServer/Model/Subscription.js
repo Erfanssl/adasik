@@ -10,6 +10,6 @@ const subscriptionSchema = new mongoose.Schema({
         auth: String,
         p256dh: String
     }
-});
+}, { timestamps: true });
 
 mongoose.model('Subscription', subscriptionSchema);

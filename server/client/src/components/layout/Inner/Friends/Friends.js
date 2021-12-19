@@ -12,6 +12,10 @@ import numberFormatter from "../../../../utility/numberFormatter";
 import requireAuth from "../../../../middlewares/requireAuth";
 import history from "../../../../history";
 import pageViewSocketConnection from "../../../../utility/pageViewSocketConnection";
+import Loading from "../../utils/Loading/Loading";
+import textCutter from "../../../../utility/textCutter";
+import likesFormatter from "../../../../utility/likesFormatter";
+import Spinner from "../../utils/Spinner/Spinner";
 
 import person from '../../../../assets/temp/male2.jpg';
 import confirm from '../../../../assets/check.svg';
@@ -26,10 +30,12 @@ const Friends = ({
                      acceptFriendRequest,
                      rejectFriendRequest,
                      deleteFriend
-}) => {
+                 }) => {
     const [notification, setNotification] = useState({ type: '' });
     const [popUpConfig, setPopUpConfig] = useState({ show: false, type: '', payload: {} });
     const [input, setInput] = useState('');
+    const [showRequestSpinner, setShowRequestSpinner] = useState(false);
+    const [showDeleteSpinner, setShowDeleteSpinner] = useState(false);
 
     // refs
     const requestItem1 = useRef();
@@ -71,6 +77,7 @@ const Friends = ({
 
     useEffect(() => {
         if (friendsData && (friendsData.requestAccepted)) {
+            setShowRequestSpinner(false);
             fetchFriendsData();
             setNotification({ type: 'requestAccepted' });
             setTimeout(() => {
@@ -79,6 +86,7 @@ const Friends = ({
         }
 
         if (friendsData && (friendsData.requestRejected)) {
+            setShowRequestSpinner(false);
             fetchFriendsData();
             setNotification({ type: 'requestRejected' });
             setTimeout(() => {
@@ -113,6 +121,7 @@ const Friends = ({
         if (friendsData && friendsData.friendDeleted) {
             fetchFriendsData();
             setNotification({ type: 'friendDeleted' });
+            setShowDeleteSpinner(false);
             setTimeout(() => {
                 setNotification({ type: '' });
             }, 1300);
@@ -154,10 +163,10 @@ const Friends = ({
     }, []);
 
     function renderFriendItem({ _id, status, avatar, username, fullName }) {
-        function generateClassName() {
+        function generateClassName(status) {
             let className = "friends--main__img-container";
-            if (status.text === 'online') className += " friends--item__offline";
-            else className += " friends--item__online";
+            if (status === 'online') className += " friends--item__online";
+            else className += " friends--item__offline";
 
             return className;
         }
@@ -172,7 +181,7 @@ const Friends = ({
 
         return (
             <li className="friends--main__item">
-                <div className={ generateClassName() + " hover" }>
+                <div className={ generateClassName(status.text) + " hover" }>
                     <img src={ avatar } alt={ fullName } />
                     <div className="hover--container">
                         <Link to={`/profile/${ username }`}>{ fullName }</Link>
@@ -183,7 +192,7 @@ const Friends = ({
                     <div className="title--container">
                         <Link to={`/profile/${ username }`}>{ fullName }</Link>
                     </div>
-                    <div className={ generateClassName() }>
+                    <div className={ generateClassName(status.text) }>
                         <img onClick={ handleAvatarClick } className="image" src={ avatar } alt={ fullName } />
                     </div>
                     <div className="btn--container">
@@ -214,15 +223,23 @@ const Friends = ({
         );
 
         return (
-            <ul className="friends--main-group">
-                { notification && notification.type === 'friendError' && <p className="friends--friend__notification error">Operation Failed!</p> }
-                { notification && notification.type === 'friendDeleted' && <p className="friends--friend__notification successful">Successfully deleted from you friends!</p> }
+            <>
                 {
-                    filteredFriendData.map(friend => {
-                        return renderFriendItem(friend)
-                    })
+                    showDeleteSpinner &&
+                    <div className="spinner--container">
+                        <Spinner />
+                    </div>
                 }
-            </ul>
+                <ul className="friends--main-group">
+                    { notification && notification.type === 'friendError' && <p className="friends--friend__notification error">Operation Failed!</p> }
+                    { notification && notification.type === 'friendDeleted' && <p className="friends--friend__notification successful">Successfully deleted from you friends!</p> }
+                    {
+                        filteredFriendData.map(friend => {
+                            return renderFriendItem(friend)
+                        })
+                    }
+                </ul>
+            </>
         );
     }
 
@@ -266,6 +283,7 @@ const Friends = ({
 
         function handleRequestAccept(id) {
             requestDropper(acceptFriendRequest, id);
+            setShowRequestSpinner(true);
         }
 
         function handleRequestReject(id) {
@@ -290,13 +308,13 @@ const Friends = ({
                     </Link>
                     <div className="friends--item__meta-data-container">
                         <div>
-                            <Link to={ `/profile/${ username }` }>{ fullName }</Link>
+                            <Link to={ `/profile/${ username }` }>{ textCutter(fullName, 14) }</Link>
                             <p>{ numberFormatter(games.total) } Challenge{ games.total >= 2 ? 's' : '' }</p>
                         </div>
                         <div>
-                            <p><span>Total Score:</span> { numberFormatter(totalScore) }</p>
-                            <p><span>Training Score:</span> { numberFormatter(trainingScore) }</p>
-                            <p><span>Rank:</span> { numberFormatter(rank) }</p>
+                            <p><span>Total Score:</span> { totalScore < 0 ? '-' + likesFormatter(totalScore.toString().substring(1)) : likesFormatter(totalScore) }</p>
+                            <p><span>Training Score:</span> { trainingScore < 0 ? '-' + likesFormatter(trainingScore.toString().substring(1)) : likesFormatter(trainingScore) }</p>
+                            <p><span>Rank:</span> { likesFormatter(rank) }</p>
                             <p><span>Level:</span> { numberFormatter(level.level) }</p>
                         </div>
                     </div>
@@ -332,6 +350,12 @@ const Friends = ({
                 <h2 className="friends--ribbon">
                     <p className="friends--ribbon-content">{ friendsData.pending.length === 0 ? 'No' : friendsData.pending.length } Friend Request{ friendsData.pending.length >= 2 ? 's' : '' }</p>
                 </h2>
+                {
+                    showRequestSpinner &&
+                    <div className="spinner--container">
+                        <Spinner />
+                    </div>
+                }
                 { notification && notification.type === 'requestError' && <p className="friends--requests__notification error">Operation Failed!</p> }
                 { notification && notification.type === 'requestAccepted' && <p className="friends--requests__notification successful">Successfully added to your friends!</p> }
                 { notification && notification.type === 'requestRejected' && <p className="friends--requests__notification successful">Successfully rejected!</p> }
@@ -346,6 +370,7 @@ const Friends = ({
                 function handleRequestYesBtn() {
                     requestDropper(rejectFriendRequest, popUpConfig.payload.id);
                     setPopUpConfig({ show: false, type: '', payload: {} });
+                    setShowRequestSpinner(true);
                 }
 
                 function handleRequestNoBtn() {
@@ -367,6 +392,7 @@ const Friends = ({
                 function handleFriendYesBtn() {
                     deleteFriend(popUpConfig.payload.id);
                     setPopUpConfig({ show: false, type: '', payload: {} });
+                    setShowDeleteSpinner(true);
                 }
 
                 function handleFriendNoBtn() {
@@ -396,6 +422,7 @@ const Friends = ({
 
     return (
         <div className="friends--container" style={ popUpConfig.show ? { height: '93vh', overflow: 'hidden' } : {} }>
+            { (!friendsData || !friendsData.pending) && <Loading /> }
             { popUpConfig.show && renderPopUp() }
             { friendsData && friendsData.pending && renderRequestsSection() }
             { friendsData && friendsData.friends && renderFriendsSection() }

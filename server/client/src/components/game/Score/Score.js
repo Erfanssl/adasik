@@ -50,26 +50,32 @@ const decreasedBoostIcon = (
 
 const Score = ({ type, finalScore = false, dataFromSocket, setMaxBooster, setScore, gameName }) => {
     // state
-    const [booster, setBooster] = useState(1);
+    const [booster, setBooster] = useState({ type: null, score: 1 });
     const [totalScore, setTotalScore] = useState(2);
-    const [showDecreaseStatus, setShowDecreaseStatus] = useState(false);
-    const [showIncreaseStatus, setShowIncreaseStatus] = useState(false);
     const [consecutiveTrue, setConsecutiveTrue] = useState(0);
 
     // Refs
     const shapeContainer = useRef();
     const scoreContainer = useRef();
+    const increasedBoostEl = useRef();
+    const decreasedBoostEl = useRef();
+    const scoreShapeOne = useRef();
+    const scoreShapeTwo = useRef();
+    const scoreShapeThree = useRef();
+    const scoreShapeFour = useRef();
+
+    const boosterElTimeout = useRef();
 
     useEffect(() => {
         return () => {
             setConsecutiveTrue(0);
-            setBooster(1);
+            setBooster({ type: null, score: 1 });
         };
     }, []);
 
     useEffect(() => {
         if (dataFromSocket && dataFromSocket.score) {
-            setBooster(Number(dataFromSocket.booster));
+            setBooster({ type: null, score: Number(dataFromSocket.booster) });
             setConsecutiveTrue(Number(dataFromSocket.consecutiveTrue));
             setTotalScore(Number(dataFromSocket.score));
         }
@@ -81,106 +87,110 @@ const Score = ({ type, finalScore = false, dataFromSocket, setMaxBooster, setSco
 
     useEffect(() => {
         if (type[0] === 'right') {
+            if (booster.type) setBooster(booster => ({ ...booster, type: null }));
             setConsecutiveTrue(t => t + 1);
             let newScore;
-            if (gameName === 'Anticipation') newScore = totalScore + (booster ** 2);
-            if (gameName === 'MentalFlex') newScore = totalScore + parseInt((booster ** 2.5).toFixed(0));
-            if (gameName === 'MemoryRacer') newScore = totalScore + parseInt((booster ** 2.7).toFixed(0));
+            if (gameName === 'Anticipation') newScore = totalScore + (booster.score ** 2);
+            if (gameName === 'MentalFlex') newScore = totalScore + parseInt((booster.score ** 2.5).toFixed(0));
+            if (gameName === 'MemoryRacer') newScore = totalScore + parseInt((booster.score ** 2.7).toFixed(0));
             if (newScore) setTotalScore(newScore);
             if (setScore && newScore) setScore(newScore);
         }
 
         if (type[0] === 'wrong') {
             setConsecutiveTrue(0);
-            if (booster !== 1) setBooster(1);
+            const newBooster = Math.ceil(booster.score / 2);
+            if (booster.score !== newBooster) setBooster({ type: 'decrease', score: Math.ceil(booster.score / 2) });
         }
     }, [type]);
 
     useEffect(() => {
         if (consecutiveTrue >= 4) {
-            setBooster(booster => booster + 1);
-            // setConsecutiveTrue(0);
+            setBooster({ type: 'increase', score: booster.score + 1 });
         }
     }, [consecutiveTrue]);
 
     useEffect(() => {
-        if (setMaxBooster) setMaxBooster(booster);
+        if (setMaxBooster) setMaxBooster(booster.score);
 
-        if (booster > 1) {
-            setShowIncreaseStatus(true);
-            setTimeout(() => {
-                setShowIncreaseStatus(false);
-            }, 1500);
+        if (booster.type === 'increase') {
+            if (increasedBoostEl && increasedBoostEl.current) {
+                decreasedBoostEl.current.classList.remove('active');
+                increasedBoostEl.current.classList.add('active');
+
+                if (boosterElTimeout?.current) {
+                    clearTimeout(boosterElTimeout.current);
+                    boosterElTimeout.current = null;
+                }
+
+                const timeout = setTimeout(() => {
+                    increasedBoostEl.current.classList.remove('active');
+                    boosterElTimeout.current = null;
+                }, 1500);
+
+                boosterElTimeout.current = timeout;
+            }
         }
 
-        else if (booster <= 1 && totalScore !== 2) {
-            setShowDecreaseStatus(true);
-            setTimeout(() => {
-                setShowDecreaseStatus(false);
-            }, 1500);
+        else if (booster.type === 'decrease') {
+            if (decreasedBoostEl && decreasedBoostEl.current) {
+                increasedBoostEl.current.classList.remove('active');
+                decreasedBoostEl.current.classList.add('active');
+
+                if (boosterElTimeout?.current) {
+                    clearTimeout(boosterElTimeout.current);
+                    boosterElTimeout.current = null;
+                }
+
+                const timeout = setTimeout(() => {
+                    decreasedBoostEl.current.classList.remove('active');
+                }, 1500);
+
+                boosterElTimeout.current = timeout;
+            }
         }
     }, [booster]);
 
     function renderTrueCircle() {
         if (shapeContainer && shapeContainer.current) {
-            shapeContainer.current.childNodes.forEach(node => {
-                const id = Number(node.dataset.id);
+            if (consecutiveTrue === 0) {
+                scoreShapeOne.current.classList.remove('on');
+                scoreShapeTwo.current.classList.remove('on');
+                scoreShapeThree.current.classList.remove('on');
+                scoreShapeFour.current.classList.remove('on');
+            }
 
-                function renderYellowCircle(node) {
-                    node.style.backgroundImage = 'linear-gradient(315deg, #fbb034 0%, #ffdd00 74%)';
-                    node.style.opacity = '0';
-                    node.style.transition = 'all .2s';
+            if (consecutiveTrue === 1) {
+                scoreShapeOne.current.classList.add('on');
+            }
 
-                    setTimeout(() => {
-                        node.style.opacity = '1';
-                    }, 200);
-                }
+            if (consecutiveTrue === 2) {
+                scoreShapeTwo.current.classList.add('on');
+            }
 
-                if (consecutiveTrue === 0 && id) {
-                    node.style.backgroundImage = 'linear-gradient(135deg, #0a2514 0%, #233329 74%)';
-                    return;
-                }
+            if (consecutiveTrue === 3) {
+                scoreShapeThree.current.classList.add('on');
+            }
 
-                if (consecutiveTrue >= 4 && id) {
-                    renderYellowCircle(node);
+            if (consecutiveTrue >= 4) {
+                scoreShapeFour.current.classList.add('on');
 
-                    setTimeout(() => {
-                        node.style.backgroundImage = 'linear-gradient(135deg, #0a2514 0%, #233329 74%)';
-                    }, 400);
-
-                    setTimeout(() => {
-                        setConsecutiveTrue(0);
-                    }, 100);
-                    return;
-                }
-
-                if (id === consecutiveTrue) {
-                    return renderYellowCircle(node);
-                }
-
-                if (id && id < consecutiveTrue) node.style.backgroundImage = 'linear-gradient(315deg, #fbb034 0%, #ffdd00 74%)';
-            });
+                setTimeout(() => {
+                    setConsecutiveTrue(0);
+                }, 100);
+            }
         }
-    }
-
-    // rendering final result
-    function renderFinalScore() {
-        return (
-            <div>
-                Your score is: { totalScore }
-            </div>
-        );
     }
 
     // rendering booster status
     function renderIncreaseBoosterStatus() {
         return (
-            <div className="score--booster-status increase">
+            <div ref={ increasedBoostEl } className="score--booster-status increase">
                 <div className="score--booster-status__shape">
                     { increasedBoostIcon }
                 </div>
                 <div className="score--booster-status__text">
-                    <p>Increased to { booster }X booster!</p>
+                    <p>Increased to { booster.score }X booster!</p>
                 </div>
             </div>
         );
@@ -188,12 +198,12 @@ const Score = ({ type, finalScore = false, dataFromSocket, setMaxBooster, setSco
 
     function renderDecreaseBoosterStatus() {
         return (
-            <div className="score--booster-status decrease">
+            <div ref={ decreasedBoostEl } className="score--booster-status decrease">
                 <div className="score--booster-status__shape">
                     { decreasedBoostIcon }
                 </div>
                 <div className="score--booster-status__text">
-                    <p>Decreased to { booster }X booster!</p>
+                    <p>Decreased to { booster.score }X booster!</p>
                 </div>
             </div>
         );
@@ -204,20 +214,32 @@ const Score = ({ type, finalScore = false, dataFromSocket, setMaxBooster, setSco
             <div ref={ scoreContainer } className="score--container">
                 <p className="score--total-score">Score: { numberFormatter(totalScore) }</p>
                 <div ref={ shapeContainer } className="score--shape-container">
-                    <div data-id={ 4 } className="score--shape__item" />
-                    <div data-id={ 3 } className="score--shape__item" />
-                    <div data-id={ 2 } className="score--shape__item" />
-                    <div data-id={ 1 } className="score--shape__item" />
+                    <div ref={ scoreShapeFour } data-id={ 4 } className="score--shape__item">
+                        <div className="on" />
+                        <div className="off" />
+                    </div>
+                    <div ref={ scoreShapeThree } data-id={ 3 } className="score--shape__item">
+                        <div className="on" />
+                        <div className="off" />
+                    </div>
+                    <div ref={ scoreShapeTwo } data-id={ 2 } className="score--shape__item">
+                        <div className="on" />
+                        <div className="off" />
+                    </div>
+                    <div ref={ scoreShapeOne } data-id={ 1} className="score--shape__item">
+                        <div className="on" />
+                        <div className="off" />
+                    </div>
                     <div className="score--shape__text">
-                        <p>x{ booster }</p>
+                        <p>x{ booster.score }</p>
                     </div>
                 </div>
             </div>
-            { showDecreaseStatus && renderDecreaseBoosterStatus() }
-            { showIncreaseStatus && renderIncreaseBoosterStatus() }
+            { renderDecreaseBoosterStatus() }
+            { renderIncreaseBoosterStatus() }
         </>
 
     );
 };
 
-export default Score;
+export default React.memo(Score);

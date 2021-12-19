@@ -5,7 +5,7 @@ const cors = require('cors');
 const cookieSession = require('cookie-session');
 const path = require('path');
 const compression = require('compression');
-const rateLimiter = require('express-rate-limit');
+// const rateLimiter = require('express-rate-limit');
 
 const dashboardRouter = require('./routes/dashboard');
 const profileRouter = require('./routes/profile');
@@ -27,12 +27,13 @@ const trainingRouter = require('./routes/training');
 const settingRouter = require('./routes/setting');
 const receiveRouter = require('./routes/receive');
 const innerRouter = require('./routes/inner');
+const joinUsRouter = require('./routes/joinUs');
 
 const app = express();
-const limiter = rateLimiter({
-    windowMs: 2 * 60 * 1000, // 2 minutes
-    max: 200
-});
+// const limiter = rateLimiter({
+//     windowMs: 2 * 60 * 1000, // 2 minutes
+//     max: 200
+// });
 
 app.use(helmet({
     contentSecurityPolicy: false
@@ -45,7 +46,7 @@ app.use(helmet({
 // }));
 app.use(cors());
 app.use(compression());
-app.use(limiter);
+// app.use(limiter);
 app.use(express.json());
 
 app.use(cookieSession({
@@ -75,6 +76,7 @@ app.use('/api/training', trainingRouter);
 app.use('/api/setting', settingRouter);
 app.use('/api/receive', receiveRouter);
 app.use('/api/inner', innerRouter);
+app.use('/api/joinUs', joinUsRouter);
 
 app.use(express.static(path.join(__dirname, 'client', 'public')));
 app.get('*', (req, res) => {
@@ -84,4 +86,3 @@ app.get('*', (req, res) => {
 app.listen(3000, () => {
     console.log('API server is up on port 3000');
 });
-

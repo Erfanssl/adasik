@@ -1,6 +1,7 @@
 import {
     FETCH_CONVERSATIONS,
     FETCH_INDIVIDUAL_CONVERSATION,
+    WIPE_INDIVIDUAL_CONVERSATION,
     UPDATE_MESSAGE_STATUS,
     SUBMIT_NEW_MESSAGE,
     UPDATE_MESSAGE_TEXT,
@@ -16,6 +17,8 @@ export default (state = {}, action) => {
             return { ...state, conversations: action.payload.messengerData.persons, userId: action.payload.messengerData.userId, userInfo: action.payload.messengerData.userInfo };
         case FETCH_INDIVIDUAL_CONVERSATION:
             return { ...state, conversationData: action.payload };
+        case WIPE_INDIVIDUAL_CONVERSATION:
+            return { ...state, conversationData: undefined };
         case MESSENGER_UPDATE_USER_STATUS:
             let newConversationData;
             if (state.conversationData && state.conversationData.username === action.payload.username) {
@@ -29,7 +32,7 @@ export default (state = {}, action) => {
                 ...state,
                 conversations: action.payload.status === 'seen' ?
                     state.conversations.map(
-                    c => c.userId === action.payload.conversationPersonId ? { ...c, unseen: 0 } : c) :
+                        c => c.userId === action.payload.conversationPersonId ? { ...c, unseen: 0 } : c) :
                     state.conversations,
                 conversationData: {
                     ...state.conversationData,
@@ -48,9 +51,12 @@ export default (state = {}, action) => {
                     conversations = [...state.conversations, { userId: action.payload.message.from, messages: [ action.payload.message ], messengerStatus: state.conversationData.messengerStatus, unseen: 1 }];
                 }
             }
-            else conversations = action.payload.shouldUpdateConversationData ? state.conversations.map(conv => conv.userId === action.payload.personId ? { ...conv, messages: [ action.payload.message ] } : conv) : state.conversations.map(conv => conv.userId === action.payload.personId ? { ...conv, messages: [ action.payload.message ], unseen: conv.unseen + 1 } : conv);
-            const conversationData = action.payload.shouldUpdateConversationData ? ({ ...state.conversationData, messages: [ ...state.conversationData.messages, action.payload.message ] }) : state.conversationData;
+            else conversations = action.payload.shouldUpdateConversationData ? (state.conversations.map(conv => conv.userId === action.payload.personId ? ({ ...conv, messages: [ action.payload.message ] }) : conv)) : (state.conversations.map(conv => conv.userId === action.payload.personId ? ({ ...conv, messages: [ action.payload.message ], unseen: conv.unseen + 1 }) : conv));
+            let conversationData;
+            if (action.payload.tempMessageId) conversationData = action.payload.shouldUpdateConversationData ? ({ ...state.conversationData, messages: [ ...state.conversationData.messages.filter(m => m._id !== action.payload.tempMessageId), action.payload.message ] }) : state.conversationData;
+            else conversationData = action.payload.shouldUpdateConversationData ? ({ ...state.conversationData, messages: [ ...state.conversationData.messages, action.payload.message ] }) : state.conversationData;
             if (state.conversationData && state.conversationData.isFromProfile) conversationData.shouldConversationReload = true;
+            if (conversationData) conversationData.fromSocket = !!action.payload.fromSocket;
             return {
                 ...state,
                 conversations,

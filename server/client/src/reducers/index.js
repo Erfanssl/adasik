@@ -16,6 +16,7 @@ import testReducer from "./testReducer";
 import identifierReducer from "./identifierReducer";
 import innerReducer from "./innerReducer";
 import isLoggedInReducer from "./isLoggedInReducer";
+import joinUsReducer from "./joinUsReducer";
 
 
 export default combineReducers({
@@ -35,5 +36,6 @@ export default combineReducers({
     tests: testReducer,
     identifier: identifierReducer,
     appNotification: innerReducer,
-    isLoggedIn: isLoggedInReducer
+    isLoggedIn: isLoggedInReducer,
+    joinUs: joinUsReducer
 });

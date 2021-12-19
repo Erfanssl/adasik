@@ -4,11 +4,13 @@ import './Profile.scss';
 import { connect } from 'react-redux';
 import 'intl-tel-input/build/css/intlTelInput.css';
 import ImagePicker from "./ImagePicker/ImagePicker";
+import CountryPicker from "./CountryPicker/CountryPicker";
 import {
     fetchSettingsProfileData,
     sendSettingsProfileData,
     wipeSettingsProfileData
 } from "../../../../../actions/settingsAction";
+import { changeIdentifierProfileName } from "../../../../../actions/identifierAction";
 import Loading from "../../../utils/Loading/Loading";
 import Spinner from "../../../utils/Spinner/Spinner";
 import Button from "../Button/Button";
@@ -19,14 +21,16 @@ import twitter from '../../../../../assets/icons/twitter.svg';
 import instagram from '../../../../../assets/icons/instagram.svg';
 import facebook from '../../../../../assets/icons/facebook.svg';
 import youtube from '../../../../../assets/icons/youtube.svg';
+import down from '../../../../../assets/icons/back.svg';
 
 
 const Profile = ({
                      profileData,
                      fetchSettingsProfileData,
                      sendSettingsProfileData,
-                     wipeSettingsProfileData
-}) => {
+                     wipeSettingsProfileData,
+                     changeIdentifierProfileName
+                 }) => {
     const [philosophy, setPhilosophy] = useState('');
     const [bio, setBio] = useState('');
     const [locationCoords, setLocationCoords] = useState([]);
@@ -35,8 +39,14 @@ const Profile = ({
     const [formSuccess, setFormSuccess] = useState({ show: true, text: '' });
     const [avatar, setAvatar] = useState('');
     const [showSendingSpinner, setShowSendingSpinner] = useState(false);
-    const [phoneCountry, setPhoneCountry] = useState('');
-    const [telFn, setTelFn] = useState(null);
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [prePhoneNumber, setPrePhoneNumber] = useState('');
+    const [firstSecurityQuestion, setFirstSecurityQuestion] = useState('What is the name of the road you grew up on?');
+    const [secondSecurityQuestion, setSecondSecurityQuestion] = useState('What is your favorite food?');
+    const [firstSecurityQuestionActive, setFirstSecurityQuestionActive] = useState(false);
+    const [secondSecurityQuestionActive, setSecondSecurityQuestionActive] = useState(false);
+    const [allowSecurityQuestions, setAllowSecurityQuestions] = useState(false);
+    const [country, setCountry] = useState('');
 
     // refs
     const phoneInput = useRef();
@@ -45,21 +55,29 @@ const Profile = ({
     const birthdayMonthInput = useRef();
     const birthdayYearInput = useRef();
     const jobInput = useRef();
-    const locationCountryInput = useRef();
     const locationCityInput = useRef();
     const socialTwitterInput = useRef();
     const socialInstagramInput = useRef();
     const socialFacebookInput = useRef();
     const socialYoutubeInput = useRef();
+    const firstQuestionsContainer = useRef();
+    const secondQuestionsContainer = useRef();
+    const firstQuestionContainer = useRef();
+    const secondQuestionContainer = useRef();
+    const answerOneInput = useRef();
+    const answerTwoInput = useRef();
+
+    const itiFn = useRef();
 
     useEffect(() => {
         document.title = 'Adasik - Settings/Profile';
+
         fetchSettingsProfileData();
         const pageViewSocket = pageViewSocketConnection();
 
         return () => {
             wipeSettingsProfileData();
-            pageViewSocket.disconnect()
+            pageViewSocket.disconnect();
         };
     }, []);
 
@@ -70,6 +88,7 @@ const Profile = ({
                 if (profileData.name) setFormSuccess({ show: true, text: 'Your data was successfully updated' });
                 if (!profileData.name) setFormSuccess({ show: true, text: 'Your data was successfully submitted' });
                 fetchSettingsProfileData();
+                changeIdentifierProfileName();
             }
 
             if (!profileData.dataSent) setFormSuccess({ show: false, text: '' });
@@ -95,12 +114,12 @@ const Profile = ({
             }
 
             if (profileData.job) jobInput.current.value = profileData.job;
-            if (profileData.location && profileData.location.country) locationCountryInput.current.value = profileData.location.country;
+            if (profileData.location && profileData.location.country) setCountry(profileData.location.country);
             if (profileData.location && profileData.location.city) locationCityInput.current.value = profileData.location.city;
             if (profileData.philosophy) setPhilosophy(profileData.philosophy);
             if (profileData.bio) setBio(profileData.bio);
-            if (profileData.education) document.querySelector(`input[value*='${ profileData.education }']`).checked = true;
-            if (profileData.howHeardUs) document.querySelector(`input[value*='${ profileData.howHeardUs }']`).checked = true;
+            if (profileData.education) document.querySelector(`input[name="education"][value*="${ profileData.education }"]`).checked = true;
+            if (profileData.howHeardUs) document.querySelector(`input[name="discover"][value*="${ profileData.howHeardUs }"]`).checked = true;
 
             if (profileData.social) {
                 profileData.social.forEach(socialObj => {
@@ -112,6 +131,9 @@ const Profile = ({
             }
 
             if  (profileData.avatar) setAvatar(profileData.avatar);
+
+            if (profileData.phoneNumber) setPhoneNumber(profileData.phoneNumber);
+            if (profileData.prePhoneNumber) setPrePhoneNumber(profileData.prePhoneNumber);
         }
     }, [profileData]);
 
@@ -121,8 +143,10 @@ const Profile = ({
                 separateDialCode: true
             });
 
-            if (profileData && profileData.phoneNumber) iti.setNumber(profileData.phoneNumber);
-            if (profileData && profileData.prePhoneNumber) iti.setCountry(profileData.prePhoneNumber.split('-')[1]);
+            if (phoneNumber) iti.setNumber(phoneNumber);
+            if (prePhoneNumber) iti.setCountry(prePhoneNumber.split('-')[1]);
+
+            itiFn.current = iti;
 
             const wrapper = document.querySelector('.iti--allow-dropdown');
             const label = document.createElement('label');
@@ -133,7 +157,7 @@ const Profile = ({
             wrapper.appendChild(label);
             wrapper.appendChild(label2);
         }
-    }, [phoneInput, profileData, phoneCountry]);
+    }, [phoneInput, phoneNumber]);
 
     function handleLocationClick() {
         navigator.geolocation.getCurrentPosition(success => {
@@ -156,10 +180,9 @@ const Profile = ({
                 year: birthdayYearInput.current.value
             },
             phoneNumber: phoneInput.current.value,
-            prePhoneNumber: document.querySelectorAll('.iti__selected-dial-code')[1]?.textContent + '-' + document.querySelectorAll('.iti__selected-flag')[1].attributes['aria-activedescendant'].value.split('-')[2],
             job: jobInput.current.value,
             location: {
-                country: locationCountryInput.current.value,
+                country,
                 city: locationCityInput.current.value,
                 coords: locationCoords || []
             },
@@ -175,8 +198,145 @@ const Profile = ({
             }
         };
 
+        if (firstSecurityQuestion && secondSecurityQuestion && answerOneInput.current && answerOneInput.current.value && answerTwoInput.current && answerTwoInput.current.value) {
+            data.securityQuestions = {
+                one: {
+                    question: firstSecurityQuestion,
+                    answer: answerOneInput.current.value
+                },
+                two: {
+                    question: secondSecurityQuestion,
+                    answer: answerTwoInput.current.value
+                }
+            };
+        }
+
+        if (itiFn && itiFn.current) {
+            const countryData = itiFn.current.getSelectedCountryData();
+            data.prePhoneNumber = '+' + countryData.dialCode + '-' + countryData.iso2;
+        }
+
         sendSettingsProfileData(data);
         setShowSendingSpinner(true);
+    }
+
+    function handleFirstQuestionItemClick(e) {
+        setFirstSecurityQuestion(e.target.innerText);
+        firstQuestionsContainer.current.classList.remove('active');
+        firstQuestionContainer.current.classList.remove('active');
+        setFirstSecurityQuestionActive(false);
+        secondQuestionsContainer.current.children.forEach(child => {
+            if (child.textContent === e.target.innerText) child.parentNode.removeChild(child);
+        });
+    }
+
+    function handleSecondQuestionItemClick(e) {
+        setSecondSecurityQuestion(e.target.innerText);
+        secondQuestionsContainer.current.classList.remove('active');
+        secondQuestionContainer.current.classList.remove('active');
+        setSecondSecurityQuestionActive(false);
+        firstQuestionsContainer.current.children.forEach(child => {
+            if (child.textContent === e.target.innerText) child.parentNode.removeChild(child);
+        });
+    }
+
+    function handleFirstQuestionClick() {
+        if (firstQuestionsContainer && firstQuestionsContainer.current) {
+            if (!firstSecurityQuestionActive) {
+                firstQuestionsContainer.current.classList.add('active');
+                firstQuestionContainer.current.classList.add('active');
+                setFirstSecurityQuestionActive(true);
+            }
+            else {
+                firstQuestionsContainer.current.classList.remove('active');
+                firstQuestionContainer.current.classList.remove('active');
+                setFirstSecurityQuestionActive(false);
+            }
+        }
+    }
+
+    function handleSecondQuestionClick() {
+        if (secondQuestionsContainer && secondQuestionsContainer.current) {
+            if (!secondSecurityQuestionActive) {
+                secondQuestionsContainer.current.classList.add('active');
+                secondQuestionContainer.current.classList.add('active');
+                setSecondSecurityQuestionActive(true);
+            }
+            else {
+                secondQuestionsContainer.current.classList.remove('active');
+                secondQuestionContainer.current.classList.remove('active');
+                setSecondSecurityQuestionActive(false);
+            }
+        }
+    }
+
+    function renderSecurityQuestions() {
+        return (
+            <>
+                <div className="questions--group">
+                    <div ref={ firstQuestionContainer } onClick={ handleFirstQuestionClick } className="question">
+                        <p>
+                            { firstSecurityQuestion ? firstSecurityQuestion : 'What is the name of the road you grew up on?' }
+                        </p>
+                        <img src={ down } alt="down" />
+                    </div>
+                    <ul ref={ firstQuestionsContainer } className="questions--one">
+                        <li onClick={ handleFirstQuestionItemClick }>What is the name of the road you grew up on?</li>
+                        <li onClick={ handleFirstQuestionItemClick }>What Is your favorite book?</li>
+                        <li onClick={ handleFirstQuestionItemClick }>What was the name of your first/current/favorite pet?</li>
+                        <li onClick={ handleFirstQuestionItemClick }>What was the first company that you worked for?</li>
+                        <li onClick={ handleFirstQuestionItemClick }>Where did you meet your spouse?</li>
+                        <li onClick={ handleFirstQuestionItemClick }>Where did you go to high school/college?</li>
+                        <li onClick={ handleFirstQuestionItemClick }>What is your favorite food?</li>
+                        <li onClick={ handleFirstQuestionItemClick }>What city were you born in?</li>
+                        <li onClick={ handleFirstQuestionItemClick }>Where is your favorite place to vacation?</li>
+                        <li onClick={ handleFirstQuestionItemClick }>Who was your childhood hero?</li>
+                    </ul>
+                    <input
+                        ref={ answerOneInput }
+                        type="text"
+                        placeholder="Answer"
+                    />
+                </div>
+                <div className="questions--group">
+                    <div ref={ secondQuestionContainer } onClick={ handleSecondQuestionClick } className="question">
+                        <p>
+                            { secondSecurityQuestion ? secondSecurityQuestion : 'What is your favorite food?' }
+                        </p>
+                        <img src={ down } alt="down" />
+                    </div>
+                    <ul ref={ secondQuestionsContainer } className="questions--two">
+                        <li onClick={ handleSecondQuestionItemClick }>What is your favorite food?</li>
+                        <li onClick={ handleSecondQuestionItemClick }>Where did you meet your spouse?</li>
+                        <li onClick={ handleSecondQuestionItemClick }>What was the name of your first/current/favorite pet?</li>
+                        <li onClick={ handleSecondQuestionItemClick }>What is the name of the road you grew up on?</li>
+                        <li onClick={ handleSecondQuestionItemClick }>What Is your favorite book?</li>
+                        <li onClick={ handleSecondQuestionItemClick }>What was the first company that you worked for?</li>
+                        <li onClick={ handleSecondQuestionItemClick }>Where did you go to high school/college?</li>
+                        <li onClick={ handleSecondQuestionItemClick }>What city were you born in?</li>
+                        <li onClick={ handleSecondQuestionItemClick }>Where is your favorite place to vacation?</li>
+                        <li onClick={ handleSecondQuestionItemClick }>Who was your childhood hero?</li>
+                    </ul>
+                    <input
+                        ref={ answerTwoInput }
+                        type="text"
+                        placeholder="Answer"
+                    />
+                </div>
+            </>
+        );
+    }
+
+    function renderAllowSecurityQuestions() {
+        function handleResetSecurityQuestions() {
+            setAllowSecurityQuestions(true);
+        }
+
+        return (
+            <div onClick={ handleResetSecurityQuestions } className="reset--questions">
+                Reset your Security Questions
+            </div>
+        );
     }
 
     return (
@@ -250,9 +410,11 @@ const Profile = ({
                             <div className="input--multi location ad-mr-7">
                                 <h3>Location</h3>
                                 <div className="input--group-container__vertical">
-                                    <input onClick={ handleLocationClick } ref={ locationCountryInput } type="text" id="settings--profile__country" placeholder="Country" />
-                                    <label className="settings--profile__border-bottom" />
-                                    <label htmlFor="settings--profile__country" className="settings--profile__label">Country</label>
+                                    <CountryPicker
+                                        country={ country }
+                                        setCountry={ setCountry }
+                                        setLocationCoords={ setLocationCoords }
+                                    />
                                 </div>
                                 <div className="input--group-container__vertical">
                                     <input onClick={ handleLocationClick } ref={ locationCityInput } type="text" id="settings--profile__city" placeholder="City" />
@@ -444,10 +606,23 @@ const Profile = ({
                                 </div>
                             </div>
                         </div>
+                        <div className="security--questions-container">
+                            <h3 className="header">Security Questions</h3>
+                            <p>These questions will help you if you forget your password</p>
+                            {
+                                profileData && !profileData.securityQuestions && renderSecurityQuestions()
+                            }
+                            {
+                                profileData && profileData.securityQuestions && allowSecurityQuestions && renderSecurityQuestions()
+                            }
+                            {
+                                profileData && profileData.securityQuestions && !allowSecurityQuestions && renderAllowSecurityQuestions()
+                            }
+                        </div>
                         <div className="settings--profile__footer-container">
                             <div className="upper-container">
                                 { formError.show && <p className="form--error">{ formError.text }</p> }
-                                { showSendingSpinner && <Spinner /> }
+                                { showSendingSpinner && <div className="spinner--container"><Spinner /></div> }
                                 { formSuccess.show && <p className="form--success">{ formSuccess.text }</p> }
                             </div>
                             <Button
@@ -470,5 +645,6 @@ function mapStateToProps(state) {
 export default requireAuth(connect(mapStateToProps, {
     fetchSettingsProfileData,
     sendSettingsProfileData,
-    wipeSettingsProfileData
+    wipeSettingsProfileData,
+    changeIdentifierProfileName
 })(Profile), true);

@@ -1,5 +1,29 @@
 @import "../../../sass/mixins";
 
+@mixin score-item-responsive {
+  @include responsive(phone-big) {
+    width: 3rem;
+    height: 3rem;
+    margin: 0 1.2rem;
+  }
+
+  @include responsive(phone) {
+    width: 2.5rem;
+    height: 2.5rem;
+    margin: 0 .8rem;
+  }
+
+  @media only screen and (max-width: 31.25em) { //500px
+    width: 2rem;
+    height: 2rem;
+  }
+
+  @include responsive(phone-small) {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
 .score--container {
   display: flex;
   align-items: center;
@@ -8,6 +32,7 @@
   height: 20vh;
   position: relative;
   color: #fff;
+  width: 50%;
 }
 
 .score--booster-status {
@@ -21,21 +46,27 @@
   bottom: 0;
   left: 50%;
   transform: translate(-50%, 118%);
+  opacity: 0;
+  //transition: all .2s;
 
   @include responsive(tab-port) {
-    width: 34rem;
+    width: 36rem;
+  }
+
+  &.active {
+    opacity: 1;
   }
 
   &.increase {
     background-color: #3bb78f;
     background-image: linear-gradient(315deg, #3bb78f 0%, #0bab64 74%);
-    z-index: 4;
+    //z-index: 4;
   }
 
   &.decrease {
     background-color: #861657;
     background-image: linear-gradient(326deg, #861657 0%, #ffa69e 74%);
-    z-index: 5;
+    //z-index: 5;
   }
 
   &__text {
@@ -70,35 +101,45 @@
   &__item {
     width: 4rem;
     height: 4rem;
-    border-radius: 50%;
     margin: 0 2rem;
-    //background-color: #0a2514;
-    background-image: linear-gradient(135deg, #0a2514 0%, #233329 74%);
-    box-shadow: 0 6px 0 #266b91, 0 8px 1px 1px rgba(0, 0, 0, .3), 0 10px 0 5px #12517d, 0 12px 0 5px #1a6b9a, 0 15px 0 5px #0c405e, 0 15px 1px 6px rgba(0, 0, 0, .3);
-    border-bottom: .25rem solid rgba(0 ,0 ,0, .3);
+    border-radius: 50%;
     position: relative;
 
-    @include responsive(phone-big) {
-      width: 3rem;
-      height: 3rem;
-      margin: 0 1.2rem;
+    &.on {
+      .on {
+        opacity: 1;
+      }
     }
 
-    @include responsive(phone) {
-      width: 2.5rem;
-      height: 2.5rem;
-      margin: 0 .8rem;
+    .on {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4rem;
+      height: 4rem;
+      border-radius: 50%;
+      background-image: linear-gradient(315deg, #fbb034 0%, #ffdd00 74%);
+      box-shadow: 0 6px 0 #266b91, 0 8px 1px 1px rgba(0, 0, 0, .3), 0 10px 0 5px #12517d, 0 12px 0 5px #1a6b9a, 0 15px 0 5px #0c405e, 0 15px 1px 6px rgba(0, 0, 0, .3);
+      border-bottom: .25rem solid rgba(0 ,0 ,0, .3);
+      opacity: 0;
+      z-index: 5;
+      @include score-item-responsive;
     }
 
-    @media only screen and (max-width: 31.25em) { //500px
-      width: 2rem;
-      height: 2rem;
+    .off {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4rem;
+      height: 4rem;
+      border-radius: 50%;
+      background-image: linear-gradient(135deg, #0a2514 0%, #233329 74%);
+      box-shadow: 0 6px 0 #266b91, 0 8px 1px 1px rgba(0, 0, 0, .3), 0 10px 0 5px #12517d, 0 12px 0 5px #1a6b9a, 0 15px 0 5px #0c405e, 0 15px 1px 6px rgba(0, 0, 0, .3);
+      border-bottom: .25rem solid rgba(0 ,0 ,0, .3);
+      @include score-item-responsive;
     }
 
-    @include responsive(phone-small) {
-      width: 1.5rem;
-      height: 1.5rem;
-    }
+    @include score-item-responsive;
 
     &:first-child {
       margin-left: 1.5rem;
@@ -114,6 +155,7 @@
 
     @include responsive(phone-big) {
       font-size: 3.5rem;
+      margin-left: 1.5rem;
     }
 
     @media only screen and (max-width: 31.25em) { //500px
@@ -126,6 +168,7 @@
   color: #fff;
   font-size: 4rem;
   font-family: BarlowSemiCondensed-Bold;
+  text-align: center;
 
   @include responsive(phone-big) {
     font-size: 3.5rem;

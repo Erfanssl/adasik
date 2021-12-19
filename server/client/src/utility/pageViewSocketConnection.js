@@ -1,8 +1,9 @@
 import io from "socket.io-client";
 import getDeviceType from "./getDeviceType";
+import getUserIP from "./getUserIP";
 
 function pageViewSocketConnection() {
-    const pageViewSocket = io.connect('/sss-socket/pageview', {transports: ['websocket'], upgrade: false});
+    const pageViewSocket = io.connect('/pageview', {transports: ['websocket'], upgrade: false});
 
     pageViewSocket.on('connect', () => {
 
@@ -16,16 +17,23 @@ function pageViewSocketConnection() {
             deviceType: getDeviceType()
         };
 
-        fetch('/api/pageview', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        }).then(res => res.json())
-            .then(res => {
-                pageViewSocket.emit('viewData', res.data);
-            });
+        getUserIP(ip => {
+            if (!data.ip) {
+                data.ip = ip;
+
+                fetch('/api/pageview', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then(res => res.json())
+                    .then(res => {
+                        pageViewSocket.emit('viewData', res.data);
+                    });
+            }
+        });
     });
 
     return pageViewSocket;

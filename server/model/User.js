@@ -43,6 +43,13 @@ const userSchema = new mongoose.Schema({
         },
         date: Date
     },
+    securityQuestions: {
+        one: { question: String, answer: String },
+        two: { question: String, answer: String }
+    },
+    adminMessage: [
+        { message: String, seen: Boolean }
+    ],
     info: {
         general: {
             name: String,
@@ -168,7 +175,7 @@ const userSchema = new mongoose.Schema({
                         min: 0,
                         max: 1
                     }
-                    },
+                },
                 personality: {
                     competence: {
                         type: Number,
@@ -351,6 +358,31 @@ const userSchema = new mongoose.Schema({
                         max: 1
                     },
                     management: {
+                        type: Number,
+                        min: 0,
+                        max: 1
+                    },
+                    shame: {
+                        type: Number,
+                        min: 0,
+                        max: 1
+                    },
+                    selfConsciousness: {
+                        type: Number,
+                        min: 0,
+                        max: 1
+                    },
+                    trustOthers: {
+                        type: Number,
+                        min: 0,
+                        max: 1
+                    },
+                    fantasy: {
+                        type: Number,
+                        min: 0,
+                        max: 1
+                    },
+                    selfLove: {
                         type: Number,
                         min: 0,
                         max: 1

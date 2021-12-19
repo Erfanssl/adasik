@@ -6,6 +6,7 @@ import { fetchTrainings } from "../../../../actions/trainingAction";
 import person2 from '../../../../assets/brain-char.svg';
 import requireAuth from "../../../../middlewares/requireAuth";
 import pageViewSocketConnection from "../../../../utility/pageViewSocketConnection";
+import Loading from "../../utils/Loading/Loading";
 
 const Training = ({ trainingsData, fetchTrainings }) => {
     useEffect(() => {
@@ -36,7 +37,7 @@ const Training = ({ trainingsData, fetchTrainings }) => {
                         {
                             trainingsObj[trainingType].map(({ _id, name, icon }) => {
                                 return (
-                                    <Link target="_blank" to={ `/training/${ name.toLowerCase().split(' ').join('-') }` } key={ _id } className="training--item-container">
+                                    <Link to={ `/training/${ name.toLowerCase().split(' ').join('-') }` } key={ _id } className="training--item-container">
                                         <img src={ icon || person2 } alt={ name }/>
                                         <div className="training--item__name-container">
                                             <p>{ name }</p>
@@ -53,6 +54,7 @@ const Training = ({ trainingsData, fetchTrainings }) => {
 
     return (
         <div className="training--container">
+            { (!trainingsData || !trainingsData.data) && <Loading /> }
             { trainingsData && trainingsData.data && renderTrainings() }
         </div>
     );

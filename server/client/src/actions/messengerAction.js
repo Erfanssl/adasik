@@ -1,6 +1,7 @@
 import {
     FETCH_CONVERSATIONS,
     FETCH_INDIVIDUAL_CONVERSATION,
+    WIPE_INDIVIDUAL_CONVERSATION,
     UPDATE_MESSAGE_STATUS,
     SUBMIT_NEW_MESSAGE,
     UPDATE_MESSAGE_TEXT,
@@ -97,6 +98,12 @@ export const fetchIndividualConversation = (conversationId, fullName, messengerS
     }
 };
 
+export const wipeIndividualConversation = () => async (dispatch) => {
+    dispatch({
+        type: WIPE_INDIVIDUAL_CONVERSATION
+    });
+};
+
 export const updateMessageStatus = (messageId, status, conversationPersonId) => async (dispatch) => {
     try {
         const body = {
@@ -128,21 +135,24 @@ export const updateMessageStatus = (messageId, status, conversationPersonId) => 
 export const submitNewMessage = (messageData = {}, personId, messengerSocket, statusSocket, buffer = false, userInfo) => async (dispatch, getState) => {
     try {
         // first dispatch for when data is not yet saved to DB
-        // message._id = (Math.random() * 64).toString();
-        // message.toMessageId = (Math.random() * 64).toString();
-        // message.createdAt = Date.now();
-        // message.side = 'host';
-        // message.status = 'pending';
-        //
-        // dispatch({
-        //     type: SUBMIT_NEW_MESSAGE,
-        //     payload: {
-        //         message,
-        //         personId,
-        //         shouldUpdateConversationData: true
-        //     }
-        // });
+        const tempMessageData = { ...messageData };
+        const tempMessageId = (Math.random() * 64).toString();
+        tempMessageData._id = tempMessageId;
+        tempMessageData.toMessageId = (Math.random() * 64).toString();
+        tempMessageData.createdAt = Date.now();
+        tempMessageData.side = 'host';
+        tempMessageData.status = 'pending';
 
+        if (buffer) tempMessageData.isBuf = true;
+
+        dispatch({
+            type: SUBMIT_NEW_MESSAGE,
+            payload: {
+                message: tempMessageData,
+                personId,
+                shouldUpdateConversationData: true
+            }
+        });
 
         if (buffer) {
             const bufRequest = await fetch(`/api/messenger/${personId}`, {
@@ -177,7 +187,8 @@ export const submitNewMessage = (messageData = {}, personId, messengerSocket, st
             payload: {
                 message: messageData,
                 personId,
-                shouldUpdateConversationData: true
+                shouldUpdateConversationData: true,
+                tempMessageId
             }
         });
 
@@ -195,13 +206,20 @@ export const submitNewMessage = (messageData = {}, personId, messengerSocket, st
             });
         }
 
+        const newMessageData = { ...messageData };
+        if (messageData && messageData.reply && messageData.tempReply) {
+            // we should change the reply
+            newMessageData.reply = newMessageData.tempReply;
+            delete newMessageData.tempReply;
+        }
+
         // messenger socket
         messengerSocket.emit('messageSent', {
             fromUsername: userInfo.username,
             toUsername: conversation.username,
             fullName: conversation.fullName,
             userInfo,
-            message: messageData
+            message: newMessageData
         });
 
 

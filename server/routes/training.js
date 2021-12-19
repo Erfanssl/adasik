@@ -10,10 +10,10 @@ const User = mongoose.model('User');
 const History = mongoose.model('History');
 const DailyAssignment = mongoose.model('DailyAssignment');
 
-const TYPE_STANDARD = {
-    speed: 150000,
-    flexibility: 100000
-};
+// const TYPE_STANDARD = {
+//     speed: 150000,
+//     flexibility: 100000
+// };
 
 trainingRouter.get('/', currentUser, auth, async (req, res) => {
     try {
@@ -69,11 +69,11 @@ trainingRouter.patch('/finish', currentUser, auth, async (req, res) => {
             ]);
 
             // now we need to know the user's trainingScore increment base on the score he/she got
-            function calculateTrainingScoreIncrement(type) {
+            function calculateTrainingScoreIncrement() {
                 let increment = 2;
-                const diff = score - TYPE_STANDARD[type];
-                const small = Math.min(TYPE_STANDARD[type], score);
-                const big = Math.max(TYPE_STANDARD[type], score);
+                const diff = score - 120000;
+                const small = Math.min(120000, score);
+                const big = Math.max(120000, score);
 
                 const magnitude = parseFloat((big / small).toFixed(2));
 
@@ -87,8 +87,9 @@ trainingRouter.patch('/finish', currentUser, auth, async (req, res) => {
                 return increment;
             }
 
-            const trainingScoreIncrement = calculateTrainingScoreIncrement(allGameQuery.type);
-            const newTrainingScore = userQuery[0].trainingScore + trainingScoreIncrement;
+            const trainingScoreIncrement = calculateTrainingScoreIncrement();
+            const trainingScoreIncrementOpt = trainingScoreIncrement < -100 ? -100 : trainingScoreIncrement
+            const newTrainingScore = userQuery[0].trainingScore + trainingScoreIncrementOpt;
 
             // now level
             function levelIncrement(levelObj, increment) {

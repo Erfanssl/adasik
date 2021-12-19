@@ -71,6 +71,15 @@
           color: var(--primaryWhite);
         }
       }
+
+      p {
+        color: var(--primaryLink);
+        cursor: pointer;
+
+        &:hover {
+          color: var(--primaryWhite);
+        }
+      }
     }
   }
 

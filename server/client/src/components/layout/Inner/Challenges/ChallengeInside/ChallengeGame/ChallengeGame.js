@@ -33,7 +33,7 @@ const ChallengeGame = ({
                        }) => {
     const [gameComponent, setGameComponent] = useState({ c: undefined });
     const [shouldStart, setShouldStart] = useState(false);
-    const [timer, setTimer] = useState(90);
+    // const [timer, setTimer] = useState(90);
     const [result, setResult] = useState('');
     const [socket, setSocket] = useState(null);
     const [dataFromSocket, setDataFromSocket] = useState({});
@@ -42,6 +42,7 @@ const ChallengeGame = ({
     const [gameAnalysisData, setGameAnalysisData] = useState({ completed: false, showLoading: false });
     const [gameName, setGameName] = useState(null);
     const [renderTimes, setRenderTimes] = useState(0);
+    const [finish, setFinish] = useState(null);
 
     // ref
     const chart = useRef();
@@ -62,6 +63,10 @@ const ChallengeGame = ({
             pageViewSocket.disconnect();
         };
     }, []);
+
+    useEffect(() => {
+        preGameContainer?.current?.focus();
+    }, [preGameContainer.current]);
 
     useEffect(() => {
         if (isOffline && isOffline[0]) {
@@ -85,7 +90,9 @@ const ChallengeGame = ({
 
         if (gameAnalysisData && gameAnalysisData.completed) {
             if (chart?.current) {
-                const scoreArr = [ ...gameAnalysisData.scoreArrLast30 ].reverse().map((scoreObj, i) => ({ date: i + 1, value: scoreObj.score }));
+                let scoreArr;
+                if (window.innerWidth > 600) scoreArr = [ ...gameAnalysisData.scoreArrLast30 ].reverse().map((scoreObj, i) => ({ date: i + 1, value: scoreObj.score }));
+                else scoreArr = [ ...gameAnalysisData.scoreArrLast30.slice(-10) ].reverse().map((scoreObj, i) => ({ date: i + 1, value: scoreObj.score }));
                 createMultiLineChart(scoreArr, chart.current);
             }
         }
@@ -93,15 +100,11 @@ const ChallengeGame = ({
 
     useEffect(() => {
         if (shouldStart) {
-            const gameSocket = io.connect('http://127.0.0.1:4500/game');
+            const gameSocket = io.connect('/game');
 
             setSocket(gameSocket);
 
             gameSocket.emit('gameInfo', { challengeId: match.params.challengeId, gameId: match.params.gameId, username: gameData.username, gameName });
-
-            gameSocket.on('time', time => {
-                setTimer(time);
-            });
 
             gameSocket.on('initialInfo', info => {
                 setDataFromSocket(info);
@@ -194,10 +197,13 @@ const ChallengeGame = ({
             return (
                 <GameComponentLoaded
                     shouldStart={ shouldStart }
-                    timer={ timer }
+                    finish={ finish }
+                    setFinish={ setFinish }
                     handleResult={ setResult }
                     dataFromSocket={ dataFromSocket }
                     setGameName={ setGameName }
+                    gameSocket={ socket }
+                    isFromSocket={ true }
                 />
             );
         }
@@ -237,7 +243,12 @@ const ChallengeGame = ({
                             <div className="score--container">
                                 <p>{ numberFormatter(player.score) }</p>
                             </div>
-                            <img src={ player.avatar } alt={ player.username } title={ player.username } />
+                            <div className="image--container">
+                                <img src={ player.avatar } alt={ player.username } title={ player.username } />
+                                <div className="username--container">
+                                    <p>{ player.username }</p>
+                                </div>
+                            </div>
                         </a>
                     );
                 })
@@ -278,8 +289,12 @@ const ChallengeGame = ({
                 );
             }
 
+            function handlePreGameKeyDown(e) {
+                if (e.keyCode === 13) handleStartGameClick();
+            }
+
             return (
-                <div ref={ preGameContainer } className={ "challenge-game--pre-game__container" + (shouldStart ? " hide" : "")}>
+                <div onKeyDown={ handlePreGameKeyDown } tabIndex="0" ref={ preGameContainer } className={ "challenge-game--pre-game__container" + (shouldStart ? " hide" : "")}>
                     <div ref={ lineOne } className="line hide" />
                     <div ref={ lineTwo } className="line2 hide" />
                     <div ref={ preGameLeftContainer } className="challenge-game--pre-game__left-container hide">
@@ -341,12 +356,30 @@ const ChallengeGame = ({
         );
 
         function renderTop5() {
+            function createHighlightClassName(topScore) {
+                if (topScore === gameAnalysisData.score) {
+                    let index = -1;
+                    for (let i = gameAnalysisData.scoreArrTop5.length - 1; i >= 0; i--) {
+                        if (gameAnalysisData.scoreArrTop5[i].score === topScore) {
+                            index = i;
+                            break;
+                        }
+                    }
+
+                    if (index !== -1) {
+                        return 'highlight';
+                    }
+
+                    return '';
+                }
+            }
+
             return (
                 <ol>
                     {
                         [ ...gameAnalysisData.scoreArrTop5 ].map((scoreObj, i) => {
                             return (
-                                <li>
+                                <li className={ createHighlightClassName(scoreObj.score) }>
                                     <p>{ i + 1 }.</p>
                                     <p>{ numberFormatter(scoreObj.score) }</p>
                                 </li>
@@ -376,7 +409,7 @@ const ChallengeGame = ({
                             <p>{ numberFormatter(gameAnalysisData.score) }</p>
                             <p>{ gameAnalysisData.right } of { gameAnalysisData.total }</p>
                             <p>{ gameAnalysisData.accuracy }%</p>
-                            <p>{ gameAnalysisData.responseTime } ms</p>
+                            <p>{ gameAnalysisData.responseTime > 1 ? `${ gameAnalysisData.responseTime } ms` : 'Not Enough Data' }</p>
                         </div>
                     </div>
                     <div className="challenge-game--after-game__right-container">
@@ -388,7 +421,11 @@ const ChallengeGame = ({
                     </div>
                     <div className="challenge-game--after-game__bottom-container">
                         <div className="head">
-                            <h3>Your last 30 Attempts</h3>
+                            {
+                                window.innerWidth > 600 ?
+                                    <h3>Your last 30 Attempts</h3>:
+                                    <h3>Your last 10 Attempts</h3>
+                            }
                             <p>(includes only games from challenges)</p>
                         </div>
                         {
@@ -433,10 +470,10 @@ const ChallengeGame = ({
 
     return (
         <div className="challenge-game--container">
-            { (gameAnalysisData && gameAnalysisData.showLoading && !gameAnalysisData.completed) &&
-                <div className="spinner--container">
-                    <Spinner />
-                </div>
+            { (finish && !gameAnalysisData.completed) &&
+            <div className="spinner--container">
+                <Spinner />
+            </div>
             }
             { (gameAnalysisData && gameAnalysisData.completed) && renderAfterGame() }
             { !gameData && <Loading /> }

@@ -145,11 +145,22 @@ function renderPieChart(games, data = sampleData, optionalDims, statistics = fal
 
         const text = ((i.data.orders / total) * 100).toFixed(0) + '%';
 
+        function generateFontSize() {
+            if (window.innerWidth > 600) return '2rem';
+            return '1.2rem';
+        }
+
+        function generateX() {
+            if (window.innerWidth > 600) return cent.x - (text.length * 4);
+            return cent.x - (text.length * 2);
+        }
+
         svg.append('text')
             .attr('class', 'games--center-text')
-            .attr('x', cent.x - text.length / 2 - 15)
+            .attr('x', generateX())
             .attr('y', cent.y + 5)
             .text(text)
+            .attr('font-size', generateFontSize())
             .attr('fill', '#fff');
     }
 

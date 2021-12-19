@@ -16,22 +16,18 @@ import io from 'socket.io-client';
 import { fetchMainSocket, fetchStatusSocket } from "./actions/socketsAction";
 import { setIdentifier } from "./actions/identifierAction";
 import Inner from "./components/layout/Inner/Inner";
+import NotFound from "./components/layout/utils/NotFound/NotFound";
 
 const Main = lazy(() => import('./components/layout/Main/Main'));
 const ChallengeGame = lazy(() => import('./components/layout/Inner/Challenges/ChallengeInside/ChallengeGame/ChallengeGame'));
 const TrainingGame = lazy(() => import('./components/layout/Inner/Training/TrainingGame/TrainingGame'));
-const MentalFlex = lazy(() => import('./components/game/MentalFlex/MentalFlex'));
-const Anticipation = lazy(() => import('./components/game/Anticipation/Anticipation'));
-const MemoryRacer = lazy(() => import('./components/game/MemoryRacer/MemoryRacer'));
 const SignOut = lazy(() => import('./components/layout/Inner/SignOut/SignOut'));
 
 
-
-/* TODO: TEMP */
 // import './assets/mental-flex.svg';
 // import './assets/anticipation.svg';
 // import './assets/memory-racer.svg';
-// import './assets/personality-general.svg';
+import './assets/personality-general.svg';
 
 import Loading from "./components/layout/utils/Loading/Loading";
 
@@ -40,46 +36,66 @@ const store = createStore(reducers, composeEnhancer(applyMiddleware(thunk)));
 
 const App = ({ setStatus }) => {
     const [isOffline, setIsOffline] = useState([false]);
+    const [installEvent, setInstallEvent] = useState(null);
 
-    useEffect(() => {
-        const mainSocket = io.connect('/sss-socket',  {transports: ['websocket'], upgrade: false} );
+    useEffect(async () => {
+        if (!navigator.onLine) {
+            const bypass = localStorage.getItem('bypass');
+
+            if (bypass) {
+                const [text, name] = bypass.split('_');
+                await store.dispatch(setIdentifier({text, name}));
+            }
+        }
+
+        const mainSocket = io.connect('/',  {transports: ['websocket'], upgrade: false} );
         let OuterStatusSocket;
-
 
         mainSocket.on('connect', async () => {
             await store.dispatch(fetchMainSocket(mainSocket));
 
-            fetch('/api/get').then(res => {
-                return res.json();
-            }).then(data => {
-                mainSocket.emit('encryptedMessage', data);
-                const statusSocket = io.connect('/sss-socket/status');
-                OuterStatusSocket = statusSocket;
-                store.dispatch(setIdentifier(data));
+            fetch('/api/get')
+                .then(res => res.json())
+                .then(data => {
+                    mainSocket.emit('encryptedMessage', data);
+                    const statusSocket = io.connect('/status');
+                    OuterStatusSocket = statusSocket;
+                    if (data) {
+                        store.dispatch(setIdentifier(data));
 
-
-                statusSocket.on('connect', () => {
-                    store.dispatch(fetchStatusSocket(statusSocket));
-                });
-
-                statusSocket.emit('data', data);
-
-                statusSocket.on('userOnline', async username => {
-                    try {
-                        await store.dispatch(setStatus(username, 'online'));
-                    } catch (err) {
-
+                        if (data.text && data.name) {
+                            const bypass = localStorage.getItem('bypass');
+                            if (!bypass) localStorage.setItem('bypass', `${ data.text }_${ data.name }`);
+                        }
                     }
-                });
 
-                statusSocket.on('userOffline', async username => {
-                    try {
-                        await store.dispatch(setStatus(username, 'offline'));
-                    } catch (err) {
+                    statusSocket.on('connect', () => {
+                        store.dispatch(fetchStatusSocket(statusSocket));
+                    });
 
-                    }
+                    statusSocket.emit('data', data);
+
+                    statusSocket.on('userOnline', async username => {
+                        try {
+                            await store.dispatch(setStatus(username, 'online'));
+                        } catch (err) {
+
+                        }
+                    });
+
+                    statusSocket.on('userOffline', async username => {
+                        try {
+                            await store.dispatch(setStatus(username, 'offline'));
+                        } catch (err) {
+
+                        }
+                    });
+                })
+                .catch(err => {
+                    store.dispatch(setIdentifier({
+                        FetchError: true
+                    }));
                 });
-            });
         });
 
         // handle offline events
@@ -93,9 +109,20 @@ const App = ({ setStatus }) => {
 
         if (!navigator.onLine) setIsOffline([true]);
 
+        // handle install event for installing the app with pwa
+        function beforeInstallPromptListener(event) {
+            event.preventDefault();
+            setInstallEvent(event);
+
+            return false;
+        }
+
+        window.addEventListener('beforeinstallprompt', beforeInstallPromptListener);
+
         return () => {
             mainSocket.disconnect();
             if (OuterStatusSocket) OuterStatusSocket.disconnect();
+            window.removeEventListener('beforeinstallprompt', beforeInstallPromptListener);
         };
     }, []);
 
@@ -103,14 +130,14 @@ const App = ({ setStatus }) => {
         <div>
             <Switch>
                 <Route path="/inner" exact render={ props => <Inner { ...props } /> } />
-                <Route path="/dashboard" exact render={ (props) => <Inner { ...props } type="dashboard" isOffline={ isOffline } /> } />
+                <Route path="/dashboard" exact render={ (props) => <Inner { ...props } type="dashboard" isOffline={ isOffline } installEvent={ installEvent } setInstallEvent={ setInstallEvent } /> } />
                 <Route path="/profile/:username" exact render={ (props) => <Inner { ...props } type="usersProfile" isOffline={ isOffline } /> } />
                 <Route path="/profile" exact render={ (props) => <Inner { ...props } type="profile" isOffline={ isOffline } /> } />
                 <Route path="/messenger" exact render={ (props) => <Inner { ...props } type="messenger" isOffline={ isOffline } /> } />
                 <Route path="/training/:trainingName" exact render={ (props) => <Suspense fallback={ <Loading /> }><TrainingGame { ...props } /></Suspense> } />
                 <Route path="/training" exact render={ (props) => <Inner { ...props } type="training" isOffline={ isOffline } /> } />
                 <Route path="/tests/:testName" exact render={ (props) => <Inner { ...props } type="testInside" isOffline={ isOffline } /> } />
-                <Route path="/tests" exact render={ (props) => <Inner { ...props } type="tests" /> } />
+                <Route path="/tests" exact render={ (props) => <Inner { ...props } type="tests" isOffline={ isOffline } /> } />
                 <Route path="/challenges/:challengeId/:gameId" exact render={ (props) => <Suspense fallback={ <Loading /> }><ChallengeGame { ...props } isOffline={ isOffline } /></Suspense> } />
                 <Route path="/challenges/:id" exact render={ (props) => <Inner { ...props } type="challengeInside" isOffline={ isOffline } /> } />
                 <Route path="/challenges" exact render={ (props) => <Inner { ...props } type="challenges" isOffline={ isOffline } /> } />
@@ -127,13 +154,11 @@ const App = ({ setStatus }) => {
                 <Route path="/sign-in" exact render={ (props) => <Suspense fallback={ <Loading /> }><Main { ...props } signIn={ true } /></Suspense> } />
                 <Route path="/sign-up" exact render={ (props) => <Suspense fallback={ <Loading /> }><Main { ...props } signUp={ true } /></Suspense> } />
                 <Route path="/sign-out" exact render={ props => <Suspense fallback={ <Loading /> }><SignOut { ...props } /></Suspense> } />
-                <Route path="/mental" exact render={ props => <Suspense fallback={ <Loading /> }><MentalFlex { ...props } /></Suspense> } />
-                <Route path="/ant" exact render={ props => <Suspense fallback={ <Loading /> }><Anticipation { ...props } /></Suspense> } />
-                <Route path="/memory" exact render={ props => <Suspense fallback={ <Loading /> }><MemoryRacer { ...props } /></Suspense> } />
                 <Route path="/" exact render={ (props) => <Suspense fallback={ <Loading /> }><Main { ...props } /></Suspense> } />
-                {/*<Route path="/" exact render={ (props) => <Main { ...props } /> } />*/}
                 <Route>
-                    <h2>NOT FOUND</h2>
+                    <div style={ { height: '100vh', backgroundImage: 'linear-gradient(135deg, #000000 0%, #414141 74%)', color: '#fff' } }>
+                        <NotFound showLogo={ true } />
+                    </div>
                 </Route>
             </Switch>
         </div>

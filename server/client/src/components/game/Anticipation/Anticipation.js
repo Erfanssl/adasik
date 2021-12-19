@@ -4,33 +4,24 @@ import Button from "../Button/Button";
 import Clock from "../Clock/Clock";
 import Result from "../Result/Result";
 import Score from "../Score/Score";
-
-import blueRect from '../../../assets/blue-3D-rectangle.svg';
-import blueCircle from '../../../assets/blue-circle.svg';
-import greenCircle from '../../../assets/Button-Green.svg';
-import colorfulCircle from '../../../assets/Colorful-lines.svg';
-import diamond from '../../../assets/Diamond-card-sign.svg';
-import cyanSquare from '../../../assets/Gloss-cyan-square.svg';
-import violetSquare from '../../../assets/Gloss-violet-square.svg';
-
+import { blueCircle, blueRect, cyanSquare, diamond, greenCircle, simpleCircle1, simpleCircle2, violetSquare } from './shapes';
 
 const data = [
-    { id: 1, shape: blueRect },
-    { id: 2, shape: blueCircle },
-    { id: 3, shape: greenCircle },
-    { id: 4, shape: diamond },
-    { id: 5, shape: colorfulCircle },
-    { id: 6, shape: cyanSquare },
-    { id: 7, shape: violetSquare },
+    { id: 'one' },
+    { id: 'two'},
+    { id: 'three' },
+    { id: 'four' },
+    { id: 'five' },
+    { id: 'six' },
+    { id: 'seven' },
+    { id: 'eight' },
 ];
 
 const NUM = 7;
 
-const Anticipation = ({ shouldStart, timer, handleResult, dataFromSocket, setMaxBooster, setScore, setGameName }) => {
+const Anticipation = ({ shouldStart, handleResult, dataFromSocket, setMaxBooster, setScore, setGameName, finish, setFinish, gameSocket, isFromSocket }) => {
     const [result, setResult] = useState(['']);
-    // const [resId, setResId] = useState(1);
     const [start, setStart] = useState(false);
-    const [finish, setFinish] = useState(null);
     const [bucketHolder, setBucketHolder] = useState({
         one: null,
         two: null,
@@ -40,7 +31,7 @@ const Anticipation = ({ shouldStart, timer, handleResult, dataFromSocket, setMax
         six: null,
         seven: null
     });
-    const [allowToChoose, setAllowToChoose] = useState(true);
+    const allowToChoose = useRef(true);
 
     // Refs
     const container = useRef();
@@ -56,7 +47,7 @@ const Anticipation = ({ shouldStart, timer, handleResult, dataFromSocket, setMax
 
     useEffect(() => {
         document.title = 'Adasik - Anticipation';
-       shapeBucket(NUM);
+        shapeBucket(NUM);
         if (setGameName) setGameName('Anticipation');
     }, []);
 
@@ -66,13 +57,6 @@ const Anticipation = ({ shouldStart, timer, handleResult, dataFromSocket, setMax
             if (container && container.current) container.current.focus();
         }
     }, [shouldStart]);
-
-    useEffect(() => {
-        if (timer <= 0) {
-            setFinish(true);
-            setStart(false);
-        }
-    }, [timer]);
 
     function randomNum() {
         return Math.floor(Math.random() * data.length);
@@ -117,24 +101,41 @@ const Anticipation = ({ shouldStart, timer, handleResult, dataFromSocket, setMax
 
     function beforeUpdateBucket() {
         if (shapeOne?.current) {
-            shapeOne.current.style.transition = 'all .1s';
-            shapeOne.current.style.transform = 'translateY(120%)';
-            shapeOne.current.style.opacity = '0';
+            if (window.innerWidth > 600) {
+                shapeOne.current.style.transition = 'all .05s';
+                shapeOne.current.style.transform = 'translateY(60%)';
+                shapeOne.current.style.opacity = '0';
 
-            setTimeout(() => {
-                updateBucket();
-            }, 100);
+                setTimeout(() => {
+                    updateBucket();
+                }, 50);
+            } else updateBucket();
         }
     }
 
     useEffect(() => {
-        // if (bucketHolder.seven) {
-        //     setTimeout(() => {
-        //         shapeSeven.current.style.transition = 'all .1s';
-        //         shapeSeven.current.style.transform = 'translateY(0)';
-        //         shapeSeven.current.style.opacity = '1';
-        //     }, 10);
-        // }
+        if (bucketHolder.one && shapeOne?.current) {
+            shapeOne.current.classList.remove(shapeOne.current.classList[1]);
+            shapeOne.current.classList.add(`shape--${ bucketHolder.one.id }`);
+
+            shapeTwo.current.classList.remove(shapeTwo.current.classList[1]);
+            shapeTwo.current.classList.add(`shape--${ bucketHolder.two.id }`);
+
+            shapeThree.current.classList.remove(shapeThree.current.classList[1]);
+            shapeThree.current.classList.add(`shape--${ bucketHolder.three.id }`);
+
+            shapeFour.current.classList.remove(shapeFour.current.classList[1]);
+            shapeFour.current.classList.add(`shape--${ bucketHolder.four.id }`);
+
+            shapeFive.current.classList.remove(shapeFive.current.classList[1]);
+            shapeFive.current.classList.add(`shape--${ bucketHolder.five.id }`);
+
+            shapeSix.current.classList.remove(shapeSix.current.classList[1]);
+            shapeSix.current.classList.add(`shape--${ bucketHolder.six.id }`);
+
+            shapeSeven.current.classList.remove(shapeSeven.current.classList[1]);
+            shapeSeven.current.classList.add(`shape--${ bucketHolder.seven.id }`);
+        }
 
         return () => {
             if (bucketHolder.one && shapeOne?.current) {
@@ -173,29 +174,44 @@ const Anticipation = ({ shouldStart, timer, handleResult, dataFromSocket, setMax
         }
     }
 
+    function renderShapes() {
+        return (
+            <>
+                { blueRect }
+                { blueCircle}
+                { greenCircle }
+                { diamond }
+                { simpleCircle1 }
+                { cyanSquare }
+                { violetSquare }
+                { simpleCircle2 }
+            </>
+        );
+    }
+
     function renderBuckets() {
         return (
             <>
                 <div ref={ shapeOne } className="anticipation--shape-container">
-                    <img src={ bucketHolder.one.shape } alt="shape" />
+                    { renderShapes() }
                 </div>
                 <div ref={ shapeTwo } className="anticipation--shape-container">
-                    <img src={ bucketHolder.two.shape } alt="shape" />
+                    { renderShapes() }
                 </div>
                 <div ref={ shapeThree } className="anticipation--shape-container">
-                    <img src={ bucketHolder.three.shape } alt="shape" />
+                    { renderShapes() }
                 </div>
                 <div ref={ shapeFour } className="anticipation--shape-container">
-                    <img src={ bucketHolder.four.shape } alt="shape" />
+                    { renderShapes() }
                 </div>
                 <div ref={ shapeFive } className="anticipation--shape-container">
-                    <img src={ bucketHolder.five.shape } alt="shape" />
+                    { renderShapes() }
                 </div>
                 <div ref={ shapeSix } className="anticipation--shape-container">
-                    <img src={ bucketHolder.six.shape } alt="shape" />
+                    { renderShapes() }
                 </div>
                 <div ref={ shapeSeven } className="anticipation--shape-container">
-                    <img src={ bucketHolder.seven.shape } alt="shape" />
+                    { renderShapes() }
                 </div>
             </>
         );
@@ -208,8 +224,8 @@ const Anticipation = ({ shouldStart, timer, handleResult, dataFromSocket, setMax
             if (e.keyCode === 37) bool = 'no';
             else if (e.keyCode === 39) bool = 'yes';
 
-            if (bool && allowToChoose) {
-                setAllowToChoose(false);
+            if (bool && allowToChoose.current) {
+                allowToChoose.current = false;
                 const res = checkTheAnswer(bool);
                 printResult(res);
                 beforeUpdateBucket();
@@ -218,7 +234,7 @@ const Anticipation = ({ shouldStart, timer, handleResult, dataFromSocket, setMax
     }
 
     function handleContainerKeyUp() {
-        setAllowToChoose(true);
+        allowToChoose.current = true;
     }
 
     return (
@@ -236,8 +252,11 @@ const Anticipation = ({ shouldStart, timer, handleResult, dataFromSocket, setMax
                     type={ result }
                 />
                 <Clock
-                    current={ 90 - timer }
                     ultimate={ 90 }
+                    shouldStart={ shouldStart }
+                    setFinish={ setFinish }
+                    gameSocket={ gameSocket }
+                    isFromSocket={ isFromSocket }
                 />
             </div>
             <div ref={ bucketContainer } className="anticipation--bucket-container">
@@ -251,4 +270,4 @@ const Anticipation = ({ shouldStart, timer, handleResult, dataFromSocket, setMax
     );
 };
 
-export default Anticipation;
+export default React.memo(Anticipation);

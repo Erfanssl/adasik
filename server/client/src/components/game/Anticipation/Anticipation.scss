@@ -91,6 +91,10 @@
   @include responsive(tab-port) {
     width: 98%;
   }
+
+  @media only screen and (max-height: 43.75em) and (min-width: 37.5em) { //700px //600px
+    margin-top: 7rem;
+  }
 }
 
 .anticipation--shape-container {
@@ -105,6 +109,67 @@
   background-color: #fcfcf7;
   border-radius: 2.5rem;
   margin: 0 1rem;
+  position: revert;
+
+  svg {
+    opacity: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) !important;
+  }
+
+  &.shape--one {
+    .shape--one {
+      opacity: 1;
+    }
+  }
+
+  &.shape--two {
+    .shape--two {
+      opacity: 1;
+    }
+  }
+
+  &.shape--three {
+    .shape--three {
+      opacity: 1;
+    }
+  }
+
+  &.shape--four {
+    .shape--four {
+      opacity: 1;
+    }
+  }
+
+  &.shape--five {
+    .shape--five {
+      opacity: 1;
+    }
+  }
+
+  &.shape--six {
+    .shape--six {
+      opacity: 1;
+    }
+  }
+
+  &.shape--seven {
+    .shape--seven {
+      opacity: 1;
+    }
+  }
+
+  &.shape--eight {
+    .shape--eight {
+      opacity: 1;
+    }
+  }
+
+  svg {
+    width: 90%;
+  }
 
   @include responsive(tab-port-big) {
     width: 14rem;

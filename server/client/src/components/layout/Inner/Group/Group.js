@@ -26,7 +26,7 @@ const Group = () => {
                 <p>CONSTRUCTION</p>
                 <div className="group--divide-line" />
                 <p>Will be available until</p>
-                <p>September 2021</p>
+                <p>September 2022</p>
             </div>
             <div className="group--bottom__big-el">
                 <div className="group--bottom__small-el" />

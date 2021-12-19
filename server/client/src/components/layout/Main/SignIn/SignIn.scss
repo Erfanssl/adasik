@@ -5,6 +5,37 @@
     width: 30vw;
     height: 90vh;
     max-height: 65rem;
+    position: absolute;
+
+    top: 52%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    border-radius: 2rem;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    background-color: #130f40;
+    background-image: linear-gradient(180deg, #130f40 0%, #100c29 74%);
+
+    box-shadow: inset 0 0 10px rgba(255, 255, 255, .2);
+
+    z-index: 10000;
+    color: #fff;
+
+    .loading--container {
+      border-radius: 2rem;
+    }
+
+    .reset--done {
+      height: 60%;
+      display: flex;
+      align-items: center;
+      font-size: 2rem;
+      color: #02ff02;
+    }
 
     @include responsive(small-desktop) {
       width: 35vw;
@@ -35,26 +66,6 @@
       //height: 90vh;
     }
 
-    position: absolute;
-
-    top: 52%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-
-    border-radius: 2rem;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    background-color: #130f40;
-    background-image: linear-gradient(180deg, #130f40 0%, #100c29 74%);
-
-    box-shadow: inset 0 0 10px rgba(255, 255, 255, .2);
-
-    z-index: 10000;
-    color: white;
-
     form {
       margin-top: 4rem;
       display: flex;
@@ -62,6 +73,12 @@
 
       .input--group-container {
         position: relative;
+
+        .question {
+          margin-bottom: -1.3rem;
+          text-align: center;
+          font-size: 1.7rem;
+        }
 
         input {
           width: 40rem;
@@ -77,8 +94,8 @@
           font-size: 1.5rem;
           letter-spacing: .1rem;
 
-          @include responsive(phone-small) {
-            width: 30rem;
+          @include responsive(phone) {
+            width: 34rem;
           }
 
           &::placeholder {
@@ -196,11 +213,29 @@
     }
   }
 
+  &__bottom--links {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &--sign--up {
+    text-decoration: none;
+    color: #eee;
+    margin-top: 2rem;
+    font-size: 1.6rem;
+    cursor: pointer;
+
+    &:hover {
+      color: #c5c5c5;
+    }
+  }
+
   &--forgot__password {
     text-decoration: none;
     color: #eee;
     margin-top: 2rem;
     font-size: 1.6rem;
+    cursor: pointer;
 
     &:hover {
       color: #c5c5c5;

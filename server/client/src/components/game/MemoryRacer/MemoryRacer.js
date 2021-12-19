@@ -7,14 +7,14 @@ import Score from "../Score/Score";
 
 
 const circle = (
-    <svg width="512" height="512">
+    <svg className="shape--one" width="512" height="512">
         <path fill='#2EA2EF' d="M256,0v512c141.385,0,256-114.615,256-256S397.385,0,256,0z"/>
         <path fill='#54BBFF' d="M470.793,256C470.793,114.615,374.626,0,256,0C114.615,0,0,114.615,0,256s114.615,256,256,256 C374.626,512,470.793,397.385,470.793,256z"/>
     </svg>
 );
 
 const triangle = (
-    <svg height="512" width="512">
+    <svg className="shape--two" height="512" width="512">
         <g>
             <path d="m248.753 45.31-247.537 412.692c-3.376 5.629.68 12.788 7.247 12.788h495.074c6.566 0 10.623-7.159 7.247-12.788l-247.538-412.692c-3.281-5.47-11.212-5.47-14.493 0z" fill="#c2bce0"/>
             <path d="m510.891 466.507-123.665-70.014-131.227-226.985v-128.298c2.788 0 5.587 1.351 7.235 4.075l247.647 412.882c1.584 2.776 1.394 5.89.01 8.34z" fill="#8379c1"/>
@@ -27,7 +27,7 @@ const triangle = (
 );
 
 const cir = (
-    <svg height="512" width="512">
+    <svg className="shape--three" height="512" width="512">
         <linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="255.994" x2="255.994" y1="511.988" y2="0">
             <stop offset="0" stopColor="#a93aff"/>
             <stop offset="1" stopColor="#ff81ff"/>
@@ -37,14 +37,14 @@ const cir = (
 );
 
 const rect = (
-    <svg height="512" width="512">
+    <svg className="shape--four" height="512" width="512">
         <path fill="#615AD3" d="M407,76H105C47.109,76,0,123.109,0,181v150c0,57.891,47.109,105,105,105h302c57.891,0,105-47.109,105-105V181C512,123.109,464.891,76,407,76z"/>
         <path fill="#615AD3" d="M407,76H255v360h152c57.891,0,105-47.109,105-105V181C512,123.109,464.891,76,407,76z"/>
     </svg>
 );
 
 const cirTw = (
-    <svg height="512" width="512">
+    <svg className="shape--five" height="512" width="512">
         <linearGradient id="a" gradientTransform="matrix(1 0 0 -1 0 -14446)" gradientUnits="userSpaceOnUse" x1="0" x2="512" y1="-14702" y2="-14702">
             <stop offset="0" stopColor="#00f38d"/>
             <stop offset="1" stopColor="#009eff"/>
@@ -58,34 +58,34 @@ const cirTw = (
 );
 
 const poly = (
-    <svg height="512" width="512">
+    <svg className="shape--six" height="512" width="512">
         <path fill="#615AD3" d="M121.978,473.441C124.644,478.114,129.624,481,135,481h242c5.376,0,10.356-2.886,13.022-7.559 l120-210c2.637-4.614,2.637-10.269,0-14.883l-120-210C387.356,33.886,382.376,31,377,31H135c-5.376,0-10.356,2.886-13.022,7.559 l-120,210c-2.637,4.614-2.637,10.269,0,14.883L121.978,473.441z"/>
     </svg>
 );
 
 const data = [
-    { id: 1, shape: circle },
-    { id: 2, shape: triangle },
-    { id: 3, shape: cir },
-    { id: 4, shape: cirTw },
-    { id: 5, shape: rect },
-    { id: 6, shape: poly },
+    { id: 'one' },
+    { id: 'two' },
+    { id: 'three' },
+    { id: 'four' },
+    { id: 'five' },
+    { id: 'six' },
 ];
 
-const MemoryRacer = ({ shouldStart, timer, handleResult, dataFromSocket, setMaxBooster, setScore, setGameName }) => {
+const MemoryRacer = ({ shouldStart, handleResult, dataFromSocket, setMaxBooster, setScore, setGameName, finish, setFinish, gameSocket, isFromSocket }) => {
     // State
     const [result, setResult] = useState(['']);
-    const [info, setInfo] = useState([undefined, data[randomNum()]]);
+    const [info, setInfo] = useState(() => [undefined, data[randomNum()]]);
     const [btnDisabled, setBtnDisabled] = useState(true);
     const [start, setStart] = useState(false);
-    const [finish, setFinish] = useState(null);
-    const [allowToChoose, setAllowToChoose] = useState(true);
 
     // Refs
     const container = useRef();
     const shape = useRef();
     const metaContainer = useRef();
 
+    const allowToChoose = useRef(true);
+    const allowToChooseInterval = useRef(true);
 
     // generate a random number based on the length of the data
     function randomNum() {
@@ -95,7 +95,6 @@ const MemoryRacer = ({ shouldStart, timer, handleResult, dataFromSocket, setMaxB
     useEffect(() => {
         if (shouldStart) {
             setStart(true);
-            beforeRender();
             setTimeout(() => {
                 beforeUpdate();
                 setBtnDisabled(false);
@@ -112,12 +111,8 @@ const MemoryRacer = ({ shouldStart, timer, handleResult, dataFromSocket, setMaxB
     }, []);
 
     useEffect(() => {
-        if (timer <= 0) {
-            setFinish(true);
-            setStart(false);
-            setBtnDisabled(true);
-        }
-    }, [timer]);
+        if (finish) setBtnDisabled(true);
+    }, [finish]);
 
     // to perform entering animation whenever our info array changes
     useEffect(() => {
@@ -127,32 +122,41 @@ const MemoryRacer = ({ shouldStart, timer, handleResult, dataFromSocket, setMaxB
     function renderShape() {
         return (
             <div ref={ shape } className="memory-racer--shape-container">
-                { info[1].shape }
+                { circle }
+                { triangle }
+                { cir }
+                { cirTw }
+                { rect }
+                { poly }
             </div>
         );
     }
 
     // update function for updating the main place for showing shapes
     function update() {
-        const newInfo = [info[1], data[randomNum()]];
+        const newShape = data[randomNum()];
+        const newInfo = [info[1], newShape];
+        if (shape && shape.current) {
+            if (shape.current.classList[1]) shape.current.classList.remove(shape.current.classList[1]);
+            shape.current.classList.add(`shape--${ newShape.id }`);
+        }
         setInfo(newInfo);
     }
 
     // to preform exiting animation
     function beforeUpdate() {
         if (shape && shape.current) {
-            shape.current.style.transform = 'translateX(-50%)';
+            shape.current.style.transform = 'translateX(-30%)';
             shape.current.style.opacity = '0';
         }
 
         setTimeout(() => {
-            shape.current.style.transform = 'translateX(50%)';
-            shape.current.style.opacity = '0';
-            setTimeout(() => {
-                update();
-            }, 50);
-        }, 100);
+            shape.current.style.transform = 'translateX(30%)';
+        }, 50);
 
+        setTimeout(() => {
+            update();
+        }, 100);
     }
 
     // to perform entering animation
@@ -160,6 +164,7 @@ const MemoryRacer = ({ shouldStart, timer, handleResult, dataFromSocket, setMaxB
         if (shape && shape.current) {
             shape.current.style.transform = 'translateX(0)';
             shape.current.style.opacity = '1';
+            if (!info[0]) shape.current.classList.add(`shape--${ info[1].id }`);
         }
     }
 
@@ -183,7 +188,8 @@ const MemoryRacer = ({ shouldStart, timer, handleResult, dataFromSocket, setMaxB
 
     // button click handler
     function btnOnClick(e) {
-        if (start && !finish) {
+        if (start && !finish && allowToChooseInterval?.current) {
+            allowToChooseInterval.current = false;
             const btnId = Number(e.target.dataset.id);
             let btnText;
             if (btnId === 1) btnText = 'no';
@@ -191,6 +197,9 @@ const MemoryRacer = ({ shouldStart, timer, handleResult, dataFromSocket, setMaxB
             const res = checkTheAnswer(btnText);
             printResult(res);
             beforeUpdate();
+            setTimeout(() => {
+                allowToChooseInterval.current = true;
+            }, 150);
         }
     }
 
@@ -202,17 +211,21 @@ const MemoryRacer = ({ shouldStart, timer, handleResult, dataFromSocket, setMaxB
             if (e.keyCode === 37) bool = 'no';
             else if (e.keyCode === 39) bool = 'yes';
 
-            if (bool && allowToChoose) {
-                setAllowToChoose(false);
+            if (bool && allowToChoose?.current && allowToChooseInterval?.current) {
+                allowToChoose.current = false;
+                allowToChooseInterval.current = false;
                 const res = checkTheAnswer(bool);
                 printResult(res);
                 beforeUpdate();
+                setTimeout(() => {
+                    allowToChooseInterval.current = true;
+                }, 150);
             }
         }
     }
 
     function handleContainerKeyUp() {
-        setAllowToChoose(true);
+        allowToChoose.current = true;
     }
 
     return (
@@ -230,8 +243,11 @@ const MemoryRacer = ({ shouldStart, timer, handleResult, dataFromSocket, setMaxB
                     type={ result }
                 />
                 <Clock
-                    current={ 90 - timer }
                     ultimate={ 90 }
+                    shouldStart={ shouldStart }
+                    setFinish={ setFinish }
+                    gameSocket={ gameSocket }
+                    isFromSocket={ isFromSocket }
                 />
             </div>
             { renderShape() }
@@ -244,4 +260,4 @@ const MemoryRacer = ({ shouldStart, timer, handleResult, dataFromSocket, setMaxB
     );
 };
 
-export default MemoryRacer;
+export default React.memo(MemoryRacer);

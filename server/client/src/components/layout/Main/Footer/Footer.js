@@ -1,8 +1,25 @@
 import React from 'react';
 import './Footer.scss';
+import { Link } from "react-router-dom";
 import dottedCircle from '../../../../assets/circle-dotted.svg';
 
-const Footer = () => {
+const Footer = ({
+                    handleTermsClick,
+                    handlePrivacyClick,
+                    handleAboutClick
+                }) => {
+    function handleAboutClickFn() {
+        handleAboutClick(window.scrollY);
+    }
+
+    function handleTermsClickFn() {
+        handleTermsClick(window.scrollY);
+    }
+
+    function handlePrivacyClickFn() {
+        handlePrivacyClick(window.scrollY);
+    }
+
     return (
         <div className="footer--container">
             <div className="footer--columns">
@@ -10,22 +27,16 @@ const Footer = () => {
                     <h3>Navigation</h3>
                     <ul>
                         <li>
-                            <a href="#">Home</a>
+                            <Link to="/">Home</Link>
                         </li>
                         <li>
-                            <a href="#">Sign Up</a>
+                            <Link to="/sign-up">Sign Up</Link>
                         </li>
                         <li>
-                            <a href="#">Login</a>
+                            <Link to="/sign-in">Login</Link>
                         </li>
                         <li>
-                            <a href="#">Blog</a>
-                        </li>
-                        <li>
-                            <a href="#">Contact</a>
-                        </li>
-                        <li>
-                            <a href="#">About</a>
+                            <p onClick={ handleAboutClickFn }>About</p>
                         </li>
                     </ul>
                 </div>
@@ -33,10 +44,7 @@ const Footer = () => {
                     <h3>Games</h3>
                     <ul>
                         <li>
-                            <a href="#">Tutorials</a>
-                        </li>
-                        <li>
-                            <a href="#">Information</a>
+                            <a href="#second-container">Information</a>
                         </li>
                     </ul>
                 </div>
@@ -44,10 +52,10 @@ const Footer = () => {
                     <h3>Legal</h3>
                     <ul>
                         <li>
-                            <a href="#">Privacy Policy</a>
+                            <p onClick={ handlePrivacyClickFn }>Privacy Policy</p>
                         </li>
                         <li>
-                            <a href="#">Terms of Service</a>
+                            <p onClick={ handleTermsClickFn }>Terms of Service</p>
                         </li>
                     </ul>
                 </div>

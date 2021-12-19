@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { NavLink } from "react-router-dom";
 import './Nav.scss';
 import { connect } from 'react-redux';
-import { authSignOutSendData } from "../../../../actions/authAction";
+import {
+    authSignOutSendData,
+    authSignOutWipeData
+} from "../../../../actions/authAction";
+import { wipeIdentifier } from "../../../../actions/identifierAction";
 import Logo from "../../utils/Logo/Logo";
 import history from "../../../../history";
-import requireAuth from "../../../../middlewares/requireAuth";
 
 import dashboard from '../../../../assets/icons/home.svg';
 import profile from '../../../../assets/icons/profile.svg';
@@ -21,13 +24,61 @@ import test from '../../../../assets/icons/test.svg';
 
 const Nav = ({
                  popUpRes,
+                 sockets,
                  setShowPopUp,
                  signOutData,
+                 currentNotification,
                  notificationData,
                  authSignOutSendData,
+                 authSignOutWipeData,
+                 wipeIdentifier,
                  isOffline
 }) => {
     const [signOutError, setSignOutError] = useState({ show: false });
+
+    // refs
+    const messengerNotification = useRef();
+    const challengesNotification = useRef();
+    const friendsNotification = useRef();
+
+    useEffect(() => {
+        function notificationActiveStyle(element) {
+            element.style.opacity = '1';
+            element.style.visibility = 'visible';
+            element.classList.add('receive');
+            currentNotification.current = '';
+
+            setTimeout(() => {
+                element.classList.remove('receive');
+            }, 500);
+        }
+
+        function notificationInActiveStyle(element) {
+            element.style.opacity = '0';
+            element.style.visibility = 'hidden';
+        }
+
+        if (notificationData) {
+            if (notificationData.newMessengerConversations > 0 && messengerNotification?.current) {
+                if (currentNotification.current === 'initial' || currentNotification.current === 'messenger') notificationActiveStyle(messengerNotification.current);
+            } else {
+                notificationInActiveStyle(messengerNotification.current);
+            }
+
+            if ((notificationData.challengesShouldPlay + notificationData.challengeRequests) > 0 && challengesNotification?.current) {
+                if (currentNotification.current === 'initial' || currentNotification.current === 'challenges') notificationActiveStyle(challengesNotification.current);
+            } else {
+                notificationInActiveStyle(challengesNotification.current);
+            }
+
+            if (notificationData.newFriendRequests > 0 && friendsNotification?.current) {
+                if (currentNotification.current === 'initial' || currentNotification.current === 'friends') notificationActiveStyle(friendsNotification.current);
+            } else {
+                notificationInActiveStyle(friendsNotification.current);
+            }
+        }
+
+    }, [notificationData]);
 
     useEffect(() => {
         if (signOutData && signOutData.Error) {
@@ -39,6 +90,17 @@ const Nav = ({
         }
 
         if (signOutData  && signOutData.done) {
+            authSignOutWipeData();
+            wipeIdentifier();
+
+            const { main, status, messenger } = sockets;
+
+            if (main && main.connected) main.disconnect();
+            if (status && status.connected) status.disconnect();
+            if (messenger && messenger.connected) messenger.disconnect();
+            const bypass = localStorage.getItem('bypass');
+            if (bypass) localStorage.removeItem('bypass');
+
             history.push('/');
         }
     }, [signOutData]);
@@ -84,12 +146,9 @@ const Nav = ({
                     <li className={ isOffline && isOffline[0] ? "nav--items__messenger offline" : "nav--items__messenger" }>
                         <NavLink to="/messenger" activeClassName="nav--item__active-link">
                             <div className="nav--item__active-bg" />
-                            {
-                                notificationData && !!notificationData.newMessengerConversations &&
-                                    <div className="notification">
-                                        <p>{ notificationData.newMessengerConversations }</p>
-                                    </div>
-                            }
+                            <div ref={ messengerNotification } className="notification">
+                                <p>{ notificationData && !!notificationData.newMessengerConversations && notificationData.newMessengerConversations }</p>
+                            </div>
                             <img src={ messenger } alt="messenger" />
                             <p>Messenger</p>
                         </NavLink>
@@ -111,12 +170,9 @@ const Nav = ({
                     <li className={ isOffline && isOffline[0] ? "nav--items__challenges offline" : "nav--items__challenges" }>
                         <NavLink to="/challenges" activeClassName="nav--item__active-link">
                             <div className="nav--item__active-bg" />
-                            {
-                                notificationData && !!(notificationData.challengesShouldPlay || notificationData.challengeRequests) &&
-                                <div className="notification">
-                                    <p>{ notificationData.challengesShouldPlay + notificationData.challengeRequests }</p>
-                                </div>
-                            }
+                            <div ref={ challengesNotification } className="notification">
+                                <p>{ notificationData && !!(notificationData.challengesShouldPlay || notificationData.challengeRequests) && (notificationData.challengesShouldPlay + notificationData.challengeRequests) }</p>
+                            </div>
                             <img src={ challenges } alt="challenges" />
                             <p>Challenges</p>
                         </NavLink>
@@ -131,12 +187,9 @@ const Nav = ({
                     <li className={ isOffline && isOffline[0] ? "nav--items__friends offline" : "nav--items__friends" }>
                         <NavLink to="/friends" activeClassName="nav--item__active-link">
                             <div className="nav--item__active-bg" />
-                            {
-                                notificationData && !!notificationData.newFriendRequests &&
-                                <div className="notification">
-                                    <p>{ notificationData.newFriendRequests }</p>
-                                </div>
-                            }
+                            <div ref={ friendsNotification } className="notification">
+                                <p>{ notificationData && !!notificationData.newFriendRequests && notificationData.newFriendRequests }</p>
+                            </div>
                             <img src={ friends } alt="friends" />
                             <p>Friends</p>
                         </NavLink>
@@ -178,10 +231,13 @@ const Nav = ({
 
 function mapStateToProps(state) {
     return {
-        signOutData: state.auth.signOut
+        signOutData: state.auth.signOut,
+        sockets: state.sockets
     };
 }
 
 export default connect(mapStateToProps, {
-    authSignOutSendData
+    authSignOutSendData,
+    authSignOutWipeData,
+    wipeIdentifier
 })(Nav);

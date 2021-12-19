@@ -3,7 +3,8 @@
 .training {
 
   &--container {
-
+    position: relative;
+    min-height: 93vh;
   }
 
   &--group__header-container {

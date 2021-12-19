@@ -1,7 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import './SignUp.scss';
+import io from "socket.io-client";
 import { connect } from 'react-redux';
 import history from "../../../../history";
+import { Link } from "react-router-dom";
 import Logo from "../../utils/Logo/Logo";
 import Button from "../../utils/Button/Button";
 import Spinner from "../../utils/Spinner/Spinner";
@@ -11,17 +13,25 @@ import {
     authSignUpSendData,
     authSignUpWipeData
 } from "../../../../actions/authAction";
+import { fetchStatusSocket } from "../../../../actions/socketsAction";
+import { setIdentifier } from "../../../../actions/identifierAction";
 import TermsOfService from "../TermsOfService/TermsOfService";
 import PrivacyPolicy from "../PrivacyPolicy/PrivacyPolicy";
+import Loading from "../../utils/Loading/Loading";
+import Input from "./Input";
 
 import close from "../../../../assets/icons/close.svg";
 
 const SignUp = ({
                     signUpData,
+                    mainSocket,
+                    identifier,
                     authSignUpValidateEmail,
                     authSignUpValidateUsername,
                     authSignUpSendData,
-                    authSignUpWipeData
+                    authSignUpWipeData,
+                    setIdentifier,
+                    fetchStatusSocket
 }) => {
     const [emailInput, setEmailInput] = useState('');
     const [usernameInput, setUsernameInput] = useState('');
@@ -46,10 +56,22 @@ const SignUp = ({
         document.title = 'Adasik - Sign Up';
 
         return () => {
+            document.title = 'Adasik';
             authSignUpWipeData();
         };
     }, []);
 
+    useEffect(() => {
+        if (emailInputEl?.current && window.innerWidth > 600) {
+            emailInputEl.current.focus();
+        }
+    }, [emailInputEl]);
+
+    useLayoutEffect(() => {
+        if (identifier && identifier.text) {
+            history.push('/dashboard');
+        }
+    }, [identifier]);
 
     function handleCloseClick() {
         history.push('/');
@@ -89,19 +111,47 @@ const SignUp = ({
         }
 
         if (signUpData && signUpData.send && signUpData.send.done) {
-            setSubmissionResult({ show: true, type: 'done', text: 'Sign Up was Successful' });
+            setSubmissionResult({ show: true, type: 'done', text: 'Sign Up was Successful. Redirecting...' });
             setShowSpinner({ show: false, type: '' });
-            history.push('/settings');
+
+            fetch('/api/get')
+                .then(res => res.json())
+                .then(data => {
+                    mainSocket.emit('encryptedMessage', data);
+                    const statusSocket = io.connect('/status');
+                    setIdentifier(data);
+
+                    statusSocket.on('connect', () => {
+                        fetchStatusSocket(statusSocket);
+                    });
+
+                    statusSocket.emit('data', data);
+
+                    history.push('/settings');
+                })
+                .catch(err => {
+                    setIdentifier({
+                        FetchError: true
+                    });
+                });
         }
     }, [signUpData]);
 
     function handleEmailBlur() {
-        if (!emailInput.match(/^.+@.+\.[a-z]+$/i)) {
+        let inputValue = '';
+
+        if (emailInputEl?.current) {
+            inputValue = emailInputEl.current.value;
+            setEmailInput(inputValue);
+        }
+
+        if (!inputValue.match(/^.+@.+\.[a-z]+$/i)) {
             setEmailError({ show: true, text: 'Please enter a valid email' });
             return emailInputEl.current.setCustomValidity('Please enter a valid email');
         }
 
-        authSignUpValidateEmail(emailInput);
+        authSignUpValidateEmail(inputValue);
+
         setShowSpinner({ show: true, type: 'email' });
     }
 
@@ -110,22 +160,29 @@ const SignUp = ({
     }
 
     function handleUsernameBlur() {
+        let inputValue = '';
+
+        if (usernameInputEl?.current) {
+            inputValue = usernameInputEl.current.value;
+            setUsernameInput(inputValue);
+        }
+
         let allowChar = false;
         let finalAllowChar = true;
 
-        if (usernameInput.trim().length < 4 || usernameInput.trim().length > 16) {
+        if (inputValue.length < 4 || inputValue.length > 16) {
             setUsernameError({ show: true, text: 'Should be 4 or more and 16 or less characters' });
             return usernameInputEl.current.setCustomValidity('Username Should be 4 or more and 16 or less characters');
         }
 
-        for (let i = 0; i < usernameInput.trim().length; i++) {
+        for (let i = 0; i < inputValue.length; i++) {
             if (
-                (usernameInput[i].charCodeAt(0) >= 65 && usernameInput[i].charCodeAt(0) <= 90) ||
-                (usernameInput[i].charCodeAt(0) >= 97 && usernameInput[i].charCodeAt(0) <= 122)
+                (inputValue[i].charCodeAt(0) >= 65 && inputValue[i].charCodeAt(0) <= 90) ||
+                (inputValue[i].charCodeAt(0) >= 97 && inputValue[i].charCodeAt(0) <= 122)
             ) allowChar = true;
-            if (usernameInput[i].charCodeAt(0) >= 48 && usernameInput[i].charCodeAt(0) <= 57) allowChar = true;
-            if (usernameInput[i] === '_') allowChar = true;
-            if (usernameInput[i] === '.') allowChar = true;
+            if (inputValue[i].charCodeAt(0) >= 48 && inputValue[i].charCodeAt(0) <= 57) allowChar = true;
+            if (inputValue[i] === '_') allowChar = true;
+            if (inputValue[i] === '.') allowChar = true;
             if (!allowChar) {
                 finalAllowChar = false;
                 break;
@@ -138,7 +195,7 @@ const SignUp = ({
             return usernameInputEl.current.setCustomValidity('Username can only contain letters, numbers, period and underscore');
         }
 
-        authSignUpValidateUsername(usernameInput);
+        authSignUpValidateUsername(inputValue);
         setShowSpinner({ show: true, type: 'username' });
     }
 
@@ -147,17 +204,24 @@ const SignUp = ({
     }
 
     function handlePasswordBlur() {
+        let inputValue = '';
+
+        if (passwordInputEl?.current) {
+            inputValue = passwordInputEl.current.value;
+            setPasswordInput(inputValue);
+        }
+
         let passwordValidity = false;
         let hasWord = false;
         let hasNumber = false;
 
-        if (passwordInput.trim().length < 16) passwordValidity = false;
+        if (inputValue.trim().length < 16) passwordValidity = false;
         else {
-            for (let i = 0; i < passwordInput.trim().length; i++) {
-                if (passwordInput[i].charCodeAt(0) >= 48 && passwordInput[i].charCodeAt(0) <= 57) hasNumber = true;
+            for (let i = 0; i < inputValue.trim().length; i++) {
+                if (inputValue[i].charCodeAt(0) >= 48 && inputValue[i].charCodeAt(0) <= 57) hasNumber = true;
                 if (
-                    (passwordInput[i].charCodeAt(0) >= 65 && passwordInput[i].charCodeAt(0) <= 90) ||
-                    (passwordInput[i].charCodeAt(0) >= 97 && passwordInput[i].charCodeAt(0) <= 122)
+                    (inputValue[i].charCodeAt(0) >= 65 && inputValue[i].charCodeAt(0) <= 90) ||
+                    (inputValue[i].charCodeAt(0) >= 97 && inputValue[i].charCodeAt(0) <= 122)
                 ) hasWord = true;
 
                 if (hasWord && hasNumber) {
@@ -208,27 +272,29 @@ const SignUp = ({
 
     return (
         <div className="sign-up--container">
+            { !identifier && <Loading /> }
             <TermsOfService termsRef={ termsContainer } />
             <PrivacyPolicy privacyRef={ privacyContainer } />
-            <div onClick={ handleCloseClick } className="sign-up--close-container">
-                <img src={ close } alt="close" />
-            </div>
+            {
+                identifier &&
+                <div onClick={ handleCloseClick } className="sign-up--close-container">
+                    <img src={ close } alt="close" />
+                </div>
+            }
             <div className="sign-up--header-container">
                 <Logo />
                 <h2>Sign up and start improving</h2>
             </div>
             <form onSubmit={ handleFormSubmit }>
                 <div className="input--group-container">
-                    <input
-                        ref={ emailInputEl }
+                    <Input
+                        inputRef={ emailInputEl }
                         onBlur={ handleEmailBlur }
                         onFocus={ handleEmailFocus }
-                        onChange={ e => setEmailInput(e.target.value) }
                         type="email"
                         required
                         id="sign-up--email"
                         placeholder="Email"
-                        value={ emailInput }
                     />
                     <label htmlFor="sign-up--email">Email</label>
                     {
@@ -246,17 +312,14 @@ const SignUp = ({
                     }
                 </div>
                 <div className="input--group-container">
-                    <input
-                        ref={ usernameInputEl }
+                    <Input
+                        inputRef={ usernameInputEl }
                         type="text"
                         onFocus={ handleUsernameFocus }
                         onBlur={ handleUsernameBlur }
-                        onChange={ e => setUsernameInput(e.target.value) }
-                        value={ usernameInput }
                         required
                         id="sign-up--username"
                         placeholder="Username"
-
                     />
                     <label htmlFor="sign-up--username">Username</label>
                     {
@@ -274,14 +337,12 @@ const SignUp = ({
                     }
                 </div>
                 <div className="input--group-container">
-                    <input
-                        ref={ passwordInputEl }
+                    <Input
+                        inputRef={ passwordInputEl }
                         type="password"
                         id="sign-up-password"
                         required
                         placeholder="Password"
-                        onChange={ e => setPasswordInput(e.target.value) }
-                        value={ passwordInput }
                         onBlur={ handlePasswordBlur }
                         onFocus={ handlePasswordFocus }
                     />
@@ -303,6 +364,7 @@ const SignUp = ({
                 <button type="submit">
                     <Button form={ true } text="Sign Up" />
                 </button>
+                <Link to="/sign-in" className="sign-up--login">Login</Link>
                 <div className="sign-up--footer__container">
                     {
                         showSpinner.show && showSpinner.type === 'submission' &&
@@ -326,7 +388,9 @@ const SignUp = ({
 
 function mapStateToProps(state) {
     return {
-        signUpData: state.auth.signUp
+        signUpData: state.auth.signUp,
+        identifier: state.identifier,
+        mainSocket: state.sockets.main
     };
 }
 
@@ -334,5 +398,7 @@ export default connect(mapStateToProps, {
     authSignUpValidateEmail,
     authSignUpValidateUsername,
     authSignUpSendData,
-    authSignUpWipeData
+    authSignUpWipeData,
+    setIdentifier,
+    fetchStatusSocket
 })(SignUp);

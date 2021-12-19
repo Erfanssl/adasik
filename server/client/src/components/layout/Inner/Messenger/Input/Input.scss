@@ -1,0 +1,74 @@
+@import "../../../../../sass/mixins";
+
+.input__message--container {
+
+  .editable-input__container {
+    width: 60rem;
+    min-height: 2.7rem;
+    border-radius: 2rem;
+    padding: 1.5rem 1rem 1rem;
+    background-color: #151513;
+    position: relative;
+    border: .1rem solid rgba(255, 255, 255, .35);
+    margin-right: 1.5rem;
+    overflow: hidden;
+
+    @include responsive(phone-big) {
+      width: 55rem;
+      margin-right: 1rem;
+    }
+
+    @include responsive(phone) {
+      margin-left: .4rem;
+    }
+
+    @media only screen and (max-width: 31.25em) { //500px
+      width: 51rem;
+    }
+
+    @media only screen and (max-width: 26.875em) { //430px
+      width: 19rem;
+    }
+
+    @include responsive(phone-small) {
+      width: 18rem;
+      margin-right: .5rem;
+    }
+
+    @media only screen and (max-width: 22.5em) { //360px
+      width: 16rem;
+    }
+  }
+
+  .editable-input {
+    position: relative;
+    min-height: 2.7rem;
+    width: 100%;
+    max-height: 12rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+    outline: none;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    font-size: 1.65rem;
+    z-index: 10;
+    color: rgba(255, 255, 255, .92);
+  }
+
+  .placeholder {
+    position: absolute;
+    z-index: 5;
+    top: 50%;
+    left: 1rem;
+    transform: translateY(-50%);
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, .4);
+    transition: all .4s;
+
+    &.hide {
+      opacity: 0;
+      visibility: hidden;
+      transform: translate(100%, -50%);
+    }
+  }
+}

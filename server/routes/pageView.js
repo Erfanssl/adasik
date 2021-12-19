@@ -9,7 +9,7 @@ const pageViewRouter = express.Router();
 const WebsitePageviewSession = mongoose.model('WebsitePageviewSession');
 
 pageViewRouter.post('/', currentUser, async (req, res) => {
-    const { pageviewUrl, httpReferer, deviceType, isDisconnected = false, sessionJwt, pageViewJwt } = req.body;
+    const { pageviewUrl, httpReferer, deviceType, isDisconnected = false, sessionJwt, pageViewJwt, ip } = req.body;
 
     try {
         if (isDisconnected) {
@@ -95,7 +95,8 @@ pageViewRouter.post('/', currentUser, async (req, res) => {
         const pageViewData = {
             _id: pageViewDataId,
             pageviewUrl,
-            timespent: 0
+            timespent: 0,
+            ip
         };
 
         // send the data to WebsitePageview

@@ -1,6 +1,13 @@
 @import '../../../sass/mixins';
 
 .clock--container {
+  text-align: right;
+  width: 50%;
+
+  @media only screen and (max-height: 43.75em) { //700px
+    transform: scale(.65);
+  }
+
   @include responsive(tab-port) {
     transform: scale(.8);
   }
@@ -26,6 +33,10 @@
   }
 
   @include responsive(phone-small) {
-    transform: scale(.45) translateX(-10%);
+    transform: scale(.45) translateX(10%);
+  }
+
+  @media only screen and (max-width: 22.5em) { //360px
+    transform: scale(.4) translateX(-1%);
   }
 }

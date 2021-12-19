@@ -18,6 +18,8 @@ import numberFormatter from "../../../../utility/numberFormatter";
 import requireAuth from "../../../../middlewares/requireAuth";
 import likesFormatter from "../../../../utility/likesFormatter";
 import pageViewSocketConnection from "../../../../utility/pageViewSocketConnection";
+import Loading from "../../utils/Loading/Loading";
+import Spinner from "../../utils/Spinner/Spinner";
 
 import person2 from '../../../../assets/temp/male2.jpg';
 import gun from '../../../../assets/icons/gun.svg';
@@ -28,6 +30,7 @@ import close from "../../../../assets/icons/close.svg";
 import avatar from '../../../../assets/icons/user.svg';
 // ChallengeFriends assets
 import alone from '../../../../assets/alone.svg';
+import textCutter from "../../../../utility/textCutter";
 
 const POPUP_TYPES = {
     CREATE_NEW_CHALLENGE: 'CREATE_NEW_CHALLENGE',
@@ -51,19 +54,18 @@ const Challenges = ({
                         fetchFriends,
                         sendChallengeFriendRequest,
                         cleanCreateChallenge
-}) => {
-    // we use setInterval each 10 sec, to check for challengers to see if they're online
-
+                    }) => {
     const [shouldSendCreateChallengeRequest, setShouldSendCreateChallengeRequest] = useState(false);
     const [popUpConfig, setPopUpConfig] = useState({ show: false, type: '' });
     const [resultItemClose, setResultItemClose] = useState([false, '']);
     const [requestItemClose, setRequestItemClose] = useState([false, '']);
     const [shouldReject, setShouldReject] = useState({ bool: false, type: 'single', id: '' });
     const [fadeWarning, setFadeWarning] = useState({});
-     // ChallengeFriend state
+    // ChallengeFriend state
     const [challengeFriendSelectionList, setChallengeFriendSelectionList] = useState([]);
     const [challengeFriendInput, setChallengeFriendInput] = useState('');
     const [requestSent, setRequestSent] = useState({ showLoading: false, loaded: false });
+    const [showRequestSpinner, setShowRequestSpinner] = useState(false);
 
     // ref
     const warningCardContainer = useRef();
@@ -86,6 +88,12 @@ const Challenges = ({
             fetchChallengeData();
         }
     }, [challengesReFetch]);
+
+    useEffect(() => {
+        if (challengeData && challengeData.requests !== undefined) {
+            setShowRequestSpinner(false);
+        }
+    }, [challengeData]);
 
     useEffect(() => {
         if (popUpConfig.show && popUpConfig.type === POPUP_TYPES.CREATE_NEW_CHALLENGE) {
@@ -118,6 +126,7 @@ const Challenges = ({
 
             setTimeout(() => {
                 rejectRequest(shouldReject.id);
+                setShowRequestSpinner(true);
             }, 300);
         }
 
@@ -126,6 +135,7 @@ const Challenges = ({
 
             setTimeout(() => {
                 rejectRequest('all');
+                setShowRequestSpinner(true);
             }, 300);
         }
     }, [shouldReject])
@@ -180,6 +190,7 @@ const Challenges = ({
 
         setTimeout(() => {
             acceptRequest(id);
+            setShowRequestSpinner(true);
         }, 300);
     }
 
@@ -205,9 +216,12 @@ const Challenges = ({
                             <p>{ numberFormatter(totalScore) }</p>
                         </div>
                     </div>
-                    <div className={ createStatusClassName(status, 'challenges--request__img-container') }>
-                        <img src={ avatar } alt={ username } />
-                    </div>
+                    <Link to={ `/profile/${ username }` } className={ createStatusClassName(status, 'challenges--request__img-container') }>
+                        <img src={ avatar } title={ username } alt={ username } />
+                        <div className="hover">
+                            <Link to={ `/profile/${ username }` }>{ textCutter(username, 15) }</Link>
+                        </div>
+                    </Link>
                     <div className="challenges--request__btn-container">
                         <img onClick={ handleAcceptRequest.bind(null, _id) } src={ confirm } alt="confirm" />
                         <img onClick={ handleSingleRejectRequest.bind(null, _id) } src={ reject } alt="reject" />
@@ -218,6 +232,8 @@ const Challenges = ({
     }
 
     function renderRequestSection() {
+        if (!challengeData.requests.length && window.innerWidth <= 600) return null;
+
         return (
             <div className="challenges--requests__container">
                 {
@@ -230,6 +246,12 @@ const Challenges = ({
                             </ul>
                             <div onClick={ handleRejectAllRequests } className="challenges--close">
                                 <p>Reject All</p>
+                                {
+                                    showRequestSpinner &&
+                                    <div className="spinner--container">
+                                        <Spinner />
+                                    </div>
+                                }
                             </div>
                         </>
                 }
@@ -326,6 +348,7 @@ const Challenges = ({
 
     function renderResultSection() {
         const resultsArr = challengeData.challenges.inactive.filter(ch => !ch.close);
+        if (!resultsArr.length && window.innerWidth <= 600) return null;
 
         return (
             <div className="challenges--results__container">
@@ -379,7 +402,8 @@ const Challenges = ({
         if (time <= ONE_MINUTE) return 'less than a minute ago';
         if (time > ONE_MINUTE && time < ONE_HOUR) {
             if (window.innerWidth <= 500) return `${ (time / ONE_MINUTE).toFixed(0) }m ago`;
-            return `${ (time / ONE_MINUTE).toFixed(0) } minutes ago`;
+            const calculatedTime = (time / ONE_MINUTE).toFixed(0);
+            return `${ calculatedTime } minute${ calculatedTime.toString() === '1' ? '' : 's' } ago`;
         }
         if (time >= ONE_HOUR) {
             if (window.innerWidth <= 500) return `about ${ (time / ONE_HOUR).toFixed(0) }h ago`;
@@ -591,7 +615,7 @@ const Challenges = ({
                             </div>
                         </div>
                         <Link to={ `/profile/${ username }` } className="name--container">
-                            <p>{ fullName }</p>
+                            <p>{ textCutter(fullName, 10) }</p>
                         </Link>
                     </li>
                 );
@@ -690,6 +714,11 @@ const Challenges = ({
                     <div onClick={ handleChallengeAFriendCloseBtn } className="close--container">
                         <img src={ close } alt="close" />
                     </div>
+                    { challengeData && !challengeData.friends &&
+                    <div className="spinner--container">
+                        <Spinner />
+                    </div>
+                    }
                     { challengeData && renderChallengeAFriendInnerContent() }
                 </div>
             </div>
@@ -737,6 +766,7 @@ const Challenges = ({
 
     return (
         <div className="challenges--container" style={ popUpConfig.show ? { overflow: 'hidden', height: '93vh', padding: '1rem 0' } : {} }>
+            { !challengeData && <Loading /> }
             { popUpConfig.show && renderPopUp() }
             <div className="challenges--header__btn-container--two">
                 <div onClick={ handleCreateNewChallengeClick }>

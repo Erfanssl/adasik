@@ -4,15 +4,18 @@ import { Link } from 'react-router-dom';
 import adasikLogo from '../../../../assets/adasik-logo-small.png';
 import adasikLogoBig from '../../../../assets/adasik-logo-big.png';
 
-const Logo = ({ extraClass }) => {
+const Logo = ({ extraClass, onlyImg = false }) => {
     return (
         <div className={ "nav--logo" + (extraClass ? (" " + extraClass) : "") }>
             <Link to="/">
                 <img src={ adasikLogo } alt="Adasik" />
             </Link>
-            <h1>
-                <Link to="/">Adasik</Link>
-            </h1>
+            {
+                !onlyImg &&
+                <h1>
+                    <Link to="/">Adasik</Link>
+                </h1>
+            }
         </div>
     );
 };

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import './ChallengeInside.scss';
@@ -12,6 +12,8 @@ import textCutter from "../../../../../utility/textCutter";
 import requireAuth from "../../../../../middlewares/requireAuth";
 import NotFound from "../../../utils/NotFound/NotFound";
 import pageViewSocketConnection from "../../../../../utility/pageViewSocketConnection";
+import Loading from "../../../utils/Loading/Loading";
+import Spinner from "../../../utils/Spinner/Spinner";
 
 // import surrender from '../../../../../assets/icons/surrender.svg';
 import play from '../../../../../assets/icons/play.svg';
@@ -29,6 +31,8 @@ const ChallengeInside = ({
                              challengeInsideReFetch,
                              createGame
                          }) => {
+    const [showSpinner, setShowSpinner] = useState(false);
+
     useEffect(() => {
         document.title = 'Adasik - Challenge Match';
         fetchChallengeInsideData(match.params.id);
@@ -36,6 +40,7 @@ const ChallengeInside = ({
 
         return () => {
             pageViewSocket.disconnect();
+            setShowSpinner(false);
         };
     }, []);
 
@@ -100,6 +105,14 @@ const ChallengeInside = ({
             }
         }
 
+        function createAvatarClassName(status) {
+            let className = "challenge--header__avatar-container";
+            if (status === 'online') className += " challenge--item__online";
+            else className += " challenge--item__offline";
+
+            return className;
+        }
+
         return (
             <div className="challenge--header-container"
                  style={{ backgroundImage: `linear-gradient(45deg, #6b0f1a 0%, #b91372 ${ homePercentage }%, #ffdd00 ${ homePercentage }%, #fbb034 100%)` }}
@@ -115,7 +128,7 @@ const ChallengeInside = ({
                     endType && renderLostOnTime()
                 }
                 <div className="challenge--header__left-container">
-                    <div className="challenge--header__avatar-container challenge--item__online">
+                    <div className={ createAvatarClassName(home.userInfo.status.text) }>
                         <Link to={ `/profile/${ home.userInfo.username }` }>
                             <img src={ home.userInfo.avatar } alt={ home.userInfo.username } />
                         </Link>
@@ -184,7 +197,7 @@ const ChallengeInside = ({
                     <div className="challenge--score-container" style={ { left: (62 - (numberFormatter(generateTotalScore(away)).length * 2.4) - 5 + '%') } }>
                         <p>{ numberFormatter(generateTotalScore(away)) }</p>
                     </div>
-                    <div className="challenge--header__avatar-container challenge--item__offline">
+                    <div className={ createAvatarClassName(away.userInfo.status.text) }>
                         <Link to={ `/profile/${ away.userInfo.username === 'Anonymous' ? '#' : away.userInfo.username }` }>
                             <img src={ away.userInfo.avatar } alt={ away.userInfo.username } />
                         </Link>
@@ -293,6 +306,7 @@ const ChallengeInside = ({
 
     function handlePlayClick() {
         createGame(match.params.id, challengeInsideData.challengeInfo.username);
+        setShowSpinner(true);
     }
 
     function renderChallengeButton() {
@@ -308,8 +322,16 @@ const ChallengeInside = ({
         if (challengeInfo.shouldPlay) {
             return (
                 <div onClick={ handlePlayClick } className="challenge--btn challenge--btn__play">
-                    <span>Play</span>
-                    <img src={ play } alt="play" />
+                    {
+                        showSpinner ?
+                            <div className="spinner--container">
+                                <Spinner />
+                            </div> :
+                            <>
+                                <span>Play</span>
+                                <img src={ play } alt="play" />
+                            </>
+                    }
                 </div>
             );
         }
@@ -333,6 +355,7 @@ const ChallengeInside = ({
 
     return (
         <div className="challenge--container">
+            { !challengeInsideData && <Loading /> }
             { challengeInsideData && challengeInsideData.challengeInfo && !challengeInsideData.Error && renderChallengeHeader() }
             {
                 (challengeInsideData && challengeInsideData.Error) &&

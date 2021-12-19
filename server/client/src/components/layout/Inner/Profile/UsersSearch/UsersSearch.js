@@ -29,7 +29,6 @@ const UsersSearch = ({
     // state
     const [input, setInput] = useState('');
     const [inputFocus, setInputFocus] = useState(false);
-    const [inputTimeout, setInputTimeout] = useState(null);
     const [showSpinner, setShowSpinner] = useState(false);
     const [showError, setShowError] = useState(false);
 
@@ -38,6 +37,8 @@ const UsersSearch = ({
     const usersSearchContainer = useRef();
     const inputEl = useRef();
 
+    const inputTimeout = useRef();
+
     useEffect(() => {
         return () => {
             usersProfileWipeSearch();
@@ -45,11 +46,11 @@ const UsersSearch = ({
     }, []);
 
     useEffect(() => {
-        if (resultContainer && resultContainer.current && inputFocus && input.length) {
+        if (resultContainer && resultContainer.current && inputFocus && input.trim().length) {
             resultContainer.current.classList.add('active');
             if (usersSearchContainer && usersSearchContainer.current) usersSearchContainer.current.style.zIndex = 15
             if (inputEl && inputEl) inputEl.current.style.borderBottom = 'none';
-        } else if (resultContainer && resultContainer.current && (!inputFocus || !input.length)) {
+        } else if (resultContainer && resultContainer.current && (!inputFocus || !input.trim().length)) {
             resultContainer.current.classList.remove('active');
             if (usersSearchContainer && usersSearchContainer.current) usersSearchContainer.current.style.zIndex = 5
         }
@@ -84,12 +85,20 @@ const UsersSearch = ({
 
     function handleInputChange(e) {
         setInput(e.target.value);
-        setShowSpinner(true);
+
+        if (e.target.value.trim()) setShowSpinner(true);
+
+        if (inputTimeout?.current) {
+            clearTimeout(inputTimeout.current);
+            inputTimeout.current = null;
+        }
+
         const timeoutId = setTimeout(() => {
             if (e.target.value.trim()) usersProfileFetchSearch(e.target.value);
-        }, 1000);
-        setInputTimeout(timeoutId);
-        if (inputTimeout) { clearTimeout(inputTimeout) }
+            inputTimeout.current = null;
+        }, 800);
+
+        inputTimeout.current = timeoutId;
     }
 
     function handleCloseClick() {

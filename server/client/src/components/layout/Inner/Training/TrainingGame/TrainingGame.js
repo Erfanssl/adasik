@@ -47,18 +47,16 @@ const gamesData = [
 const games = ['Mental Flex', 'Anticipation', 'Memory Racer'];
 
 const TrainingGame = ({
-                           match,
+                          match,
                           gameAnalysisData,
                           trainingSendData,
                           trainingGameWipeData
-                       }) => {
+                      }) => {
     const [gameComponent, setGameComponent] = useState({ c: undefined });
     const [shouldStart, setShouldStart] = useState(false);
-    const [timer, setTimer] = useState(90);
     const [result, setResult] = useState('');
     const [notFound, setNotFound] = useState(false);
     const [gameData, setGameData] = useState(null);
-    const [timerInterval, setTimerInterval] = useState(null);
     const [choices, setChoices] = useState({ right: 0, wrong: 0 });
     const [choiceTimestamp, setChoiceTimestamp] = useState([]);
     const [maxBooster, setMaxBooster] = useState(1);
@@ -90,7 +88,6 @@ const TrainingGame = ({
         const pageViewSocket = pageViewSocketConnection();
 
         return () => {
-            clearInterval(timerInterval);
             trainingGameWipeData();
             pageViewSocket.disconnect();
             window.onbeforeunload = (e) => {
@@ -100,15 +97,14 @@ const TrainingGame = ({
         };
     }, []);
 
+    useEffect(() => {
+        preGameContainer?.current?.focus();
+    }, [preGameContainer.current]);
+
     // to specify when the time is out to send the data
     useEffect(() => {
-        if (timer <= 0) {
+        if (finish) {
             // the game is over
-            setFinish(true);
-
-            // disable the timer
-            clearInterval(timerInterval);
-
             // constructing data
             const data = {
                 gameName: gameData.name,
@@ -147,11 +143,13 @@ const TrainingGame = ({
                 }
             }
         }
-    }, [timer]);
+    }, [finish]);
 
     useEffect(() => {
         if (chart?.current && gameAnalysisData) {
-            const scoreArr = [ ...gameAnalysisData.last30Attempts ].reverse().map((scoreObj, i) => ({ date: i + 1, value: scoreObj.score }));
+            let scoreArr;
+            if (window.innerWidth > 600) scoreArr = [ ...gameAnalysisData.last30Attempts ].reverse().map((scoreObj, i) => ({ date: i + 1, value: scoreObj.score }));
+            else scoreArr = [ ...gameAnalysisData.last30Attempts.slice(-10) ].reverse().map((scoreObj, i) => ({ date: i + 1, value: scoreObj.score }));
             createMultiLineChart(scoreArr, chart.current);
         }
     }, [chart, gameAnalysisData]);
@@ -159,11 +157,6 @@ const TrainingGame = ({
     useEffect(() => {
         if (shouldStart) {
             setFinish(false);
-            // we set the timer
-            const timerInterval = setInterval(() => {
-                setTimer(timer => timer -.1);
-            }, 100);
-            setTimerInterval(timerInterval);
         }
     }, [shouldStart]);
 
@@ -222,7 +215,8 @@ const TrainingGame = ({
             return (
                 <GameComponentLoaded
                     shouldStart={ shouldStart }
-                    timer={ timer }
+                    setFinish={ setFinish }
+                    finish={ finish }
                     handleResult={ setResult }
                     setMaxBooster={ setMaxBooster }
                     setScore={ setScore }
@@ -246,8 +240,12 @@ const TrainingGame = ({
                 }, 400);
             }
 
+            function handlePreGameKeyDown(e) {
+                if (e.keyCode === 13) handleStartGameClick();
+            }
+
             return (
-                <div ref={ preGameContainer } className={ "challenge-game--pre-game__container" + (shouldStart ? " hide" : "")}>
+                <div onKeyDown={ handlePreGameKeyDown } tabIndex="0" ref={ preGameContainer } className={ "challenge-game--pre-game__container" + (shouldStart ? " hide" : "")}>
                     <div ref={ lineOne } className="line hide" />
                     <div ref={ lineTwo } className="line2 hide" />
                     <div ref={ preGameLeftContainer } className="challenge-game--pre-game__left-container hide">
@@ -308,12 +306,24 @@ const TrainingGame = ({
         }
 
         function renderTop5() {
+            function createHighlightClassName() {
+                if (gameAnalysisData.top5.map(t5 => t5.score).includes(score)) {
+                    for (let i = gameAnalysisData.top5.length - 1; i >= 0; i--) {
+                        if (gameAnalysisData.top5[i].score === score) {
+                            return i;
+                        }
+                    }
+                }
+
+                return -1;
+            }
+
             return (
                 <ol>
                     {
                         [ ...gameAnalysisData.top5 ].map((scoreObj, i) => {
                             return (
-                                <li>
+                                <li key={ scoreObj.score.toString() + i.toString() } className={ createHighlightClassName() === i ? 'highlight' : '' }>
                                     <p>{ i + 1 }.</p>
                                     <p>{ numberFormatter(scoreObj.score) }</p>
                                 </li>
@@ -322,6 +332,10 @@ const TrainingGame = ({
                     }
                 </ol>
             );
+        }
+
+        function handleTryThisGameAgain() {
+            window.location.reload();
         }
 
         return (
@@ -340,7 +354,7 @@ const TrainingGame = ({
                             <p>Response Time Per Shape</p>
                         </div>
                         <div className="right">
-                            <p>{ numberFormatter(score ) }</p>
+                            <p>{ numberFormatter(score) }</p>
                             <p>{ choices.right } of { choices.right + choices.wrong }</p>
                             <p>{ choices.right + choices.wrong === 0 ? 0 : Math.floor((choices.right / (choices.right + choices.wrong)) * 100) }%</p>
                             <p>{ (choices.right + choices.wrong) > 1 ? `${ averageResponseTime } ms` : 'Not Enough Data' }</p>
@@ -368,8 +382,18 @@ const TrainingGame = ({
                         }
                     </div>
                     <div className="challenge-game--after-game__bottom-container">
+                        {
+                            !navigator.onLine &&
+                            <div className="result--offline">
+                                <p>Your result will be submitted when you get online</p>
+                            </div>
+                        }
                         <div className="head">
-                            <h3>Your last 30 Attempts</h3>
+                            {
+                                window.innerWidth > 600 ?
+                                    <h3>Your last 30 Attempts</h3>:
+                                    <h3>Your last 10 Attempts</h3>
+                            }
                             <p>(includes only games from trainings)</p>
                         </div>
                         {
@@ -399,8 +423,13 @@ const TrainingGame = ({
                             </div>
                         }
                         <Button
-                            text="Continue"
+                            text="Go To Training"
                             link='/training'
+                        />
+                        <Button
+                            text="Try This Game Again"
+                            onClick={ handleTryThisGameAgain }
+                            form={ true }
                         />
                     </div>
                 </div>

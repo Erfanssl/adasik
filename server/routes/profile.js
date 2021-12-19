@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const auth = require('../middlewares/auth');
 const currentUser = require('../middlewares/currentUser');
+const noError = require('../middlewares/noError');
 const dataEncryption = require('../utils/dataEncryption');
 const dataDecryption = require('../utils/dataDecryption');
 
@@ -85,7 +86,7 @@ profileRouter.get('/', currentUser, auth, async (req, res) => {
     }
 });
 
-profileRouter.get('/name', currentUser, auth, async (req, res) => {
+profileRouter.get('/name', currentUser, noError, auth, async (req, res) => {
     try {
         const nameOfTheUser = await User.aggregate([
             {
@@ -131,7 +132,7 @@ profileRouter.get('/users/:username', currentUser, auth, async (req, res) => {
         const friendQuery = await Friend.aggregate([
             {
                 $match: {
-                    userId: mongoose.Types.ObjectId(req.user.id)
+                    userId: mongoose.Types.ObjectId(user[0]._id)
                 }
             },
             {
@@ -522,7 +523,7 @@ profileRouter.get('/search/:wordToSearch', currentUser, auth, async (req, res) =
         const searchBaseOnUsername = await User.aggregate([
             {
                 $match: {
-                    username: wordToSearch
+                    username: RegExp(`.*${ wordToSearch }.*`)
                 }
             },
             {
@@ -566,12 +567,21 @@ profileRouter.get('/search/:wordToSearch', currentUser, auth, async (req, res) =
         ]);
 
         let finalArr = [];
+        const searchBaseOnFullNameUsernameObj = {};
 
-        if (searchBaseOnUsername.length) {
-            if (!searchBaseOnFullName.map(search => search.username).includes(searchBaseOnUsername[0].username)) finalArr.push(searchBaseOnUsername[0]);
+        if (searchBaseOnFullName.length) {
+            searchBaseOnFullName.forEach(search => {
+                searchBaseOnFullNameUsernameObj[search?.username] = true;
+            });
         }
 
-        finalArr.push(...searchBaseOnFullName)
+        if (searchBaseOnUsername.length) {
+            searchBaseOnUsername.forEach(searchU => {
+                if (!(searchU.username in searchBaseOnFullNameUsernameObj) && searchU.fullName) finalArr.push(searchU);
+            });
+        }
+
+        finalArr.push(...searchBaseOnFullName);
 
         return res.send(finalArr);
     } catch (err) {

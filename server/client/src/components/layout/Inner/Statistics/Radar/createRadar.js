@@ -362,9 +362,15 @@ const createRadar = (element, data, size, animation = false, changeBackground = 
             .attr("class", "radarCircleWrapper" + id.className);
 
         //Set up the small tooltip for when you hover over a circle
+
+        const rectToolTip = g.append('rect')
+            .style('opacity', 0);
+
         const tooltip = g.append("text")
             .attr("class", "tooltip" + id.className)
             .style("opacity", 0);
+
+
 
         //Append a set of invisible circles on top for the mouseover pop-up
         blobCircleWrapper.selectAll(".radarInvisibleCircle" + id.className)
@@ -387,17 +393,39 @@ const createRadar = (element, data, size, animation = false, changeBackground = 
                 const newX = parseFloat(d3.select(this).attr('cx')) - 10;
                 const newY = parseFloat(d3.select(this).attr('cy')) - 10;
 
-                tooltip
-                    .attr('x', newX)
-                    .attr('y', newY)
-                    .text(Format(i.value))
-                    .style('fill', '#007000')
-                    .style('stroke', 'white')
+                const textValue = Format(i.value);
+
+                let numberToSubtract;
+
+                if (textValue.length >= 2) numberToSubtract = +6;
+                if (textValue.length >= 3) numberToSubtract = +3;
+                if (textValue.length >= 4) numberToSubtract = -1;
+
+                rectToolTip
+                    .attr('x', newX - 1 - (textValue.length + numberToSubtract))
+                    .attr('y', newY - 27)
+                    .attr('rx', 5)
+                    .attr('width', 24 + (textValue.length * 3))
+                    .attr('height', 28)
+                    .style('fill', '#011a01')
                     .transition().duration(200)
                     .style('opacity', 1);
+
+                tooltip
+                    .attr('x', newX)
+                    .attr('y', newY - 9)
+                    .style('fill', '#fff')
+                    .text(textValue)
+                    .style('font-size', 12)
+                    .transition().duration(200)
+                    .style('opacity', 1);
+
             })
             .on("mouseout", function () {
                 tooltip.transition().duration(200)
+                    .style("opacity", 0);
+
+                rectToolTip.transition().duration(200)
                     .style("opacity", 0);
             });
 
@@ -406,7 +434,8 @@ const createRadar = (element, data, size, animation = false, changeBackground = 
         function wrap(text, width) {
             text.each(function () {
                 const text = d3.select(this);
-                const words = text.text().split(/\s+/).reverse();
+                // const words = text.text().split(/\s+/).reverse();
+                const words = [text.text()].reverse();
                 let word;
                 let line = [];
                 let lineNumber = 0;
